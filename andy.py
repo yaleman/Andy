@@ -38,8 +38,8 @@ def self_ipaddr():
 			ipaddr.append( re_ipfind.findall( line )[0] )
 	return ipaddr
 
-are = Are( "are.facts" )
-notes = Note( "notes.note" )
+are = Are( "are.pickle" )
+notes = Note( "notes.pickle" )
 
 """are.handle_text( "apples are green" )
 are.handle_text( "apples are red" )
