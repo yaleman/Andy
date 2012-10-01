@@ -114,7 +114,6 @@ are.get( "colour" )
 
 are.replace( "ipaddr", self_ipaddr() )
 
-#are.get( "ipaddr" )
 
 interact()
 are.save()
