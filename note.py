@@ -69,6 +69,8 @@ class Note():
 		# can be forced
 		if( self.changed or force == True ):
 			pickle.dump( self.notes, open( self.filename, "wb" ) )
-			if not force:
+			try:
 				self.changed = False
+			except:
+				pass
 
