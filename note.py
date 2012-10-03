@@ -9,8 +9,9 @@ class Note():
 		self.changed = False
 
 	def __del__( self ):
-		print "Saving notes on destruction"
-		pickle.dump( self.notes, open( self.filename, "wb" ) )
+		#print "Saving notes on destruction"
+		#pickle.dump( self.notes, open( self.filename, "wb" ) )
+		pass
 
 	def handle_text( self, text ):
 		text = " ".join( text.split()[1:] )
