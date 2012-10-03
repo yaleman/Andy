@@ -5,6 +5,7 @@ class Are():
 		# relies on os, re, pickle
 		# feed it a filename, it'll either load a pickle of the facts or create a new empty file
 		self.filename = filename
+		self.changed = False
 		if os.path.exists( self.filename ):
 			self.facts = pickle.load( open( self.filename, "rb" ) )
 		else:
@@ -13,10 +14,11 @@ class Are():
 			self.save()
 		self.re_set = re.compile( "(\S+) (are|is a) (.*)" )	
 
-	def save( self ):
+	def save( self, force = False ):
 		# save the file
-		print "Saving facts"
-		pickle.dump( self.facts, open( self.filename, "wb" ) )
+		if self.changed or force:
+			#print "Saving facts"
+			pickle.dump( self.facts, open( self.filename, "wb" ) )
 
 
 	def handle_text( self, text ):
