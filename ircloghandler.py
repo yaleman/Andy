@@ -12,6 +12,8 @@ class LogHandler():
 		self.re_irclog = re.compile( "[0-9\:\s]{0,5}\<[\s\@\#]{0,1}([a-zA-Z0-9\-\_\+]+)\>(.*)", re.IGNORECASE )
 		self.re_set = re.compile( "(\S+) (are|is a) ([a-zA-Z0-9\s]+)" )
 		self.re_ima = re.compile( "\<[\s\@\#\+]{1}([a-zA-Z0-9\-\_\+]+)\>.*I'm a ([A-Za-z0-9\'\-\/\\\_]+)[\']{0,1}" , re.IGNORECASE )
+		self.re_uri = re.compile( "[\s]+([a-z]{3,5}\:\/\/[\S]+)", re.IGNORECASE )
+
 
 	def process( self ):
 		peopletalking = {}
@@ -21,6 +23,9 @@ class LogHandler():
 			logline = self.re_irclog.search( line )
 			if logline != None:
 				nick,text = logline.groups()
+				uri_list = self.re_uri.findall( text )
+				if uri_list:
+					print uri_list
 		#		print nick.strip(), text.strip()
 				if( nick not in peopletalking ):
 					peopletalking[nick] = [text]
