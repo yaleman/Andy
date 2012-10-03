@@ -27,6 +27,9 @@ def interact():
 			notes.handle_text( text )
 		else:
 			are.handle_text( text )
+	are.save()
+	notes.save()
+
 def self_ipaddr():
 	# relies on subprocess
 	# only works on POSIX systems	
@@ -55,7 +58,7 @@ are.get( "colour" )
 
 
 are.replace( "ipaddr", self_ipaddr() )
-
+are.save()
 
 interact()
-are.save()
+#are.save()
