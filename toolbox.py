@@ -5,13 +5,13 @@ try:
 except ImportError:
 	print "Failed to import pexpect"
 
-def sudorun( command ):
-	child = pexpect.spawn ( command )
+def sudorun( command, password ):
+	# uses pexpect to run a command with sudo on the command line with a given password and return the results.
+	child = pexpect.spawn ( "sudo {}".format( command ) )
 	i = child.expect( [ 'Password:*', '' ] )
 	errors = []
 	lines = []
 	if i == 0:
-		#print "Found password request, responding"
 		child.sendline( config.password )
 	else:
 		lines.append( child.before.strip() )

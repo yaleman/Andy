@@ -3,7 +3,7 @@
 import pexpect, re
 import toolbox
 import config
-command = "sudo lsof -i4 -L -n -P"
+command = "lsof -i4 -L -n -P"
 
 
 #TODO: deal with ipv6 ('launchd', '1', 'root', '32u', 'IPv6', '0x78aab92d3c18db51', '0t0', 'TCP', '[::1]:631 (LISTEN)')
@@ -38,10 +38,10 @@ def parse_lsof_information( lines ):
 				info.append( [src, dest, status] )
 	return errors, info
 
-errors, lines = toolbox.sudorun( command )
+errors, lines = toolbox.sudorun( command, config.password )
 errors, info = parse_lsof_information( lines )
 
-for line in [ line for line in info if line[-1] == "CLOSED" ]:
+for line in info:
 	print line
 
 if( len( errors ) > 0 ):
