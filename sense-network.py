@@ -1,10 +1,16 @@
 #!/usr/bin/env python
 
-import pexpect, re
+try:
+	import pexpect
+except ImportError:
+	print "Couldn't load pexpect"
+import re
 import toolbox
 import config
+
 command = "lsof -i4 -L -n -P"
 
+import json
 
 #TODO: deal with ipv6 ('launchd', '1', 'root', '32u', 'IPv6', '0x78aab92d3c18db51', '0t0', 'TCP', '[::1]:631 (LISTEN)')
 
@@ -41,8 +47,9 @@ def parse_lsof_information( lines ):
 errors, lines = toolbox.sudorun( command, config.password )
 errors, info = parse_lsof_information( lines )
 
-for line in info:
-	print line
+#for line in info:
+#	print line
+print json.dumps( info )
 
 if( len( errors ) > 0 ):
 	print "#" * 50
