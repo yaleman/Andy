@@ -2,35 +2,38 @@
 
 import pexpect, re
 import config
-command = "sudo lsof -i"
+command = "sudo lsof -i4 -L -n -P"
 
+
+#TODO: deal with ipv6 ('launchd', '1', 'root', '32u', 'IPv6', '0x78aab92d3c18db51', '0t0', 'TCP', '[::1]:631 (LISTEN)')
 
 lineparser = re.compile( "(?P<command>[a-zA-Z0-9]+)[\s]+(?P<pid>[0-9]+)[\s]+(?P<username>[\S]+)[\s]+([a-zA-Z0-9]+)[\s]+(?P<sixorfour>[A-Za-z0-9]+)[\s]+(?P<device>[a-zA-Z0-9]+)[\s]+(?P<size>[a-z0-9A-Z]+)[\s]+(?P<transport>[A-Za-z0-9]+)[\s]+(?P<details>.*)" )
 
 
-def getinformation():
+def sudorun( command ):
 	child = pexpect.spawn ( command )
-	i = child.expect( ['COMMAND*', 'Password:*' ] )
+	i = child.expect( [ 'Password:*', '' ] )
 	errors = []
-	if i == 1:
+	lines = []
+	if i == 0:
 		print "Found password request, responding"
 		child.sendline( config.password )
 	else:
-		print "Parsing"
-		child.readline()
+		lines.append( child.before.strip() )
+		#print "Parsing"
+		#child.readline()
 		# start parsing 
-	lines = []
-	while not child.eof():
-		line = child.readline().strip()
-		lines.append( line )
+	while not child.eof() :
+		lines.append( child.readline().strip() )
 	return errors, lines
 
 def parseinformation( lines ):
 	errors = []
 	info = []
 	for line in lines:
-		if line != "":
+		if line != "" and not line.startswith( "COMMAND " ):
 			parsed = lineparser.findall( line )[0]
+			print parsed
 			if len( parsed ) == 0:
 				errors.append( "FAULT: {}".format( line ) )
 			else:
@@ -50,6 +53,7 @@ def parseinformation( lines ):
 					#print "()", details.split()[-1], details.split( ":" )[-1]
 					#print src, dest, status
 				else:
+					print "parsing {}".format( details )
 					src, dest = details.split( ":" )
 					#print "?? src: {} dst: {}".format( src, dest )
 				src = src.split( ":" )
@@ -59,7 +63,7 @@ def parseinformation( lines ):
 				#print "'{}' '{}' '{}'".format( src, dest, status )
 	return errors, info
 
-errors, lines = getinformation()
+errors, lines = sudorun( command )
 errors, info = parseinformation( lines )
 
 for line in [ line for line in info if line[-1] == "CLOSED" ]:
