@@ -1,5 +1,9 @@
 #!/usr/bin/env python
 
+# this should be run every x time to check up on what the computer's doing and report back to the database
+# the basic idea is to get a map of process -> ports/ip's used. things like web browsers will be noisy, but I'm looking
+# for those strange apps/ports that you don't know about until you're looking on wireshark.
+
 try:
 	import pexpect
 except ImportError:

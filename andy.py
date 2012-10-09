@@ -9,19 +9,23 @@ from are import Are
 
 # TODO make it so modules imported can register with the Andy object so plugins can add functionality over time
 # Andy.register( plugin-responder (eg @note), *handler )
-	
 
-def interact():
-	text = ""
-	while( text != "quit" ):
-		text = raw_input( "# " ).strip()
-		#print "'%s'" % text
-		if text.lower().startswith( "@note" ):
-			notes.handle_text( text )
-		else:
-			are.handle_text( text )
-	are.save()
-	notes.save()
+# TODO sense-search-periodically - look for things over time like movies etc on x locations	
+
+class Andy():
+	def __init__( self ):
+		pass
+	def interact( self ):
+		text = ""
+		while( text != "quit" ):
+			text = raw_input( "# " ).strip()
+			#print "'%s'" % text
+			if text.lower().startswith( "@note" ):
+				notes.handle_text( text )
+			else:
+				are.handle_text( text )
+		are.save()
+		notes.save()
 
 def self_ipaddr():
 	# relies on subprocess
@@ -34,6 +38,7 @@ def self_ipaddr():
 			ipaddr.append( re_ipfind.findall( line )[0] )
 	return ipaddr
 
+andy = Andy()
 are = Are( "are.pickle" )
 notes = Note( "notes.pickle" )
 
@@ -53,5 +58,5 @@ are.get( "colour" )
 are.replace( "ipaddr", self_ipaddr() )
 are.save()
 
-interact()
+andy.interact()
 #are.save()
