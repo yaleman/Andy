@@ -12,7 +12,7 @@ def sudorun( command, password ):
 	errors = []
 	lines = []
 	if i == 0:
-		child.sendline( config.password )
+		child.sendline( password )
 	else:
 		lines.append( child.before.strip() )
 	while not child.eof() :
