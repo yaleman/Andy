@@ -6,17 +6,10 @@ import os, hashlib
 # my modules
 from note import Note
 from are import Are
+
+# TODO make it so modules imported can register with the Andy object so plugins can add functionality over time
+# Andy.register( plugin-responder (eg @note), *handler )
 	
-
-def runProcess(exe):    
-    p = subprocess.Popen(exe, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
-    while(True):
-      retcode = p.poll() #returns None while subprocess is running
-      line = p.stdout.readline()
-      yield line
-      if(retcode is not None):
-        break
-
 
 def interact():
 	text = ""
