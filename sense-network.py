@@ -41,15 +41,23 @@ def parse_lsof_information( lines ):
 				src = src.split( ":" )
 				dest = dest.split( ":" )
 				status = status.replace( ")", "" ).replace( "(", "" )
-				info.append( [src, dest, status] )
+				info.append( [ det for det in parsed[:-1] ] + [src] + [dest] + [status ] )
 	return errors, info
 
 errors, lines = toolbox.sudorun( command, config.password )
 errors, info = parse_lsof_information( lines )
 
-#for line in info:
-#	print line
-print json.dumps( info )
+dets = {}
+for line in info:
+	#print line
+	if line[0] not in dets:
+		dets[line[0]] = [ line[1:] ]
+	else:
+		dets[line[0]].append( line[1:] )
+for line in dets:
+	print line, dets[line]
+	print ""
+#print json.dumps( info, indent=2 )
 
 if( len( errors ) > 0 ):
 	print "#" * 50
