@@ -20,35 +20,44 @@ class SenseNetwork():
 		"""
 
 	def __init__( self, config ):
-		self.lineparser = re.compile( "(?P<command>[a-zA-Z0-9]+)[\s]+(?P<pid>[0-9]+)[\s]+(?P<username>[\S]+)[\s]+([a-zA-Z0-9]+)[\s]+(?P<sixorfour>[A-Za-z0-9]+)[\s]+(?P<device>[a-zA-Z0-9]+)[\s]+(?P<size>[a-z0-9A-Z]+)[\s]+(?P<transport>[A-Za-z0-9]+)[\s]+(?P<details>.*)" )
-		self.command = "lsof -i4 -L -n -P"
-		self.config = config
-		self.info = []
-		self.errors = []
+		self._lineparser = re.compile( "(?P<command>[a-zA-Z0-9]+)[\s]+(?P<pid>[0-9]+)[\s]+(?P<username>[\S]+)[\s]+([a-zA-Z0-9]+)[\s]+(?P<sixorfour>[A-Za-z0-9]+)[\s]+(?P<device>[a-zA-Z0-9]+)[\s]+(?P<size>[a-z0-9A-Z]+)[\s]+(?P<transport>[A-Za-z0-9]+)[\s]+(?P<details>.*)" )
+		self._command = "lsof -i4 -L -n -P"
+		self._config = config
+		self._info = []
+		self._errors = []
 		self.pluginname = "sense-network"
 		
 
 	def getinfo( self ):
-		if self.info:
-			return self.info
+		if self._info:
+			return self._info
 		else:
-			return self.parse_lsof_information()[1]
+			return self._parse_lsof_information()[1]
 	def geterrors( self ):
-		if self.errors:
-			return self.errors
+		if self._errors:
+			return self._errors
 		else:
-			return self.parse_lsof_information()[0]
+			return self._parse_lsof_information()[0]
 
 	def handle_text( self, text ):
-		return "This isn't really supported by {}, sorry".format( self.pluginname )
+		command = " ".join( text.split()[1:]).strip();
+		if( command == "update" ):
+			self._parse_lsof_information()
+			return "Updated {} information".format( self.pluginname )
+		elif( command.startswith( 'search ' ) ):
+			search = " ".join( command.split()[1:] )
+			print "Searching for '{}'".format( search )
+		else:
+			return "This isn't really supported by {}, sorry".format( self.pluginname )
+		return "um...?"
 
-	def parse_lsof_information( self ):
-		errors, lines = toolbox.sudorun( self.command, self.config.password )
+	def _parse_lsof_information( self ):
+		lines = toolbox.sudorun( self.command, self.config.password )
 		errors = []
 		info = []
 		for line in lines:
 			if line != "" and not line.startswith( "COMMAND " ):
-				parsed = self.lineparser.findall( line )[0]
+				parsed = self._lineparser.findall( line )[0]
 				if len( parsed ) == 0:
 					errors.append( "FAULT: {}".format( line ) )
 				else:
@@ -68,12 +77,11 @@ class SenseNetwork():
 					dest = dest.split( ":" )
 					status = status.replace( ")", "" ).replace( "(", "" )
 					info.append( [ det for det in parsed[:-1] ] + [src] + [dest] + [status ] )
-		self.info = info
-		self.errors = errors
+		self._info = info
+		self._errors = errors
 		return errors, info
 
 if( __name__ == '__main__' ):
-
 	senseNetwork = SenseNetwork( config )
 	#errors, info = senseNetwork.parse_lsof_information()
 	errors = senseNetwork.geterrors()
