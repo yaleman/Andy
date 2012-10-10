@@ -7,6 +7,7 @@ class Note():
 		self.notes = {}
 		self.load( preload )
 		self.changed = False
+		self.pluginname = "note"
 
 	def __del__( self ):
 		#print "Saving notes on destruction"
@@ -20,7 +21,7 @@ class Note():
 		elif text.lower().startswith( "search" ):
 			foundany = False
 			terms = text.split()[1:]
-			print "Searching for: {}".format( ", ".join( terms ) )
+			#print "Searching for: {}".format( ", ".join( terms ) )
 			for note in self.notes:
 				found = False
 				notelow = self.notes[note]
@@ -28,16 +29,18 @@ class Note():
 					if( term.lower() in notelow ):
 						found = True
 						if not foundany:
-							print "##################"
+							retval = "##################\n"
 						foundany = True
 						break
 				if found:	
-					print self.notes[note]
-					print "##################"
+					retval += self.notes[note]
+					retval += "\n##################"
 			if not foundany:
-				print "Sorry, nothing found in notes."
+				return "Sorry, nothing found in {}.".format( self.pluginname )
+			else:
+				return retval
 		else:
-			print "Unsure what you meant by '{}'".format( text )		
+			return "Unsure what you meant by '{}'".format( text )
 
 	def add( self, text ):
 		# generate hash of note
