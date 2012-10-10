@@ -19,7 +19,7 @@ class SenseNetwork():
 		 for those strange apps/ports that you don't know about until you're looking on wireshark.
 		"""
 
-	def __init__( self, config ):
+	def __init__( self, config=config ):
 		self._lineparser = re.compile( "(?P<command>[a-zA-Z0-9]+)[\s]+(?P<pid>[0-9]+)[\s]+(?P<username>[\S]+)[\s]+([a-zA-Z0-9]+)[\s]+(?P<sixorfour>[A-Za-z0-9]+)[\s]+(?P<device>[a-zA-Z0-9]+)[\s]+(?P<size>[a-z0-9A-Z]+)[\s]+(?P<transport>[A-Za-z0-9]+)[\s]+(?P<details>.*)" )
 		self._command = "lsof -i4 -L -n -P"
 		self._config = config
@@ -39,8 +39,8 @@ class SenseNetwork():
 		else:
 			return self._parse_lsof_information()[0]
 
-	def handle_text( self, text ):
-		command = " ".join( text.split()[1:]).strip();
+	def _handle_text( self, text ):
+		command = " ".join( text.split()[1:]).strip()
 		if( command == "update" ):
 			self._parse_lsof_information()
 			return "Updated {} information".format( self.pluginname )

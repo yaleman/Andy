@@ -39,14 +39,14 @@ class Andy():
 			elif text_lower.startswith( "@" ):
 				oper = text_lower.split()[0][1:]
 				if( oper in self.plugins ):
-					if( 'handle_text' in dir( self.plugins[oper] ) ):
-						print self.plugins[oper].handle_text( text )
+					if( '_handle_text' in dir( self.plugins[oper] ) ):
+						print self.plugins[oper]._handle_text( text )
 					else:
 						print "{} module doesn't have handle_text".format( oper )
 				else:
 					print "Can't find {} module".format( oper )
-			else:
-				are.handle_text( text )
+			#else:
+			#	are._handle_text( text )
 		# this goes through all the registered plugins and saves them
 		for plugin in self.plugins:
 			if( 'save' in dir( self.plugins[plugin] ) ):

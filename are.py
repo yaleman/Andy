@@ -22,7 +22,7 @@ class Are():
 			pickle.dump( self.facts, open( self.filename, "wb" ) )
 
 
-	def handle_text( self, text ):
+	def _handle_text( self, text ):
 		# deals with a few things
 		res = self.re_set.match( text )
 		if( res != None ):
