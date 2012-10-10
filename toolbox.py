@@ -12,7 +12,6 @@ def sudorun( command, password ):
 	# relies on pexpect
 	child = pexpect.spawn ( "sudo {}".format( command ) )
 	i = child.expect( [ 'Password:*', '' ] )
-	errors = []
 	lines = []
 	if i == 0:
 		child.sendline( password )
@@ -20,7 +19,7 @@ def sudorun( command, password ):
 		lines.append( child.before.strip() )
 	while not child.eof() :
 		lines.append( child.readline().strip() )
-	return errors, lines
+	return lines
 
 def runProcess(exe):    
     # relies on subprocess
