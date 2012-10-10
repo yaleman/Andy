@@ -60,9 +60,8 @@ if( __name__ == '__main__' ):
 
 	andy = Andy()
 
-	are.replace( "ipaddr", toolbox.self_ipaddr() )
-	are.save()
 	andy.register_plugin( sense_network.SenseNetwork() )
+	andy.register_plugin( are.Are( config.filename['are'] ) )
 	andy.register_plugin( note.Note( config.filename['note'] ) )
 	andy.register_plugin( sense_ap.AP() )
 	
