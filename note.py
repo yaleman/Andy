@@ -1,6 +1,7 @@
+import config
 import hashlib, pickle, os
 
-class Note():
+class Note( config.base_plugin ):
 	def __init__( self, filename, preload = True ):
 		# relies on hashlib, pickle, os
 		self.filename = filename
@@ -13,14 +14,6 @@ class Note():
 		#print "Saving notes on destruction"
 		#pickle.dump( self.notes, open( self.filename, "wb" ) )
 		pass
-
-	def handle_text( self, text ):
-		text = " ".join( text.split()[1:] )
-		self._commands = [ func for func in dir( self ) if not func.startswith( "_" ) ]
-		for f in self._commands:
-			if text.startswith( "{}".format( f ) ):
-				return eval( 'self.{}( " ".join( text.split()[1:] ) )'.format( f ) )
-		return "Unsure what you meant by '{}'".format( text )
 
 	def search( self, text ):
 		foundany = False
