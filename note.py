@@ -16,32 +16,35 @@ class Note():
 
 	def handle_text( self, text ):
 		text = " ".join( text.split()[1:] )
-		if text.lower().startswith( "add" ):
-			self.add( " ".join( text.split()[1:] ) )
-		elif text.lower().startswith( "search" ):
-			foundany = False
-			terms = text.split()[1:]
-			#print "Searching for: {}".format( ", ".join( terms ) )
-			for note in self.notes:
-				found = False
-				notelow = self.notes[note]
-				for term in terms:
-					if( term.lower() in notelow ):
-						found = True
-						if not foundany:
-							retval = "##################\n"
-						foundany = True
-						break
-				if found:	
-					retval += self.notes[note]
-					retval += "\n##################"
-			if not foundany:
-				return "Sorry, nothing found in {}.".format( self.pluginname )
-			else:
-				return retval
-		else:
-			return "Unsure what you meant by '{}'".format( text )
+		self._commands = [ func for func in dir( self ) if not func.startswith( "_" ) ]
+		for f in self._commands:
+			if text.startswith( "{}".format( f ) ):
+				return eval( 'self.{}( " ".join( text.split()[1:] ) )'.format( f ) )
+		return "Unsure what you meant by '{}'".format( text )
 
+	def search( self, text ):
+		foundany = False
+		terms = text.split()
+		#print "Searching for: {}".format( ", ".join( terms ) )
+		for note in self.notes:
+			found = False
+			notelow = self.notes[note]
+			for term in terms:
+				if( term.lower() in notelow ):
+					found = True
+					if not foundany:
+						retval = "##################\n"
+					foundany = True
+					break
+			if found:	
+				retval += self.notes[note]
+				retval += "\n##################"
+		if not foundany:
+			return "Sorry, nothing found in {}.".format( self.pluginname )
+		else:
+			return retval
+
+	
 	def add( self, text ):
 		# generate hash of note
 		h = hashlib.new( 'ripemd160' )
@@ -51,8 +54,10 @@ class Note():
 		if h not in self.notes:
 			self.notes[h] = text
 			self.changed = True
-			return True
-		return False
+			#return True
+			return "Added"
+		#return False
+		return "Note already exists"
 
 	def load( self, learn = True ):
 		# loads notes from file into a variable called notes
@@ -73,8 +78,5 @@ class Note():
 		# can be forced
 		if( self.changed or force == True ):
 			pickle.dump( self.notes, open( self.filename, "wb" ) )
-			try:
-				self.changed = False
-			except:
-				pass
-
+			self.changed = False
+			
