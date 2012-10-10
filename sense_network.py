@@ -25,6 +25,8 @@ class SenseNetwork():
 		self.config = config
 		self.info = []
 		self.errors = []
+		self.pluginname = "sense-network"
+		
 
 	def getinfo( self ):
 		if self.info:
@@ -37,6 +39,8 @@ class SenseNetwork():
 		else:
 			return self.parse_lsof_information()[0]
 
+	def handle_text( self, text ):
+		return "This isn't really supported by {}, sorry".format( self.pluginname )
 
 	def parse_lsof_information( self ):
 		errors, lines = toolbox.sudorun( self.command, self.config.password )
@@ -68,26 +72,28 @@ class SenseNetwork():
 		self.errors = errors
 		return errors, info
 
-senseNetwork = SenseNetwork( config )
-#errors, info = senseNetwork.parse_lsof_information()
-errors = senseNetwork.geterrors()
-info = senseNetwork.getinfo()
+if( __name__ == '__main__' ):
 
-dets = {}
-for line in info:
-	#print line
-	if line[0] not in dets:
-		dets[line[0]] = [ line[1:] ]
-	else:
-		dets[line[0]].append( line[1:] )
-for line in dets:
-	print line, dets[line]
-	print ""
-#print json.dumps( info, indent=2 )
+	senseNetwork = SenseNetwork( config )
+	#errors, info = senseNetwork.parse_lsof_information()
+	errors = senseNetwork.geterrors()
+	info = senseNetwork.getinfo()
 
-if( len( errors ) > 0 ):
-	print "#" * 50
-	print "      Errors"
-	print "#" * 50
-	print "\n".join( errors )
+	dets = {}
+	for line in info:
+		#print line
+		if line[0] not in dets:
+			dets[line[0]] = [ line[1:] ]
+		else:
+			dets[line[0]].append( line[1:] )
+	for line in dets:
+		print line, dets[line]
+		print ""
+	#print json.dumps( info, indent=2 )
+
+	if( len( errors ) > 0 ):
+		print "#" * 50
+		print "      Errors"
+		print "#" * 50
+		print "\n".join( errors )
 
