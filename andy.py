@@ -29,6 +29,13 @@ class Andy():
 				oper = text_lower.split()[0][1:]
 				if( oper == "plugins" ):
 					print ", ".join( self.plugins.keys() )
+				elif( oper.startswith( "help" ) ):
+					helpterm = text.split()[1:]
+					if len( helpterm ) > 0:
+						print "Looking for help on {}".format( helpterm[0] )
+						if( helpterm[0] in self.plugins ):
+							helptext = [ f for f in dir( self.plugins[helpterm[0] ] ) if not f.startswith( "_" ) ]
+							print "Commands in {} are {}.".format( helpterm[0], helptext  )
 			elif text_lower.startswith( "@" ):
 				oper = text_lower.split()[0][1:]
 				if( oper in self.plugins ):
