@@ -22,7 +22,7 @@ class LogHandler():
 		for line in contents.split( "\n" ):
 			logline = self.re_irclog.search( line )
 			if logline != None:
-				nick,text = logline.groups()
+				nick, text = logline.groups()
 				uri_list = self.re_uri.findall( text )
 				if uri_list:
 					print uri_list
