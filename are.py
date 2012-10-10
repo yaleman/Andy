@@ -13,6 +13,7 @@ class Are():
 			#pickle.dump( self.facts, open( self.filename, "wb" ) )
 			self.save()
 		self.re_set = re.compile( "(\S+) (are|is a) (.*)" )	
+		self.pluginname = "are"
 
 	def save( self, force = False ):
 		# save the file
@@ -28,6 +29,7 @@ class Are():
 			#print "Found a setter: %s" % text
 			#print res.groups()
 			self.set( res.group(1), res.group( 3).strip() )
+			return "are doesn't handle_text right yet"
 
 	def replace( self, node, newfacts ):
 		# this force-resets a node's data
