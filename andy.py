@@ -1,20 +1,15 @@
 #!/usr/bin/env python
-import subprocess
-import re
-import pickle
-import os, hashlib
+
 # my modules
 #from note import Note
 #from are import Are
-import note, are, sense_network
+import note, are
+import sense_ap, sense_network
 import toolbox
 import config
 
 
-# TODO make it so modules imported can register with the Andy object so plugins can add functionality over time
-# Andy.register( plugin-responder (eg @note), *handler )
-
-# TODO sense-search-periodically - look for things over time like movies etc on x locations	
+#TODO sense-searchfor - look for things over time like movies etc on x locations	
 
 class Andy():
 	def __init__( self ):
@@ -65,14 +60,14 @@ if( __name__ == '__main__' ):
 
 	andy = Andy()
 
-	are = are.Are( "are.pickle" )
-	note = note.Note( "notes.pickle" )
-	andy.register_plugin( sense_network.SenseNetwork( config ) )
-	andy.register_plugin( are )
-	andy.register_plugin( note )
-
 	are.replace( "ipaddr", toolbox.self_ipaddr() )
 	are.save()
+	andy.register_plugin( sense_network.SenseNetwork() )
+	andy.register_plugin( note.Note( config.filename['note'] ) )
+	andy.register_plugin( sense_ap.AP() )
+	
+	andy.plugins['are'].replace( "ipaddr", toolbox.self_ipaddr() )
+	andy.plugins['are'].save()
 
 
 	andy.interact()
