@@ -29,7 +29,7 @@ for y in xrange( 0, 100 ):
 		except curses.error:
 			pass
 
-pad.refresh( 0,0, 5,5, 20, 75 )
+pad.refresh( 0, 0, 5, 5, 20, 75 )
 
 for i in range( 1, 100000 ):
 	n = i

@@ -52,7 +52,7 @@ class SenseNetwork():
 		return "um...?"
 
 	def _parse_lsof_information( self ):
-		lines = toolbox.sudorun( self.command, self.config.password )
+		lines = toolbox.sudorun( self._command, self._config.password )
 		errors = []
 		info = []
 		for line in lines:

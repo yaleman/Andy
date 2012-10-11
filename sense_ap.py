@@ -16,7 +16,7 @@ import config
 
 class AP( config.base_plugin ):
 	def __init__( self, config = config ):
-                config.base_plugin.__init__( self )
+        	config.base_plugin.__init__( self )
 		self._config = config
 		self.pluginname = "sense-ap"
 		self._command_current_connection = "airport -I"
