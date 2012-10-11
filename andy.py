@@ -4,12 +4,11 @@
 #from note import Note
 #from are import Are
 import note, are
-import sense_ap, sense_network
+import sense_ap, sense_network, sense_todo, sense_lookfor
 import toolbox
 import config
 
-
-#TODO sense-searchfor - look for things over time like movies etc on x locations	
+#TODO add usage details for help
 
 class Andy():
 	def __init__( self ):
@@ -66,10 +65,14 @@ if( __name__ == '__main__' ):
 
 	andy = Andy()
 
+	
+
 	andy.register_plugin( sense_network.SenseNetwork() )
 	andy.register_plugin( are.Are( config.filename['are'] ) )
 	andy.register_plugin( note.Note( config.filename['note'] ) )
 	andy.register_plugin( sense_ap.AP() )
+	andy.register_plugin( sense_todo.Todo() )
+	andy.register_plugin( sense_lookfor.LookFor( lookfor_uris ) )
 	
 	andy.plugins['are'].replace( "ipaddr", toolbox.self_ipaddr() )
 	andy.plugins['are'].save()
