@@ -6,7 +6,8 @@ except ImportError:
 	print "Failed to import pexpect"
 
 #import subprocess
-import re
+import re, hashlib
+import urllib2
 
 def sudorun( command, password ):
 	# uses pexpect to run a command with sudo on the command line with a given password and return the results. 
@@ -41,3 +42,15 @@ def self_ipaddr():
 		if "inet" in line and re_ipfind.search( line ) != None:
 			ipaddr.append( re_ipfind.findall( line )[0] )
 	return ipaddr
+
+def url_get( url ):
+	#based on info from here: http://docs.python.org/library/urllib2.html#urllib2.urlopen
+	# create the request object
+	u = urllib2.urlopen( url )
+	# u.geturl() should return whatever ended up being grabbed (In case of a redirect)
+	return u.read()
+
+def md5( text ):
+	h = hashlib.new( 'ripemd160' )
+	h.update( text )
+	return h.hexdigest()

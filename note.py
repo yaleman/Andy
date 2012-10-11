@@ -1,9 +1,11 @@
 import config
-import hashlib, pickle, os
+import pickle, os
+import toolbox
 
 class Note( config.base_plugin ):
 	def __init__( self, filename, preload = True ):
 		# relies on hashlib, pickle, os
+		config.base_plugin.__init__( self )
 		self.filename = filename
 		self.notes = {}
 		self.load( preload )
@@ -39,11 +41,7 @@ class Note( config.base_plugin ):
 
 	
 	def add( self, text ):
-		# generate hash of note
-		h = hashlib.new( 'ripemd160' )
-		h.update( text )
-		h = h.hexdigest()
-		# check if hash not in notes storage
+		h = toolbox.md5( text )
 		if h not in self.notes:
 			self.notes[h] = text
 			self.changed = True
