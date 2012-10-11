@@ -14,6 +14,21 @@ import config
 class Andy():
 	def __init__( self ):
 		self.plugins = {}
+
+	def _command_hash( self, text ):
+		oper = text.lower().split()[0][1:]
+		if( oper == "plugins" ):
+			return ", ".join( self.plugins.keys() )
+		elif( oper.startswith( "help" ) ):
+			helpterm = text.split()[1:]
+			if len( helpterm ) > 0:
+				#print "Looking for help on {}".format( helpterm[0] )
+				if( helpterm[0] in self.plugins ):
+					helptext = [ f for f in dir( self.plugins[helpterm[0] ] ) if not f.startswith( "_" ) and f != 'pluginname' ]
+					return "Commands in '{}' are {}.".format( helpterm[0], ", ".join( helptext  ) )
+		else:
+			return "Eh?"
+
 	def interact( self ):
 		text = ""
 		while( text != "quit" ):
@@ -21,16 +36,7 @@ class Andy():
 			#print "'%s'" % text
 			text_lower = text.lower()
 			if text_lower.startswith( "#" ):
-				oper = text_lower.split()[0][1:]
-				if( oper == "plugins" ):
-					print ", ".join( self.plugins.keys() )
-				elif( oper.startswith( "help" ) ):
-					helpterm = text.split()[1:]
-					if len( helpterm ) > 0:
-						print "Looking for help on {}".format( helpterm[0] )
-						if( helpterm[0] in self.plugins ):
-							helptext = [ f for f in dir( self.plugins[helpterm[0] ] ) if not f.startswith( "_" ) ]
-							print "Commands in {} are {}.".format( helpterm[0], helptext  )
+				print self._command_hash( text )
 			elif text_lower.startswith( "@" ):
 				oper = text_lower.split()[0][1:]
 				if( oper in self.plugins ):
