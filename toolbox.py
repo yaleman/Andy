@@ -80,8 +80,14 @@ def do_tasksequence( task_sequence, args, data ):
 		elif( cmd == "in" ):
 			if( cmdargs in data ):
 				print "Found '{}' in data.".format( cmdargs ) 
+				found = True
 			else:
 				print "Couldn't find '{}' in data.".format( cmdargs )
+				found = False
+		elif( cmd == "return" ):
+			retcmd = "retval = {}".format( cmdargs )
+			eval( retcmd )
+			return retval 
 		else:
 			print "Unknown task cmd '{}'".format( cmd )
 
