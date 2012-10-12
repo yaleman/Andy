@@ -22,8 +22,21 @@ class AP( config.base_plugin ):
 		self._command_current_connection = "airport -I"
 		self._command_scan = "airport -s"
 
-	def current( self, text ):
-		return "\n".join( [ line for line in toolbox.run( self._command_current_connection ) if line.startswith( "SSID" ) ] )
+	def _current_data( self, text=None ):
+		data = [ line for line in toolbox.run( self._command_current_connection ) if line.startswith( "SSID" ) and line.strip() != "" ]
+		data = data[0].split( ":" )[1].strip()
+		if( data != "" ):
+			return data
+		else:
+			#return "no access point"
+			return False
+
+	def current( self, text=None ):
+		tmp = self._current_data()
+		if not tmp:
+			return "Currently disconnected"
+		else:
+			return "Connected to {}.".format( self._current_data() )
 
 if( __name__ == '__main__' ):
 	pass
