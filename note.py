@@ -3,9 +3,9 @@ import pickle, os
 import toolbox
 
 class Note( config.base_plugin ):
-	def __init__( self, filename, preload = True ):
+	def __init__( self, parent, filename, preload = True ):
 		# relies on hashlib, pickle, os
-		config.base_plugin.__init__( self )
+		config.base_plugin.__init__( self, parent )
 		self.filename = filename
 		self.notes = {}
 		self.load( preload )

@@ -14,8 +14,8 @@ import config
 
 
 class Todo( config.base_plugin ):
-	def __init__( self, config = config ):
-                config.base_plugin.__init__( self )
+	def __init__( self, parent, config = config ):
+                config.base_plugin.__init__( self, parent )
 		self._config = config
 		self.pluginname = "sense-todo"
 
