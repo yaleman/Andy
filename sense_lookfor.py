@@ -47,11 +47,11 @@ class LookFor( config.base_plugin ):
 
 
 if( __name__ == '__main__' ):
-	lookfor_uris = { '1' : 'http://eztv.it/sort/100/' }
-	lf = LookFor( lookfor_uris )
+	lookfor_uris = { 1 : 'http://eztv.it/sort/100/' }
+	lf = LookFor( None, lookfor_uris )
 	re_tr = re.compile( "<tr[^>]*>([\d\w\S]+)</tr" )
 	re_td = re.compile( "<td[^>]*>([a-zA-Z0-9\s\d\w\"\#\=\'\-\.\_\\\/\?\:\(\)\[\]\>\<]*|^\<\/td\>|^\<td )</td>" )
-	#page = toolbox.url_get( lookfor_uris['1'] ).replace( "\n", "" ).replace( "\r", "" )
+	#page = toolbox.url_get( lookfor_uris[1] ).replace( "\n", "" ).replace( "\r", "" )
 	#f = open( 'data/page.cache', 'w' )
 	#f.write( page )
 	#f.close()
