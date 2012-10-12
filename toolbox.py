@@ -54,3 +54,34 @@ def md5( text ):
 	h = hashlib.new( 'ripemd160' )
 	h.update( text )
 	return h.hexdigest()
+
+
+def do_tasksequence( task_sequence, args, data ):
+	# feed this a {} of tasks with the key as an int of the sequence, and it'll do them
+	print "tasks: {}".format( task_sequence )
+	for task in range( len( task_sequence ) ):
+		print "Task {}:".format( task ),
+		t = task_sequence[ task ].split( ":" )
+		#print "'{}'".format( t )
+		cmd = t[0]
+		cmdargs = t[1]
+		if( cmd == "geturi" ):
+			uri = args[ 'url' ]
+			print "Grabbing uri: {}".format( uri )
+			#TODO this is only a hack while offline
+			#data = toolbox.url_get( uri )
+			data = open( 'data/page.cache', 'r' ).read()
+
+		elif( cmd == "replace" ):
+			search, replace = t[1].split( "|" )
+			print "Replacing '{}' with '{}'".format( search, replace )
+			data = data.replace( search, replace )
+			#print data
+		elif( cmd == "in" ):
+			if( cmdargs in data ):
+				print "Found '{}' in data.".format( cmdargs ) 
+			else:
+				print "Couldn't find '{}' in data.".format( cmdargs )
+		else:
+			print "Unknown task cmd '{}'".format( cmd )
+
