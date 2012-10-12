@@ -64,15 +64,12 @@ class Andy():
 if( __name__ == '__main__' ):
 
 	andy = Andy()
-
-	
-
-	andy.register_plugin( sense_network.SenseNetwork() )
+	andy.register_plugin( sense_network.SenseNetwork( andy ) )
 	andy.register_plugin( are.Are( config.filename['are'] ) )
-	andy.register_plugin( note.Note( config.filename['note'] ) )
-	andy.register_plugin( sense_ap.AP() )
-	andy.register_plugin( sense_todo.Todo() )
-	andy.register_plugin( sense_lookfor.LookFor( lookfor_uris ) )
+	andy.register_plugin( note.Note( andy, config.filename['note'] ) )
+	andy.register_plugin( sense_ap.AP( andy ) )
+	andy.register_plugin( sense_todo.Todo( andy ) )
+	#andy.register_plugin( sense_lookfor.LookFor( lookfor_uris ) )
 	
 	andy.plugins['are'].replace( "ipaddr", toolbox.self_ipaddr() )
 	andy.plugins['are'].save()
