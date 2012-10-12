@@ -17,16 +17,27 @@ class Todo( config.base_plugin ):
 	def __init__( self, parent, config = config ):
                 config.base_plugin.__init__( self, parent )
 		self._config = config
-		self.pluginname = "sense-todo"
+		self.pluginname = "todo_code"
 
 	def check( self, text ):
 		#pass
 		# search through .py files in the current folder and look for to-do's
 		#return toolbox.run( "pwd" )
 		dh = os.listdir( "." )
+		retval = ""
 		for f in dh:
 			if f.endswith( ".py" ):
-				print f
+				found = False
+				lines = []
+				fc = open( f, 'r' ).read()
+				for line in fc.split( "\n" ):
+					if "#TODO" in line or "# TODO" in line:
+						found = True
+						lines.append( line.strip() )
+				if( found ):
+					retval += "\n\n{}\n".format( f ) + "\n".join( lines )
+					
+		return retval
 if( __name__ == '__main__' ):
 	pass
 
