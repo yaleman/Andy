@@ -22,7 +22,7 @@ tr's = apply the regex to the data
 """
 
 class LookFor( config.base_plugin ):
-	def __init__( self, uris, config=config ):
+	def __init__( self, parent, uris = None, config=config ):
 		config.base_plugin.__init__( self, parent )
 		self._config = config
 		self.pluginname = "sense_lookfor"
@@ -45,10 +45,13 @@ class LookFor( config.base_plugin ):
 		#TODO: add search for uri
 		return False
 
-
 if( __name__ == '__main__' ):
 	lookfor_uris = { 1 : 'http://eztv.it/sort/100/' }
 	lf = LookFor( None, lookfor_uris )
+	task_sequence = { 0 : 'geturi:1', 1 : 'replace:-| ', 2 : 'replace:_| ', 3 : 'in:Criminal Minds', 4 : 'in:Chicking Fuckers' }
+	toolbox.do_tasksequence( task_sequence, { "url" : str( lookfor_uris[1]) }, None )
+	import sys
+	sys.exit()
 	re_tr = re.compile( "<tr[^>]*>([\d\w\S]+)</tr" )
 	re_td = re.compile( "<td[^>]*>([a-zA-Z0-9\s\d\w\"\#\=\'\-\.\_\\\/\?\:\(\)\[\]\>\<]*|^\<\/td\>|^\<td )</td>" )
 	#page = toolbox.url_get( lookfor_uris[1] ).replace( "\n", "" ).replace( "\r", "" )
