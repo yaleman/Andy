@@ -8,6 +8,18 @@ import re
 import toolbox
 import config
 
+tasklet_idea = """
+tasklet
+
+uri:[hash] = uri (http://www.google.com)
+
+data = download contnts from uri:[hash]
+
+
+regex:[hash] = "(<?P=trtotal\<tr(?P=trinner.*)\>(?P=trcontents)</tr>)" etc
+re.compile( regex:[hash] )
+tr's = apply the regex to the data
+"""
 
 class LookFor( config.base_plugin ):
 	def __init__( self, uris, config=config ):
@@ -16,7 +28,7 @@ class LookFor( config.base_plugin ):
 		self.pluginname = "sense_lookfor"
 		self._uris = uris
 		# tr 
-		tr = """<tr name="hover" class="forum_header_border">
+		self.tr = """<tr name="hover" class="forum_header_border">
           <td width="35" class="forum_thread_post"><a href="/shows/257/south-park/"><img src="http://ezimg.it/s/1/3/show_info.png" border="0" alt="Show" title="Show Description about South Park"></a><a href="http://www.tvrage.com/South_Park/episodes/1065175478" target="_blank" title="More info about South Park S16E10 PROPER HDTV x264-2HD at tvrage.com" alt="More info about South Park S16E10 PROPER HDTV x264-2HD at tvrage.com"><img src="http://ezimg.it/s/2/1/tvrage.png" width="16" height="16" border="0"></a></td>
             <td class="forum_thread_post">
                 <a href="/ep/38546/south-park-s16e10-proper-hdtv-x264-2hd/" title="South Park S16E10 PROPER HDTV x264-2HD (82.29 MB)" alt="South Park S16E10 PROPER HDTV x264-2HD (82.29 MB)" class="epinfo">South Park S16E10 PROPER HDTV x264-2HD</a>
@@ -37,4 +49,14 @@ class LookFor( config.base_plugin ):
 if( __name__ == '__main__' ):
 	lookfor_uris = { '1' : 'http://eztv.it/sort/100/' }
 	lf = LookFor( lookfor_uris )
-	""" http://torrentz.eu/search?q= """	
+	re_tr = re.compile( "<tr[^>]*>([\d\w\S]+)</tr" )
+	re_td = re.compile( "<td[^>]*>([a-zA-Z0-9\s\d\w\"\#\=\'\-\.\_\\\/\?\:\(\)\[\]\>\<]*|^\<\/td\>|^\<td )</td>" )
+	#page = toolbox.url_get( lookfor_uris['1'] ).replace( "\n", "" ).replace( "\r", "" )
+	#f = open( 'data/page.cache', 'w' )
+	#f.write( page )
+	#f.close()
+	page = open( 'data/page.cache', 'r' ).read()
+	print "\n ### ".join( re_td.findall( page ) )
+#	print re_tr.findall( lf.tr.replace( "\n", "" ).replace( "\r", "" ) )
+	#print page
+	torrentz_eu =	""" http://torrentz.eu/search?q= """	
