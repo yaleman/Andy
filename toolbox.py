@@ -6,6 +6,7 @@ except ImportError:
 	print "Failed to import pexpect"
 
 #import subprocess
+import pickle
 import re, hashlib
 import urllib2
 
@@ -46,6 +47,7 @@ def self_ipaddr():
 def url_get( url ):
 	#based on info from here: http://docs.python.org/library/urllib2.html#urllib2.urlopen
 	# create the request object
+	#TODO deal with exceptions
 	u = urllib2.urlopen( url )
 	# u.geturl() should return whatever ended up being grabbed (In case of a redirect)
 	return u.read()
@@ -100,36 +102,84 @@ class FileCache():
 
 def do_tasksequence( task_sequence, args, data ):
 	# feed this a {} of tasks with the key as an int of the sequence, and it'll do them
-	print "tasks: {}".format( task_sequence )
-	for task in range( len( task_sequence ) ):
+	print "tasks: {}".format( sorted( task_sequence.iterkeys() ) )
+	args['found'] = False
+	re_tr = re.compile( "(<tr[^>]*>(.*?)</tr[^>]*>)" )
+	re_table = re.compile( "(<table[^>]*>(.*?)</table[^>]*>)" )
+	
+	for task in sorted( task_sequence.iterkeys() ):
 		print "Task {}:".format( task ),
 		t = task_sequence[ task ].split( ":" )
 		#print "'{}'".format( t )
 		cmd = t[0]
 		cmdargs = t[1]
 		if( cmd == "geturi" ):
-			uri = args[ 'url' ]
+			uri = args[ 'uris' ][int( t[1] )]
 			print "Grabbing uri: {}".format( uri )
 			#TODO this is only a hack while offline
-			#data = toolbox.url_get( uri )
-			data = open( 'data/page.cache', 'r' ).read()
+			data = url_get( uri )
+			#data = open( 'data/page.cache', 'r' ).read()
 
 		elif( cmd == "replace" ):
 			search, replace = t[1].split( "|" )
 			print "Replacing '{}' with '{}'".format( search, replace )
 			data = data.replace( search, replace )
 			#print data
+
+		elif( cmd == "find_tr_with" ):
+			needle = t[1]
+			print "Looking for {}".format( needle )
+			rows = re_tr.findall( data )
+			foundrows = []
+			if( len( rows ) > 0 ):
+				for row in [ row[0] for row in rows ]:
+					if( needle in row ):
+						foundrows.append( row )
+				if( len( foundrows ) > 0 ):
+					data = foundrows
+					print "Found {} matching rows".format( len( foundrows ) )
+					args['found'] = True
+				else:
+					print "Found rows, but no matches."
+					args['found'] = False
+			else:
+				print "Found no rows in data"
+				args['found'] = False
+		
+		elif( cmd == "find_table_with" ):
+			needle = t[1]
+			
+			tables = re_table.findall( data )
+			print "Found {} tables".format( len( tables ) )
+			#print tables
+			if( len( tables ) > 0 ): # if found a table or two
+				for table in [ table[0] for table in tables ]:
+					if( needle in table ):
+						data = table
+						print "\t Found a table with {} in it".format( needle )
+						args['found'] = True
+						break
+					else:
+						# table didn't match search
+						pass
+			args['found'] = False
+	
+		elif( cmd == "email" ):
+			#TODO add email functionality to do_tasksequence
+			print "This functionality is not added yet."
+
+		elif( cmd == "writefile" ):
+			#TODO add file writing functionality to do_tasksequence
+			print "This functionality is not added yet."
+
 		elif( cmd == "in" ):
 			if( cmdargs in data ):
 				print "Found '{}' in data.".format( cmdargs ) 
-				found = True
+				args['found'] = True
 			else:
 				print "Couldn't find '{}' in data.".format( cmdargs )
-				found = False
-		elif( cmd == "return" ):
-			retcmd = "retval = {}".format( cmdargs )
-			eval( retcmd )
-			return retval 
+				args['found'] = False
 		else:
 			print "Unknown task cmd '{}'".format( cmd )
-
+	args['data'] = data
+	return args
