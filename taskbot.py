@@ -22,7 +22,7 @@ re.compile( regex:[hash] )
 tr's = apply the regex to the data
 """
 
-class LookFor( config.base_plugin ):
+class TaskBot( config.base_plugin ):
 	def __init__( self, parent, filename, config=config ):
 		config.base_plugin.__init__( self, parent )
 		self._config = config
@@ -30,21 +30,109 @@ class LookFor( config.base_plugin ):
 		self._data = { 'uris' : {}, 'tasks' : {} }
 		self._filename = filename
 		self.load()
+
+	def task_geturi( self, t, args, data ):
+		uri = args[ 'uris' ][int( t[1] )]
+		print "Grabbing uri: {}".format( uri )
+		#TODO this is only a hack while offline
+		data = toolbox.url_get( uri )
+		#data = open( 'data/page.cache', 'r' ).read()
+		return args, data
+
+	def do_tasksequence( self, task_sequence, args, data ):
+		# feed this a {} of tasks with the key as an int of the sequence, and it'll do them
+		print "tasks: {}".format( sorted( task_sequence.iterkeys() ) )
+		args['found'] = False
+		re_tr = re.compile( "(<tr[^>]*>(.*?)</tr[^>]*>)" )
+		re_table = re.compile( "(<table[^>]*>(.*?)</table[^>]*>)" )
+		
+		for task in sorted( task_sequence.iterkeys() ):
+			print "Task {}:".format( task ),
+			t = task_sequence[ task ].split( ":" )
+			#print "'{}'".format( t )
+			cmd = t[0]
+			cmdargs = t[1]
+			if( cmd == "geturi" ):
+				args, data = self.task_geturi( t, args, data )
+			elif( cmd == "replace" ):
+				search, replace = t[1].split( "|" )
+				print "Replacing '{}' with '{}'".format( search, replace )
+				data = data.replace( search, replace )
+				#print data
+
+			elif( cmd == "find_tr_with" ):
+				needle = t[1]
+				print "Looking for {}".format( needle )
+				rows = re_tr.findall( data )
+				foundrows = []
+				if( len( rows ) > 0 ):
+					for row in [ row[0] for row in rows ]:
+						if( needle in row ):
+							foundrows.append( row )
+					if( len( foundrows ) > 0 ):
+						data = foundrows
+						print "Found {} matching rows".format( len( foundrows ) )
+						args['found'] = True
+					else:
+						print "Found rows, but no matches."
+						args['found'] = False
+				else:
+					print "Found no rows in data"
+					args['found'] = False
+		
+			elif( cmd == "find_table_with" ):
+				needle = t[1]
+				
+				tables = re_table.findall( data )
+				print "Found {} tables".format( len( tables ) )
+				#print tables
+				if( len( tables ) > 0 ): # if found a table or two
+					for table in [ table[0] for table in tables ]:
+						if( needle in table ):
+							data = table
+							print "\t Found a table with {} in it".format( needle )
+							args['found'] = True
+							break
+						else:
+							# table didn't match search
+							pass
+				args['found'] = False
+		
+			elif( cmd == "email" ):
+				#TODO add email functionality to do_tasksequence
+				print "This functionality is not added yet."
+
+			elif( cmd == "writefile" ):
+				#TODO add file writing functionality to do_tasksequence
+				print "This functionality is not added yet."
+
+			elif( cmd == "in" ):
+				if( cmdargs in data ):
+					print "Found '{}' in data.".format( cmdargs ) 
+					args['found'] = True
+				else:
+					print "Couldn't find '{}' in data.".format( cmdargs )
+					args['found'] = False
+			else:
+				print "Unknown task cmd '{}'".format( cmd )
+		args['data'] = data
+		return args
+
 	def listuris( self ):
 		return self._data['uris']
 
 	def uri_id( self, uri ):
 		#TODO: add search for uri
 		for key, value in list.iteritems():
-		    if value == url:
-			return key
+			if value == url:
+				return key
 		return False
 
 	def gettasks( self ):
 		return self._data['tasks']
 
 	def dotask( self, taskid ):
-		return toolbox.do_tasksequence( self._data['tasks'][taskid], self._data, None )
+		return self.do_tasksequence( self._data['tasks'][taskid], self._data, None )
 
 	def load( self ):
 		# TODO add documentation
@@ -66,7 +154,7 @@ class LookFor( config.base_plugin ):
 		pickle.dump( self._data, open( self._filename, "wb" ) )
 
 if( __name__ == '__main__' ):
-	lf = LookFor( None, "lookfordata.pickle" )
+	lf = TaskBot( None, "lookfordata.pickle" )
 #	lf._data = lookfordata
 #	lf.save()
 #	taskdata = lf.dotask( 'eztv_Bones' )
