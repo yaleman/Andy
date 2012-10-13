@@ -8,8 +8,6 @@ import sense_ap, sense_network, sense_todo, sense_lookfor
 import toolbox
 import config
 
-#TODO add usage details for help
-
 class Andy():
 	def __init__( self ):
 		self.plugins = {}
@@ -25,10 +23,15 @@ class Andy():
 				if( helpterm[0] in self.plugins ):
 					helptext = [ f for f in dir( self.plugins[helpterm[0] ] ) if not f.startswith( "_" ) and f != 'pluginname' ]
 					return "Commands in '{}' are {}.".format( helpterm[0], ", ".join( helptext  ) )
+			else:
+				return " #help [command] will give you help on a particular command\n #plugins will give you a list of plugins"
 		else:
 			return "Eh?"
 
 	def interact( self ):
+		""" interact is the main loop of the andybot
+			it'll sit there waiting on input, if it's a #something it's probably a help/query
+			anything else you type should start with a plugin name and then the subsequent commands/arguments """ 
 		text = ""
 		while( text != "quit" ):
 			text = raw_input( "# " ).strip()
