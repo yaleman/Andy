@@ -55,6 +55,42 @@ def md5( text ):
 	h.update( text )
 	return h.hexdigest()
 
+class FileCache():
+	def __init__( self, cachefile ):
+		self._cachefile = cachefile
+		self._cachedfiles = {}
+	
+	def _filerefislink( self, fileref ):
+		#TODO make FileCache.filerefislink a little less insane
+		if( fileref.startswith( "http://" ) or fileref.startswith( "https://" ) ):
+			return True
+		return False
+		
+
+	def _getfile( self, fileref ):
+		if self._filerefislink( fileref ):
+			#TODO deal with failures in FileCache._getfile
+			return url_get( fileref )
+		else:
+			return open( fileref, 'r' ).read()
+
+	def get( self, fileref, expiry = 0 ):
+		#TODO  if expiry == 0 ignore it
+		#TODO deal with expiry in FileCache._get
+		#TODO file storage = [ grabtime, expiry, contents ] in FileCache
+		filehash = md5( fileref )
+		if filehash not in self._cachedfiles:
+			self._cachedfiles[ filehash ] = [ 0, 0, self._getfile( fileref ) ]
+			#return self._getfile( 
+		else:
+			return self._cachedfiles[filehash][2]
+		#pass
+
+	def delete( self, fileref ):
+		#TODO: add ability to remove file from cache
+		# delete from cachedfiles
+		pass
+
 
 def do_tasksequence( task_sequence, args, data ):
 	# feed this a {} of tasks with the key as an int of the sequence, and it'll do them
