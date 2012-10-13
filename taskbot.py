@@ -34,9 +34,29 @@ class TaskBot( config.base_plugin ):
 	def task_geturi( self, t, args, data ):
 		uri = args[ 'uris' ][int( t[1] )]
 		print "Grabbing uri: {}".format( uri )
-		#TODO this is only a hack while offline
 		data = toolbox.url_get( uri )
 		#data = open( 'data/page.cache', 'r' ).read()
+		return args, data
+
+	def task_find_tr_with( self, t, args, data ):
+		needle = t[1]
+		print "Looking for {}".format( needle )
+		rows = re_tr.findall( data )
+		foundrows = []
+		if( len( rows ) > 0 ):
+			for row in [ row[0] for row in rows ]:
+				if( needle in row ):
+					foundrows.append( row )
+			if( len( foundrows ) > 0 ):
+				data = foundrows
+				print "Found {} matching rows".format( len( foundrows ) )
+				args['found'] = True
+			else:
+				print "Found rows, but no matches."
+				args['found'] = False
+		else:
+			print "Found no rows in data"
+			args['found'] = False
 		return args, data
 
 	def do_tasksequence( self, task_sequence, args, data ):
@@ -46,7 +66,7 @@ class TaskBot( config.base_plugin ):
 		re_tr = re.compile( "(<tr[^>]*>(.*?)</tr[^>]*>)" )
 		re_table = re.compile( "(<table[^>]*>(.*?)</table[^>]*>)" )
 		
-		for task in sorted( task_sequence.iterkeys() ):
+		for task in sorted( task_sequence.iterkeys() ): 
 			print "Task {}:".format( task ),
 			t = task_sequence[ task ].split( ":" )
 			#print "'{}'".format( t )
@@ -54,32 +74,17 @@ class TaskBot( config.base_plugin ):
 			cmdargs = t[1]
 			if( cmd == "geturi" ):
 				args, data = self.task_geturi( t, args, data )
+		
+			elif( cmd == "find_tr_with" ):
+				args, data = self.task_find_tr_with( t, args, data )
+
 			elif( cmd == "replace" ):
 				search, replace = t[1].split( "|" )
 				print "Replacing '{}' with '{}'".format( search, replace )
 				data = data.replace( search, replace )
 				#print data
 
-			elif( cmd == "find_tr_with" ):
-				needle = t[1]
-				print "Looking for {}".format( needle )
-				rows = re_tr.findall( data )
-				foundrows = []
-				if( len( rows ) > 0 ):
-					for row in [ row[0] for row in rows ]:
-						if( needle in row ):
-							foundrows.append( row )
-					if( len( foundrows ) > 0 ):
-						data = foundrows
-						print "Found {} matching rows".format( len( foundrows ) )
-						args['found'] = True
-					else:
-						print "Found rows, but no matches."
-						args['found'] = False
-				else:
-					print "Found no rows in data"
-					args['found'] = False
-		
+	
 			elif( cmd == "find_table_with" ):
 				needle = t[1]
 				
