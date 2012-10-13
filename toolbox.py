@@ -55,6 +55,12 @@ def md5( text ):
 	h.update( text )
 	return h.hexdigest()
 
+def writefile( filename, contents ):
+	print "Writing {} bytes to {}".format( len( contents ), filename )
+	f = open( filename, 'w' )
+	f.write( contents )
+	f.close()
+
 class FileCache():
 	def __init__( self, cachefile ):
 		self._cachefile = cachefile
