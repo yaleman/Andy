@@ -39,7 +39,6 @@ class Andy():
 			text_lower = text.lower()
 			if text_lower.startswith( "#" ):
 				print self._command_hash( text )
-				#	print "Can't find {} module".format( oper )
 			else:
 				oper = text_lower.split()[0]
 				if( oper in self.plugins ):
