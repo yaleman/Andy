@@ -91,13 +91,10 @@ class taskbot( config.base_plugin ):
 		tasks = sorted( [ key for key in task_sequence.iterkeys() if isinstance( key, int ) ] )		
 		print "tasks: {}".format( tasks )
 		args['found'] = False
-#		for key in task_sequence.iterkeys():
-#			print type( key )
 		taskswithfunctions = [ 'geturi', 'find_tr_with', 'find_table_with' 'strip_nl' ]
 		for task in tasks: 
 			print "Task {}:".format( task ),
 			t = task_sequence[ task ].split( ":" )
-			#print "'{}'".format( t )
 			cmd = t[0]
 			cmdargs = t[1]
 			if( cmd in taskswithfunctions ):
@@ -138,15 +135,18 @@ class taskbot( config.base_plugin ):
 				return key
 		return False
 
-	def gettasks( self, text ):
+	def gettasks( self, text=None ):
 		return self._data['tasks'].keys()
 
 
 	def showtask( self, taskid ):
 		retval = ""
-		for task in [ "{}\t{}".format( key, value ) for key, value in sorted( self._data['tasks'][taskid].items() ) ]:
-			retval += "{}\n".format( task )
-		return retval 
+		if taskid in self._data['tasks']:
+			for task in [ "{}\t{}".format( key, value ) for key, value in sorted( self._data['tasks'][taskid].items() ) ]:
+				retval += "{}\n".format( task )
+			return retval 
+		else:
+			return "'{}' is not a valid task.".format( taskid )
 
 	def dotask( self, taskid ):
 		return self._do_tasksequence( self._data['tasks'][taskid], self._data, None )
