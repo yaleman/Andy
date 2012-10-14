@@ -4,7 +4,8 @@
 #from note import Note
 #from are import Are
 import note, are
-import sense_ap, sense_network, sense_todo, sense_lookfor
+import sense_ap, sense_network, sense_todo
+from taskbot import TaskBot
 import toolbox
 import config
 
@@ -70,6 +71,7 @@ if( __name__ == '__main__' ):
 	andy.register_plugin( note.Note( andy, config.filename['note'] ) )
 	andy.register_plugin( sense_ap.AP( andy ) )
 	andy.register_plugin( sense_todo.Todo( andy ) )
+	andy.register_plugin( TaskBot( andy, "lookfordata.pickle" ) )
 	#andy.register_plugin( sense_lookfor.LookFor( lookfor_uris ) )
 	
 	andy.plugins['are'].replace( "ipaddr", toolbox.self_ipaddr() )
