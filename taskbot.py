@@ -37,7 +37,7 @@ class TaskBot( config.base_plugin ):
 
 
 	def _task_geturi( self, t, args, data ):
-		uri = args[ 'uris' ][int( t[1] )]
+		uri = args[ 'uris' ][ int( t[1] ) ]
 		print "Grabbing uri: {}".format( uri )
 		data = toolbox.url_get( uri )
 		#data = open( 'data/page.cache', 'r' ).read()
@@ -67,26 +67,41 @@ class TaskBot( config.base_plugin ):
 			args['found'] = False
 		return args, data
 
-	def do_tasksequence( self, task_sequence, args, data ):
+	def _task_find_table_with( self, t, args, data ):
+		needle = t[1]
+				
+		tables = self._re_table.findall( data )
+		print "Found {} tables".format( len( tables ) )
+		#print tables
+		if( len( tables ) > 0 ): # if found a table or two
+			for table in [ table[0] for table in tables ]:
+				if( needle in table ):
+					data = table
+					print "\t Found a table with {} in it".format( needle )
+					args['found'] = True
+					break
+				else:
+					# table didn't match search
+					pass
+		args['found'] = False
+		return args, data
+
+	def _do_tasksequence( self, task_sequence, args, data ):
 		# feed this a {} of tasks with the key as an int of the sequence, and it'll do them
 		tasks = sorted( [ key for key in task_sequence.iterkeys() if isinstance( key, int ) ] )		
 		print "tasks: {}".format( tasks )
 		args['found'] = False
 #		for key in task_sequence.iterkeys():
 #			print type( key )
+		taskswithfunctions = [ 'geturi', 'find_tr_with', 'find_table_with' 'strip_nl' ]
 		for task in tasks: 
 			print "Task {}:".format( task ),
 			t = task_sequence[ task ].split( ":" )
 			#print "'{}'".format( t )
 			cmd = t[0]
 			cmdargs = t[1]
-			if( cmd == "geturi" ):
-				args, data = self._task_geturi( t, args, data )
-		
-			elif( cmd == "find_tr_with" ):
-				args, data = self._task_find_tr_with( t, args, data )
-			elif( cmd == "strip_nl" ):
-				args, data = self._task_strip_nl( t, args, data )
+			if( cmd in taskswithfunctions ):
+				args, data = eval( "self._task_{}( t, args, data )".format( cmd ) )
 
 			elif( cmd == "replace" ):
 				search, replace = t[1].split( "|" )
@@ -94,25 +109,6 @@ class TaskBot( config.base_plugin ):
 				data = data.replace( search, replace )
 				#print data
 
-	
-			elif( cmd == "find_table_with" ):
-				needle = t[1]
-				
-				tables = self._re_table.findall( data )
-				print "Found {} tables".format( len( tables ) )
-				#print tables
-				if( len( tables ) > 0 ): # if found a table or two
-					for table in [ table[0] for table in tables ]:
-						if( needle in table ):
-							data = table
-							print "\t Found a table with {} in it".format( needle )
-							args['found'] = True
-							break
-						else:
-							# table didn't match search
-							pass
-				args['found'] = False
-		
 			elif( cmd == "email" ):
 				#TODO add email functionality to do_tasksequence
 				print "This functionality is not added yet."
@@ -136,7 +132,7 @@ class TaskBot( config.base_plugin ):
 	def listuris( self ):
 		return self._data['uris']
 
-	def uri_id( self, uri ):
+	def _uri_id( self, uri ):
 		for key, value in self._data['uris'].iteritems():
 			if value == uri:
 				return key
@@ -153,7 +149,7 @@ class TaskBot( config.base_plugin ):
 		return retval 
 
 	def dotask( self, taskid ):
-		return self.do_tasksequence( self._data['tasks'][taskid], self._data, None )
+		return self._do_tasksequence( self._data['tasks'][taskid], self._data, None )
 
 	def load( self ):
 		# TODO add documentation
