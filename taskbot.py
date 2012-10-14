@@ -64,12 +64,12 @@ class TaskBot( config.base_plugin ):
 
 	def do_tasksequence( self, task_sequence, args, data ):
 		# feed this a {} of tasks with the key as an int of the sequence, and it'll do them
-		print "tasks: {}".format( sorted( task_sequence.iterkeys() ) )
+		tasks = sorted( [ key for key in task_sequence.iterkeys() if isinstance( key, int ) ] )		
+		print "tasks: {}".format( tasks )
 		args['found'] = False
-		re_tr = re.compile( "(<tr[^>]*>(.*?)</tr[^>]*>)" )
-		re_table = re.compile( "(<table[^>]*>(.*?)</table[^>]*>)" )
-		
-		for task in sorted( task_sequence.iterkeys() ): 
+#		for key in task_sequence.iterkeys():
+#			print type( key )
+		for task in tasks: 
 			print "Task {}:".format( task ),
 			t = task_sequence[ task ].split( ":" )
 			#print "'{}'".format( t )
