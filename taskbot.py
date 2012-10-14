@@ -36,6 +36,7 @@ class taskbot( config.base_plugin ):
 		self._re_tr = re.compile( "(<tr[^>]*>(.*?)</tr[^>]*>)" )
 		self._re_table = re.compile( "(<table[^>]*>(.*?)</table[^>]*>)" )
 
+		self._taskswithfunctions = [ 'geturi', 'find_tr_with', 'find_table_with' 'strip_nl' ]
 
 ###############################
 # 
@@ -100,19 +101,18 @@ class taskbot( config.base_plugin ):
 #
 #
 
-
 	def _do_tasksequence( self, task_sequence, args, data ):
 		# feed this a {} of tasks with the key as an int of the sequence, and it'll do them
 		tasks = sorted( [ key for key in task_sequence.iterkeys() if isinstance( key, int ) ] )		
 		print "tasks: {}".format( tasks )
 		args['found'] = False
-		taskswithfunctions = [ 'geturi', 'find_tr_with', 'find_table_with' 'strip_nl' ]
+
 		for task in tasks: 
 			print "Task {}:".format( task ),
 			t = task_sequence[ task ].split( ":" )
 			cmd = t[0]
 			cmdargs = t[1]
-			if( cmd in taskswithfunctions ):
+			if( cmd in self._taskswithfunctions ):
 				args, data = eval( "self._task_{}( t, args, data )".format( cmd ) )
 
 			elif( cmd == "replace" ):
