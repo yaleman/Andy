@@ -180,6 +180,13 @@ class taskbot( config.base_plugin ):
 # checks and balances
 #
 #
+
+	def _is_validtask( self, task ):
+		""" should return True if a task by that name exists """
+		if( task in self._data['tasks'] ):
+			return True
+		return False
+
 ###############################
 # 
 # data file tasks
