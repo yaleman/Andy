@@ -37,6 +37,13 @@ class taskbot( config.base_plugin ):
 		self._re_table = re.compile( "(<table[^>]*>(.*?)</table[^>]*>)" )
 
 
+###############################
+# 
+# task steps
+#
+#
+
+
 	def _task_geturi( self, t, args, data ):
 		uri = args[ 'uris' ][ int( t[1] ) ]
 		print "Grabbing uri: {}".format( uri )
@@ -86,6 +93,13 @@ class taskbot( config.base_plugin ):
 					pass
 		args['found'] = False
 		return args, data
+
+###############################
+# 
+# main task processor 
+#
+#
+
 
 	def _do_tasksequence( self, task_sequence, args, data ):
 		# feed this a {} of tasks with the key as an int of the sequence, and it'll do them
@@ -155,6 +169,24 @@ class taskbot( config.base_plugin ):
 	def addstep( self, text ):
 		return "Was handed '{}'".format( text )
 
+	def addtask( self, taskname ):
+		""" adds a new task to the stored tasks """
+		if( taskname not in self.gettasks() ):
+			self._data['tasks'][taskname] = self._basetask
+		return "added task"
+
+###############################
+# 
+# checks and balances
+#
+#
+###############################
+# 
+# data file tasks
+#
+#
+
+
 	def load( self ):
 		# TODO add documentation
 		if( os.path.exists( self._filename ) ):
@@ -165,11 +197,6 @@ class taskbot( config.base_plugin ):
 			print "Couldn't find filename"
 			return False
 
-	def addtask( self, taskname ):
-		""" adds a new task to the stored tasks """
-		if( taskname not in self.gettasks() ):
-			self._data['tasks'][taskname] = self._basetask
-		return "added task"
 
 	def save( self ):
 		""" saves the internal data for the class """
