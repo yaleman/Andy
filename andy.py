@@ -71,7 +71,7 @@ if( __name__ == '__main__' ):
 	andy.register_plugin( note.Note( andy, config.filename['note'] ) )
 	andy.register_plugin( sense_ap.AP( andy ) )
 	andy.register_plugin( sense_todo.Todo( andy ) )
-	andy.register_plugin( taskbot.taskbot( andy, "lookfordata.pickle" ) )
+	andy.register_plugin( taskbot.taskbot( andy, config.filename['taskbot'] ) )
 	#andy.register_plugin( sense_lookfor.LookFor( lookfor_uris ) )
 	
 	andy.plugins['are'].replace( "ipaddr", toolbox.self_ipaddr() )
