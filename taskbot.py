@@ -181,7 +181,34 @@ class taskbot( config.base_plugin ):
 		return self._do_tasksequence( self._data['tasks'][taskid], self._data, None )
 
 	def addstep( self, text ):
-		return "Was handed '{}'".format( text )
+		print "Was handed '{}'".format( text )
+		re_addstep_testinput = re.compile( "(?P<taskname>[\S]*) (?P<stepid>[0-9]*) (?P<details>[a-z]*:.*)" )
+		# check it's a valid task definition
+		s = re_addstep_testinput.match( text )
+		if( s != None ):
+			print "Details definition valid"
+		else:
+			return "Invalid task definition supplied, should be '[taskname] [stepid] [details]'"
+		task = s.group( 'taskname' )
+		stepid = int( s.group( 'stepid' ) )
+		details = s.group( 'details' )
+		# check if the task exists
+		print "Task: '{}'... ".format( task ),
+		if( self._is_validtask( task ) ):
+			print "[OK]"
+		else:
+			print "[ERR]"
+			return "Invalid task specified, please try one of these: {}".format( ", ".join( self.gettasks() ) )
+		# check if the step's already there, don't want to overwrite
+		if( self._data['tasks'][task].get( stepid, None ) != None ):
+			return "Step already set, stopping"
+		print "Step number: {}".format( stepid )
+		print "Step definition: '{}'".format( details )
+		try:
+			self._data['tasks'][task][stepid] = details
+		except:
+			return "Fucked it."
+		return "Task #{} added to {}, new definition:\n{}".format( stepid, task, self.showtask( task ) ) 
 
 	def addtask( self, taskname ):
 		""" adds a new task to the stored tasks """
