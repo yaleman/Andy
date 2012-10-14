@@ -9,6 +9,8 @@ import toolbox
 import config
 import os, pickle
 
+#TODO add a step to the eztv tasks that deal with the silly magnet links?
+
 tasklet_idea = """
 tasklet
 
@@ -138,6 +140,13 @@ class TaskBot( config.base_plugin ):
 
 	def gettasks( self ):
 		return self._data['tasks']
+
+
+	def showtask( self, taskid ):
+		 #sorted( task_sequence.iterkeys() ) 
+		for task in [ "{}\t{}".format( key, value ) for key, value in sorted( self._data['tasks'][taskid].items() ) ]:
+			print task
+
 
 	def dotask( self, taskid ):
 		return self.do_tasksequence( self._data['tasks'][taskid], self._data, None )
