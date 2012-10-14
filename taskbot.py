@@ -30,6 +30,9 @@ class TaskBot( config.base_plugin ):
 		self._data = { 'uris' : {}, 'tasks' : {} }
 		self._filename = filename
 		self.load()
+		self.re_tr = re.compile( "(<tr[^>]*>(.*?)</tr[^>]*>)" )
+		self.re_table = re.compile( "(<table[^>]*>(.*?)</table[^>]*>)" )
+
 
 	def task_geturi( self, t, args, data ):
 		uri = args[ 'uris' ][int( t[1] )]
@@ -41,7 +44,7 @@ class TaskBot( config.base_plugin ):
 	def task_find_tr_with( self, t, args, data ):
 		needle = t[1]
 		print "Looking for {}".format( needle )
-		rows = re_tr.findall( data )
+		rows = self.re_tr.findall( data )
 		foundrows = []
 		if( len( rows ) > 0 ):
 			for row in [ row[0] for row in rows ]:
@@ -88,7 +91,7 @@ class TaskBot( config.base_plugin ):
 			elif( cmd == "find_table_with" ):
 				needle = t[1]
 				
-				tables = re_table.findall( data )
+				tables = self.re_table.findall( data )
 				print "Found {} tables".format( len( tables ) )
 				#print tables
 				if( len( tables ) > 0 ): # if found a table or two
