@@ -32,6 +32,7 @@ class taskbot( config.base_plugin ):
 		self._data = { 'uris' : {}, 'tasks' : {} }
 		self._filename = filename
 		self.load()
+		self._basetask = { 'enabled' : False, 'period' : 0, 'lastdone' : 0 }
 		self._re_tr = re.compile( "(<tr[^>]*>(.*?)</tr[^>]*>)" )
 		self._re_table = re.compile( "(<table[^>]*>(.*?)</table[^>]*>)" )
 
@@ -161,10 +162,10 @@ class taskbot( config.base_plugin ):
 			print "Couldn't find filename"
 			return False
 
-	def addtask( self, taskname, taskdef ):
+	def addtask( self, taskname ):
 		""" adds a new task to the stored tasks """
 		if( taskname not in self.gettasks() ):
-			self._data['tasks'][taskname] = taskdef
+			self._data['tasks'][taskname] = self._basetask
 		return "added task"
 
 	def save( self ):
