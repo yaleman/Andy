@@ -32,21 +32,24 @@ class TaskBot( config.base_plugin ):
 		self._data = { 'uris' : {}, 'tasks' : {} }
 		self._filename = filename
 		self.load()
-		self.re_tr = re.compile( "(<tr[^>]*>(.*?)</tr[^>]*>)" )
-		self.re_table = re.compile( "(<table[^>]*>(.*?)</table[^>]*>)" )
+		self._re_tr = re.compile( "(<tr[^>]*>(.*?)</tr[^>]*>)" )
+		self._re_table = re.compile( "(<table[^>]*>(.*?)</table[^>]*>)" )
 
 
-	def task_geturi( self, t, args, data ):
+	def _task_geturi( self, t, args, data ):
 		uri = args[ 'uris' ][int( t[1] )]
 		print "Grabbing uri: {}".format( uri )
 		data = toolbox.url_get( uri )
 		#data = open( 'data/page.cache', 'r' ).read()
 		return args, data
 
-	def task_find_tr_with( self, t, args, data ):
+	def _task_strip_nl( self, t, args, data ):
+		return args, data.replace( "\n", " " )
+
+	def _task_find_tr_with( self, t, args, data ):
 		needle = t[1]
 		print "Looking for {}".format( needle )
-		rows = self.re_tr.findall( data )
+		rows = self._re_tr.findall( data )
 		foundrows = []
 		if( len( rows ) > 0 ):
 			for row in [ row[0] for row in rows ]:
@@ -78,10 +81,12 @@ class TaskBot( config.base_plugin ):
 			cmd = t[0]
 			cmdargs = t[1]
 			if( cmd == "geturi" ):
-				args, data = self.task_geturi( t, args, data )
+				args, data = self._task_geturi( t, args, data )
 		
 			elif( cmd == "find_tr_with" ):
-				args, data = self.task_find_tr_with( t, args, data )
+				args, data = self._task_find_tr_with( t, args, data )
+			elif( cmd == "strip_nl" ):
+				args, data = self._task_strip_nl( t, args, data )
 
 			elif( cmd == "replace" ):
 				search, replace = t[1].split( "|" )
@@ -93,7 +98,7 @@ class TaskBot( config.base_plugin ):
 			elif( cmd == "find_table_with" ):
 				needle = t[1]
 				
-				tables = self.re_table.findall( data )
+				tables = self._re_table.findall( data )
 				print "Found {} tables".format( len( tables ) )
 				#print tables
 				if( len( tables ) > 0 ): # if found a table or two
@@ -132,21 +137,19 @@ class TaskBot( config.base_plugin ):
 		return self._data['uris']
 
 	def uri_id( self, uri ):
-		#TODO: add search for uri
-		for key, value in list.iteritems():
-			if value == url:
+		for key, value in self._data['uris'].iteritems():
+			if value == uri:
 				return key
 		return False
 
-	def gettasks( self ):
-		return self._data['tasks']
+	def gettasks( self, text ):
+		return self._data['tasks'].keys()
 
 
 	def showtask( self, taskid ):
-		 #sorted( task_sequence.iterkeys() ) 
 		for task in [ "{}\t{}".format( key, value ) for key, value in sorted( self._data['tasks'][taskid].items() ) ]:
-			print task
-
+			retval += "{}\n".format( task )
+		return retval 
 
 	def dotask( self, taskid ):
 		return self.do_tasksequence( self._data['tasks'][taskid], self._data, None )
@@ -165,6 +168,7 @@ class TaskBot( config.base_plugin ):
 		""" adds a new task to the stored tasks """
 		if( taskname not in self.gettasks() ):
 			self._data['tasks'][taskname] = taskdef
+		return "added task"
 
 	def save( self ):
 		""" saves the internal data for the class """
