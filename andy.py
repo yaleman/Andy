@@ -53,17 +53,18 @@ class Andy():
 		text = ""
 		while( text != "quit" ):
 			text = raw_input( "# " ).strip()
-			#print "'%s'" % text
-			text_lower = text.lower()
-			if text_lower.startswith( "#" ):
-				print self._command_hash( text )
-			else:
-				oper = text_lower.split()[0]
-				if( oper in self.plugins ):
-					if( '_handle_text' in dir( self.plugins[oper] ) ):
-						print self.plugins[oper]._handle_text( text )
-					else:
-						print "{} module doesn't have handle_text".format( oper )
+			if( text != "" ):
+				#print "'%s'" % text
+				text_lower = text.lower()
+				if text_lower.startswith( "#" ):
+					print self._command_hash( text )
+				else:
+					oper = text_lower.split()[0]
+					if( oper in self.plugins ):
+						if( '_handle_text' in dir( self.plugins[oper] ) ):
+							print self.plugins[oper]._handle_text( text )
+						else:
+							print "{} module doesn't have handle_text".format( oper )
 
 		self._save_before_shutdown()
 	
