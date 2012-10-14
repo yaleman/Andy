@@ -147,6 +147,7 @@ class TaskBot( config.base_plugin ):
 
 
 	def showtask( self, taskid ):
+		retval = ""
 		for task in [ "{}\t{}".format( key, value ) for key, value in sorted( self._data['tasks'][taskid].items() ) ]:
 			retval += "{}\n".format( task )
 		return retval 
@@ -178,15 +179,22 @@ if( __name__ == '__main__' ):
 	lf = TaskBot( None, "lookfordata.pickle" )
 #	lf._data = lookfordata
 #	lf.save()
-#	taskdata = lf.dotask( 'eztv_Bones' )
+	#taskdata = lf.dotask( 'eztv_Bones' )
 	foundrows = []
 	for task in lf.gettasks():
-		taskdata = lf.dotask( task )
-		#toolbox.do_tasksequence( task_sequence, { "url" : str( lookfor_uris[1]) }, None )
-		if( taskdata['found'] ):
-			foundrows += ( taskdata['data'] )
-		else:
-			print "task failed to find info"
+		print lf.showtask( task )
+		if( 'enabled' not in lf._data['tasks'][task] ):
+			lf._data['tasks'][task]['enabled'] = True
+		if( 'period' not in lf._data['tasks'][task] ):
+			lf._data['tasks'][task]['period'] = 60 * 60 * 2
+		if( 'lastdone' not in lf._data['tasks'][task] ):
+			lf._data['tasks'][task]['lastdone'] = 0
+#		taskdata = lf.dotask( task )
+#		if( taskdata['found'] ):
+#			foundrows += ( taskdata['data'] )
+#		else:
+#			print "task failed to find info"
+	lf.save()
 	if len( foundrows ) > 0:
 		print "Found something you were looking for!"
 		htmlfile = "<html><Head></head><body><table>{}</table></body></html>".format( "\n".join( foundrows ) )
