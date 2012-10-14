@@ -28,7 +28,7 @@ class TaskBot( config.base_plugin ):
 	def __init__( self, parent, filename, config=config ):
 		config.base_plugin.__init__( self, parent )
 		self._config = config
-		self.pluginname = "sense_lookfor"
+		self.pluginname = "taskbot"
 		self._data = { 'uris' : {}, 'tasks' : {} }
 		self._filename = filename
 		self.load()
