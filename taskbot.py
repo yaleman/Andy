@@ -106,7 +106,7 @@ class taskbot( config.base_plugin ):
 		tasks = sorted( [ key for key in task_sequence.iterkeys() if isinstance( key, int ) ] )		
 		print "tasks: {}".format( tasks )
 		args['found'] = False
-
+		# a task should be a taskname:stufftodo
 		for task in tasks: 
 			print "Task {}:".format( task ),
 			t = task_sequence[ task ].split( ":" )
@@ -150,6 +150,19 @@ class taskbot( config.base_plugin ):
 				return key
 		return False
 
+	def _set_enable( self, taskid, value = True ):
+		if( self._is_validtask( taskid ) ):
+			self._data['tasks'][taskid]['enable'] = value
+
+	def disable( self, taskid ):
+		self._set_enable( taskid, False )
+		return "Disabled {}".format( taskid )
+	
+	def enable( self, taskid ):
+		self._set_enable( taskid, True )
+		return "Enabled {}".format( taskid )
+
+
 	def gettasks( self, text=None ):
 		return self._data['tasks'].keys()
 
@@ -162,6 +175,7 @@ class taskbot( config.base_plugin ):
 			return retval 
 		else:
 			return "'{}' is not a valid task.".format( taskid )
+
 
 	def dotask( self, taskid ):
 		return self._do_tasksequence( self._data['tasks'][taskid], self._data, None )
