@@ -127,7 +127,7 @@ class taskbot( config.base_plugin ):
 		args['data'] = data
 		return args
 
-	def listuris( self ):
+	def listuris( self, text=None ):
 		return self._data['uris']
 
 	def _uri_id( self, uri ):
@@ -151,6 +151,9 @@ class taskbot( config.base_plugin ):
 
 	def dotask( self, taskid ):
 		return self._do_tasksequence( self._data['tasks'][taskid], self._data, None )
+
+	def addstep( self, text ):
+		return "Was handed '{}'".format( text )
 
 	def load( self ):
 		# TODO add documentation

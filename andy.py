@@ -1,22 +1,39 @@
 #!/usr/bin/env python
 
-# my modules
-#from note import Note
-#from are import Are
-import note, are
-import sense_ap, sense_network, sense_todo
-import taskbot
+import os, sys
 import toolbox
 import config
 
 class Andy():
 	def __init__( self ):
 		self.plugins = {}
+		self._init_plugins = { 'sense_network' : 'sense_network.SenseNetwork( self )',
+					'are' : "are.Are( config.filename['are'] )",
+					'note' : "note.Note( self, config.filename['note'] )",
+					'sense_ap' : 'sense_ap.AP( self )',
+					'sense_todo' : 'sense_todo.Todo( self )',
+					'taskbot' : "taskbot.taskbot( self, config.filename['taskbot'] )",
+					}
+		for plugin in self._init_plugins:
+			# I'm sure I'll go to hell for this.
+			exec( "import {}".format( plugin ) )
+			print "Loading plugin {}".format( plugin )
+			eval( 'self.register_plugin( {} )'.format( self._init_plugins[plugin] ) )
 
 	def _command_hash( self, text ):
+		""" this handles #command style things in the interact loop """
 		oper = text.lower().split()[0][1:]
 		if( oper == "plugins" ):
 			return ", ".join( self.plugins.keys() )
+		elif( oper.startswith( "restart" ) ):
+			# this should save the system state then restart andy
+			print "Shutting down..."
+			self._save_before_shutdown()
+			# this should restart the program
+			python = sys.executable
+			print "Restarting now..."
+			os.execl(python, python, * sys.argv)
+			#pass
 		elif( oper.startswith( "help" ) ):
 			helpterm = text.split()[1:]
 			if len( helpterm ) > 0:
@@ -47,12 +64,19 @@ class Andy():
 						print self.plugins[oper]._handle_text( text )
 					else:
 						print "{} module doesn't have handle_text".format( oper )
+
+		self._save_before_shutdown()
 	
+
+
+
+	def _save_before_shutdown( self ):
 		# this goes through all the registered plugins and saves them
 		for plugin in self.plugins:
 			if( 'save' in dir( self.plugins[plugin] ) ):
 				self.plugins[plugin].save()
 	
+
 	def register_plugin( self, plugin ):
 		# registers plugins
 		# plugins need a self.pluginname which are unique so that when you call @plugin xxx it'll know what to ask for
@@ -66,14 +90,6 @@ class Andy():
 if( __name__ == '__main__' ):
 
 	andy = Andy()
-	andy.register_plugin( sense_network.SenseNetwork( andy ) )
-	andy.register_plugin( are.Are( config.filename['are'] ) )
-	andy.register_plugin( note.Note( andy, config.filename['note'] ) )
-	andy.register_plugin( sense_ap.AP( andy ) )
-	andy.register_plugin( sense_todo.Todo( andy ) )
-	andy.register_plugin( taskbot.taskbot( andy, config.filename['taskbot'] ) )
-	#andy.register_plugin( sense_lookfor.LookFor( lookfor_uris ) )
-	
 	andy.plugins['are'].replace( "ipaddr", toolbox.self_ipaddr() )
 	andy.plugins['are'].save()
 
