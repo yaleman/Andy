@@ -60,6 +60,9 @@ class taskbot( toolbox.base_plugin ):
 	def _task_stripnl( self, t, args, data ):
 		return args, data.replace( "\n", " " )
 
+	def _task_striptab( self, t, args, data ):
+		return args, data.replace( "\t", " " )
+
 	def _task_find_tr_with( self, t, args, data ):
 		needle = t[1]
 		print "Looking for {}".format( needle )
