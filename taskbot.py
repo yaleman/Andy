@@ -105,6 +105,16 @@ class taskbot( toolbox.base_plugin ):
 		args['found'] = False
 		return args, data
 
+	def _task_replace( self, t, args, data ):
+		search, replace = t[1].split( "|" )
+		print "Replacing '{}' with '{}'".format( search, replace )
+		data = data.replace( search, replace )
+		return args, data
+	
+	def _task_replacewithspace( self, t, args, data ):
+		data = data.replace( t[1].strip(), " " )
+		return args, data
+	
 ###############################
 # 
 # main task processor 
