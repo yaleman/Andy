@@ -91,8 +91,6 @@ class taskbot( toolbox.base_plugin ):
 				#TODO add tweet functionality
 				print "Can't tweet yet"
 
-			#TODO add some way of going "if found, do the next step"
-
 			else:
 				print "Unknown task cmd '{}'".format( cmd )
 		args['data'] = data
