@@ -1,10 +1,11 @@
 import os, re, pickle
-import config
+import config, toolbox 
 
-class Are():
-	def __init__( self, filename ):
+class Are( toolbox.base_plugin ):
+	def __init__( self, parent ):
 		# relies on os, re, pickle
 		# feed it a filename, it'll either load a pickle of the facts or create a new empty file
+		toolbox.base_plugin.__init__( self, parent )
 		self.pluginname = "are"
 		self.filename = config.filename[self.pluginname]
 		self.changed = False
@@ -13,6 +14,10 @@ class Are():
 		else:
 			self.facts = {}
 			#pickle.dump( self.facts, open( self.filename, "wb" ) )
+		self._filename = config.filename[self.pluginname]
+		if( not self.load() ):
+			self._data = {}
+			#pickle.dump( self._data, open( self.filename, "wb" ) )
 			self.save()
 		self.re_set = re.compile( "(\S+) (are|is a) (.*)" )	
 
@@ -36,17 +41,16 @@ class Are():
 	def replace( self, node, newfacts ):
 		# this force-resets a node's data
 		# send it a node name and an array full of facts
-		self.facts[node] = newfacts
-		self.changed = True
+		self._data[node] = newfacts
 
 	def set( self, node, newfact ):
 		# adds a new fact, checks to see if it's there already 
-		if( node not in self.facts ):
-			self.facts[node] = [ newfact ]
+		if( node not in self._data ):
+			self._data[node] = [ newfact ]
 			print "I learnt about {} and they are {}".format( node, newfact )
-		elif( node in self.facts ):
-			if( newfact not in self.facts[node] ):
-				self.facts[node].append( newfact )
+		elif( node in self._data ):
+			if( newfact not in self._data[node] ):
+				self._data[node].append( newfact )
 				print "I learnt a new fact about %s, they are %s" % ( node, newfact )
 			else:
 				print "I knew %s are %s already!" % ( node, newfact )
@@ -55,14 +59,14 @@ class Are():
 
 	def get( self, node ):
 		# give it a node and it'll tell you what it knows. Could get unwieldy quickly.
-		if node not in self.facts:
+		if node not in self._data:
 			print "I don't know about {}".format( node )
 		else:
 			subfacts = []
 			print "This is what I know about {}".format( node )
-			print "They are {}".format( ",".join( self.facts[node] ) )
-			for fact in [ fact for fact in self.facts if fact != node ] :
-				if node in self.facts[fact]: 
+			print "They are {}".format( ",".join( self._data[node] ) )
+			for fact in [ fact for fact in self._data if fact != node ] :
+				if node in self._data[fact]: 
 					subfacts.append( fact )
 			if len( subfacts ) > 0:
 				print "Also a colour can be {}".format( ",".join( subfacts ) )
