@@ -19,9 +19,7 @@ class Todo( toolbox.base_plugin ):
 		self.pluginname = "todo_code"
 
 	def check( self, text ):
-		#pass
 		# search through .py files in the current folder and look for to-do's
-		#return toolbox.run( "pwd" )
 		dh = os.listdir( "." )
 		retval = ""
 		for f in dh:
@@ -30,11 +28,11 @@ class Todo( toolbox.base_plugin ):
 				lines = []
 				fc = open( f, 'r' ).read()
 				for line in fc.split( "\n" ):
-					if "#TODO" in line or "# TODO" in line:
+					if line.strip().startswith( "# TODO" ) or line.strip().startswith( "#TODO" ):
 						found = True
 						lines.append( line.strip() )
 				if( found ):
-					retval += "\n\n{}\n".format( f ) + "\n".join( lines )
+					retval += "\n{}\n".format( f ) + "\n".join( lines )
 					
 		return retval
 if( __name__ == '__main__' ):
