@@ -135,13 +135,35 @@ class FileCache( base_plugin ):
 		#TODO  if expiry == 0 ignore it
 		#TODO have something that goes through and deletes expired files - this stops the cache size bloating over time
 		filehash = md5( fileref )
+		curr_time = time.time()
+		# if the file has expired, re-get it
+		getfile = False
+		if ( self._data.get( filehash, None ) == None ):
+			# File Not Cached
+			getfile = True
+
 
 		else:
+			expirytime = self._data[ filehash ][1] + self._data[ filehash ][0]
+			if( curr_time > expirytime ):
+				# print "File Expired, currtime: {} expirytime: {}".format( curr_time, expirytime )
+				getfile = True
+
+		if getfile:
+			# re-get the file
+			self._data[ filehash ] = [ curr_time, expiry, self._getfile( fileref ) ]
+
+		expirytime = self._data[ filehash ][1] + self._data[ filehash ][0]
+		#print "Didn't expire: currtime {} expirytime {}".format( curr_time, expirytime )
+		#print "Seconds to go: {}".format( expirytime - curr_time )
+		return self._data[filehash][2]
 
 	def delete( self, fileref ):
 		#TODO: add ability to remove file from cache
 		# delete from cachedfiles
 		pass
 
+	def cachenum( self, text=None ):
+		return "Number of files cached: {}".format( len( self._data ) )
 
 
