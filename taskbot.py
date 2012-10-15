@@ -34,9 +34,9 @@ class taskbot( toolbox.base_plugin ):
 		self._load()
 
 		# hack for when I messed up a key - JH 2012-10-14
-		for task in self._data['tasks']:
-			if( self._data['tasks'][task].get( 'enable', None ) != None ):
-				del( self._data['tasks'][task]['enable'] )
+		for t in self._data['tasks']:
+			if( self._data['tasks'][t].get( 'enable', None ) != None ):
+				del( self._data['tasks'][t]['enable'] )
 
 		self._basetask = { 'enabled' : False, 'period' : 0, 'lastdone' : 0 }
 		self._re_tr = re.compile( "(<tr[^>]*>(.*?)</tr[^>]*>)" )
@@ -66,14 +66,14 @@ class taskbot( toolbox.base_plugin ):
 		needle = t[1]
 		print "Looking for {}".format( needle )
 		rows = self._re_tr.findall( data )
-		foundrows = []
+		found_rows = []
 		if( len( rows ) > 0 ):
 			for row in [ row[0] for row in rows ]:
 				if( needle in row ):
-					foundrows.append( row )
-			if( len( foundrows ) > 0 ):
-				data = foundrows
-				print "Found {} matching rows".format( len( foundrows ) )
+					found_rows.append( row )
+			if( len( found_rows ) > 0 ):
+				data = found_rows
+				print "Found {} matching rows".format( len( found_rows ) )
 				args['found'] = True
 			else:
 				print "Found rows, but no matches."
@@ -116,9 +116,9 @@ class taskbot( toolbox.base_plugin ):
 		print "tasks: {}".format( tasks )
 		args['found'] = False
 		# a task should be a taskname:stufftodo
-		for task in tasks: 
-			print "Task {}:".format( task ),
-			t = task_sequence[ task ].split( ":" )
+		for step in tasks: 
+			print "Task {}:".format( step),
+			t = task_sequence[ step ].split( ":" )
 			cmd = t[0]
 			cmdargs = t[1]
 			# for a given task step, check if there's a self.function with the name _task_[step] and use that (all steps should be in these functions)
@@ -191,8 +191,8 @@ class taskbot( toolbox.base_plugin ):
 	def showtask( self, taskid ):
 		retval = ""
 		if taskid in self._data['tasks']:
-			for task in [ "{}\t{}".format( key, value ) for key, value in sorted( self._data['tasks'][taskid].items() ) ]:
-				retval += "{}\n".format( task )
+			for displaytask in [ "{}\t{}".format( key, value ) for key, value in sorted( self._data['tasks'][taskid].items() ) ]:
+				retval += "{}\n".format( displaytask )
 			return retval 
 		else:
 			return "'{}' is not a valid task.".format( taskid )
@@ -207,26 +207,26 @@ class taskbot( toolbox.base_plugin ):
 			print "Details definition valid"
 		else:
 			return "Invalid task definition supplied, should be '[taskname] [stepid] [details]'"
-		task = s.group( 'taskname' )
+		newtask = s.group( 'taskname' )
 		stepid = int( s.group( 'stepid' ) )
 		details = s.group( 'details' )
 		# check if the task exists
-		print "Task: '{}'... ".format( task ),
-		if( self._is_validtask( task ) ):
+		print "Task: '{}'... ".format( newtask ),
+		if( self._is_validtask( newtask ) ):
 			print "[OK]"
 		else:
 			print "[ERR]"
 			return "Invalid task specified, please try one of these: {}".format( ", ".join( self.gettasks() ) )
 		# check if the step's already there, don't want to overwrite
-		if( self._data['tasks'][task].get( stepid, None ) != None ):
+		if( self._data['tasks'][newtask].get( stepid, None ) != None ):
 			return "Step already set, stopping"
 		print "Step number: {}".format( stepid )
 		print "Step definition: '{}'".format( details )
 		try:
-			self._data['tasks'][task][stepid] = details
-		except:
+			self._data['tasks'][newtask][stepid] = details
+		except KeyError:
 			return "Fucked it."
-		return "Task #{} added to {}, new definition:\n{}".format( stepid, task, self.showtask( task ) ) 
+		return "Task #{} added to {}, new definition:\n{}".format( stepid, newtask, self.showtask( newtask ) ) 
 
 	def addtask( self, taskname ):
 		""" adds a new task to the stored tasks """
@@ -240,9 +240,9 @@ class taskbot( toolbox.base_plugin ):
 #
 #
 
-	def _is_validtask( self, task ):
+	def _is_validtask( self, tasktocheck ):
 		""" should return True if a task by that name exists """
-		if( task in self._data['tasks'] ):
+		if( tasktocheck in self._data['tasks'] ):
 			return True
 		return False
 
