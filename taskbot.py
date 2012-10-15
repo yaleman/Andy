@@ -84,6 +84,7 @@ class taskbot( toolbox.base_plugin ):
 		else:
 			print "Found no rows in data"
 			args['found'] = False
+			return False
 		return args, data
 
 	def _task_find_table_with( self, t, args, data ):
@@ -92,6 +93,7 @@ class taskbot( toolbox.base_plugin ):
 		tables = self._re_table.findall( data )
 		print "Found {} tables".format( len( tables ) )
 		#print tables
+		args['found'] = False
 		if( len( tables ) > 0 ): # if found a table or two
 			for table in [ table[0] for table in tables ]:
 				if( needle in table ):
@@ -102,8 +104,9 @@ class taskbot( toolbox.base_plugin ):
 				else:
 					# table didn't match search
 					pass
-		args['found'] = False
-		return args, data
+		if( args['found'] == True ):
+			return args, data
+		return False
 
 	def _task_replace( self, t, args, data ):
 		search, replace = t[1].split( "|" )
@@ -114,6 +117,15 @@ class taskbot( toolbox.base_plugin ):
 	def _task_replacewithspace( self, t, args, data ):
 		data = data.replace( t[1].strip(), " " )
 		return args, data
+
+	def _task_dotask( self, t, args, data ):
+		if( self._is_validtask( t[1] ) ):
+			tmp = self.dotask( t[1] )
+			args = tmp
+			data = tmp['data']
+			return args, data
+		else:
+			return False
 	
 ###############################
 # 
@@ -139,14 +151,11 @@ class taskbot( toolbox.base_plugin ):
 			cmdargs = t[1]
 			# for a given task step, check if there's a self.function with the name _task_[step] and use that (all steps should be in these functions)
 			if( "_task_{}".format( cmd ) in dir( self ) ): 
-				args, data = eval( "self._task_{}( t, args, data )".format( cmd ) )
-
-			
-			elif( cmd == "dotask" ):
-				if( self._is_validtask( cmdargs ) ):
-					tmp = self.dotask( cmdargs )
-					args = tmp
-					data = tmp['data']
+				tmp = eval( "self._task_{}( t, args, data )".format( cmd ) )
+				if tmp != False:
+					args, data = tmp
+				else:
+					return "Task {} failed at step {}.".format( taskname, step )
 
 			elif( cmd == "email" ):
 				#TODO add email functionality to do_tasksequence
