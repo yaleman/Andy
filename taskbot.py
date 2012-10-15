@@ -121,6 +121,16 @@ class taskbot( toolbox.base_plugin ):
 			return args, data
 		else:
 			return False
+
+	def _task_in( self, t, args, data ):
+		if( t[1] in data ):
+			print "Found '{}' in data.".format( cmdargs ) 
+			args['found'] = True
+		else:
+			print "Couldn't find '{}' in data.".format( cmdargs )
+			args['found'] = False
+		return args, data
+
 	
 ###############################
 # 
@@ -166,13 +176,6 @@ class taskbot( toolbox.base_plugin ):
 
 			#TODO add some way of going "if found, do the next step"
 
-			elif( cmd == "in" ):
-				if( cmdargs in data ):
-					print "Found '{}' in data.".format( cmdargs ) 
-					args['found'] = True
-				else:
-					print "Couldn't find '{}' in data.".format( cmdargs )
-					args['found'] = False
 			else:
 				print "Unknown task cmd '{}'".format( cmd )
 		args['data'] = data
