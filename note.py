@@ -15,9 +15,9 @@ class Note( toolbox.base_plugin ):
 		foundany = False
 		terms = text.split()
 		#print "Searching for: {}".format( ", ".join( terms ) )
-		for note in self.notes:
+		for note in self._data:
 			found = False
-			notelow = self.notes[note]
+			notelow = self._data[note]
 			for term in terms:
 				if( term.lower() in notelow ):
 					found = True
@@ -26,7 +26,7 @@ class Note( toolbox.base_plugin ):
 					foundany = True
 					break
 			if found:	
-				retval += self.notes[note]
+				retval += self._data[note]
 				retval += "\n##################"
 		if not foundany:
 			return "Sorry, nothing found in {}.".format( self.pluginname )
@@ -36,8 +36,8 @@ class Note( toolbox.base_plugin ):
 	
 	def add( self, text ):
 		h = toolbox.md5( text )
-		if h not in self.notes:
-			self.notes[h] = text
+		if h not in self._data:
+			self._data[h] = text
 			self.save()
 			return "Added"
 		return "Note already exists"
