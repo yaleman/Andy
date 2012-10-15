@@ -107,7 +107,6 @@ class taskbot( toolbox.base_plugin ):
 
 	def _task_replace( self, t, args, data ):
 		search, replace = t[1].split( "|" )
-		print "Replacing '{}' with '{}'".format( search, replace )
 		data = data.replace( search, replace )
 		return args, data
 	
@@ -117,7 +116,6 @@ class taskbot( toolbox.base_plugin ):
 
 	def _task_dotask( self, t, args, data ):
 		if( self._is_validtask( t[1] ) ):
-			tmp = self.do	( t[1] )
 			args = tmp
 			data = tmp['data']
 			return args, data
@@ -153,30 +151,20 @@ class taskbot( toolbox.base_plugin ):
 		if not self._is_validtask( taskname ):
 			return "Invalid task '{}'".format( taskname )
 		tasks = self._get_tasksteps( taskname )		
-		print "tasks: {}".format( tasks )
 		args['found'] = False
 		# a task should be a taskname:stufftodo
 		for step in tasks: 
-			print "Task {}:".format( step ),
 			t = self._data['tasks'][taskname][step].split( ":" )
-			#t = task_sequence[ step ].split( ":" )
 			cmd = t[0]
 			cmdargs = t[1]
 			# for a given task step, check if there's a self.function with the name _task_[step] and use that (all steps should be in these functions)
 			if( "_task_{}".format( cmd ) in dir( self ) ): 
 				tmp = eval( "self._task_{}( t, args, data )".format( cmd ) )
-				if tmp != False:
-					args, data = tmp
-				else:
 					return "Task {} stopped at step {}.".format( taskname, step )
-
 			elif( cmd == "email" ):
 				#TODO add email functionality to do_tasksequence
 				print "This functionality is not added yet."
 
-			elif( cmd == "writefile" ):
-				#TODO add file writing functionality to do_tasksequence
-				print "This functionality is not added yet."
 
 			elif( cmd == "tweet" ):
 				#TODO add tweet functionality
@@ -220,7 +208,6 @@ class taskbot( toolbox.base_plugin ):
 	def gettasks( self, text=None ):
 		return self._data['tasks'].keys()
 
-	def showtask( self, taskid ):
 		retval = ""
 		if taskid in self._data['tasks']:
 			for displaytask in [ "{}\t{}".format( key, value ) for key, value in sorted( self._data['tasks'][taskid].items() ) ]:
@@ -261,7 +248,6 @@ class taskbot( toolbox.base_plugin ):
 			self._data['tasks'][newtask][stepid] = details
 		except KeyError:
 			return "Something broke with self._data['tasks'][newtask][stepid] = details"
-		return "Task #{} added to {}, new definition:\n{}".format( stepid, newtask, self.showtask( newtask ) ) 
 
 	def delstep( self, text ):
 		""" removes a step from a task, delstep [taskname] [stepid] """
@@ -288,7 +274,6 @@ class taskbot( toolbox.base_plugin ):
 			self._data['tasks'][taskname] = self._basetask
 		return "added task"
 
-	def deltask( self, taskname ):
 		""" deletes a task """
 		#TODO add some sort of verification?
 		if( taskname in self.gettasks() ):
@@ -327,7 +312,6 @@ if( __name__ == '__main__' ):
 	#taskdata = lf.dotask( 'eztv_Bones' )
 	foundrows = []
 	for task in lf.gettasks():
-		print lf.showtask( task )
 		if( 'enabled' not in lf._data['tasks'][task] ):
 			lf._data['tasks'][task]['enabled'] = True
 		if( 'period' not in lf._data['tasks'][task] ):
