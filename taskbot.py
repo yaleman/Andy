@@ -111,10 +111,12 @@ class taskbot( toolbox.base_plugin ):
 		return args, data
 	
 	def _task_replacewithspace( self, t, args, data ):
+		""" replaces the input data with spaces """
 		data = data.replace( t[1].strip(), " " )
 		return args, data
 
 	def _task_dotask( self, t, args, data ):
+		""" does another task """
 		if( self._is_validtask( t[1] ) ):
 			print "Doing task: {}".format( t[1] )
 			tmp = self.do( t[1] )

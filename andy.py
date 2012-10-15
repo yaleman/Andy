@@ -58,14 +58,14 @@ class Andy():
 			it'll sit there waiting on input, if it's a #something it's probably a help/query
 			anything else you type should start with a plugin name and then the subsequent commands/arguments """ 
 		text = ""
-		while( text != "quit" ):
+		while( text != "quit" ):	
 			text = raw_input( "# " ).strip()
+			# skips dem newlines
 			if( text != "" ):
-				#print "'%s'" % text
-				text_lower = text.lower()
-				if text_lower.startswith( "#" ):
+				if text.startswith( "#" ):
 					print self._command_hash( text )
 				else:
+					text_lower = text.lower()
 					oper = text_lower.split()[0]
 					if( oper in self.plugins ):
 						if( '_handle_text' in dir( self.plugins[oper] ) ):
@@ -88,7 +88,7 @@ class Andy():
 	def register_plugin( self, plugin ):
 		# registers plugins
 		# plugins need a self.pluginname which are unique so that when you call @plugin xxx it'll know what to ask for
-		# doesn't help to have a handle_text too
+		# doesn't hurt to have a handle_text too
 		if plugin not in self.plugins:
 			self.plugins[plugin.pluginname] = plugin
 		else:
@@ -99,6 +99,5 @@ if( __name__ == '__main__' ):
 
 	andy = Andy()
 	andy.plugins['are'].replace( "ipaddr", toolbox.self_ipaddr() )
-
 
 	andy.interact()
