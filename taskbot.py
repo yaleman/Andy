@@ -68,12 +68,12 @@ class taskbot( toolbox.base_plugin ):
 		print "Looking for {}".format( needle )
 		rows = self._re_tr.findall( data )
 		if( len( rows ) > 0 ):
-			found_rows = [ row[0] for row in rows if needle in row ]
+			found_rows = [ row[0] for row in rows if needle in row[0] ]
 #			for row in [ row[0] for row in rows ]:
 #				if( needle in row ):
 #					found_rows.append( row )
 			if( len( found_rows ) > 0 ):
-				data = found_rows
+				data = "\n".join( found_rows )
 				print "Found {} matching rows".format( len( found_rows ) )
 				args['found'] = True
 			else:
@@ -82,21 +82,27 @@ class taskbot( toolbox.base_plugin ):
 		else:
 			print "Found no rows in data"
 			args['found'] = False
-			return False
-		return args, data
+		if args['found']:
+			return args, data
+		return False
 
 	def _task_find_table_with( self, t, args, data ):
 		needle = t[1]
-				
 		tables = self._re_table.findall( data )
-		print "Found {} tables".format( len( tables ) )
-		#print tables
 		args['found'] = False
 		if( len( tables ) > 0 ): # if found a table or two
-			data = "\n".join( [ table[0] for table in tables if needle in table ] )
+			goodtables = [ table[0] for table in tables if needle in table[0] ] 
+			data = "\n".join( goodtables )
 			if( len( data ) > 0 ):
 				args['found'] = True
+				print "Found {} tables, {} had the needle.".format( len( tables ), len( goodtables ) )
 				return args, data
+			else:
+				print "Found {} tables, 0 had the needle. ({})".format( len( tables ), needle )
+				args['found'] == False
+				return False
+		else:
+			print "Found no tables"
 		return False
 
 	def _task_replace( self, t, args, data ):
