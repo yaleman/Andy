@@ -116,6 +116,8 @@ class taskbot( toolbox.base_plugin ):
 
 	def _task_dotask( self, t, args, data ):
 		if( self._is_validtask( t[1] ) ):
+			print "Doing task: {}".format( t[1] )
+			tmp = self.do( t[1] )
 			args = tmp
 			data = tmp['data']
 			return args, data
@@ -144,6 +146,8 @@ class taskbot( toolbox.base_plugin ):
 #
 	def do( self, taskid ):
 		""" do an individual task """
+		if( not self._is_validtask( taskid ) ):
+			return "Invalid task requested in do( '{}' )".format( taskid )
 		return self._do_tasksequence( taskid, self._data, None )
 
 	def _do_tasksequence( self, taskname, args, data ):
@@ -155,12 +159,18 @@ class taskbot( toolbox.base_plugin ):
 		# a task should be a taskname:stufftodo
 		for step in tasks: 
 			t = self._data['tasks'][taskname][step].split( ":" )
+			if( len( t ) > 2 ):
+				t[1] = ":".join( t[1:] )
 			cmd = t[0]
 			cmdargs = t[1]
 			# for a given task step, check if there's a self.function with the name _task_[step] and use that (all steps should be in these functions)
 			if( "_task_{}".format( cmd ) in dir( self ) ): 
 				tmp = eval( "self._task_{}( t, args, data )".format( cmd ) )
+				if tmp == False:
 					return "Task {} stopped at step {}.".format( taskname, step )
+				else:
+					args, data = tmp
+					
 			elif( cmd == "email" ):
 				#TODO add email functionality to do_tasksequence
 				print "This functionality is not added yet."
