@@ -280,6 +280,13 @@ class taskbot( toolbox.base_plugin ):
 			self._data['tasks'][taskname] = self._basetask
 		return "added task"
 
+	def deltask( self, taskname ):
+		""" deletes a task """
+		#TODO add some sort of verification?
+		if( taskname in self.gettasks() ):
+			del( self._data['tasks'][taskname] )
+		return "removed task '{}'".format( taskname )
+
 ###############################
 # 
 # checks and balances
