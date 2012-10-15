@@ -8,8 +8,8 @@ class Andy():
 	def __init__( self ):
 		self.plugins = {}
 		self._init_plugins = { 'sense_network' : 'sense_network.SenseNetwork( self )',
-					'are' : "are.Are( config.filename['are'] )",
-					'note' : "note.Note( self, config.filename['note'] )",
+					'are' : "are.Are( self )",
+					'note' : "note.Note( self )",
 					'sense_ap' : 'sense_ap.AP( self )',
 					'sense_todo' : 'sense_todo.Todo( self )',
 					'taskbot' : "taskbot.taskbot( self, config.filename['taskbot'] )",

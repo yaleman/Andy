@@ -3,14 +3,15 @@ import pickle, os
 import toolbox
 
 class Note( config.base_plugin ):
-	def __init__( self, parent, filename, preload = True ):
+	def __init__( self, parent, preload = True ):
 		# relies on hashlib, pickle, os
 		config.base_plugin.__init__( self, parent )
-		self.filename = filename
+		self.pluginname = "note"
+		self.filename = config.filename[self.pluginname]
 		self.notes = {}
 		self.load( preload )
 		self.changed = False
-		self.pluginname = "note"
+
 
 	def __del__( self ):
 		#print "Saving notes on destruction"

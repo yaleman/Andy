@@ -30,7 +30,8 @@ class taskbot( config.base_plugin ):
 		self._config = config
 		self.pluginname = "taskbot"
 		self._data = { 'uris' : {}, 'tasks' : {} }
-		self._filename = filename
+		self._filename = config.filename[self.plugginname]
+		# load the stored data
 		self.load()
 		self._basetask = { 'enabled' : False, 'period' : 0, 'lastdone' : 0 }
 		self._re_tr = re.compile( "(<tr[^>]*>(.*?)</tr[^>]*>)" )

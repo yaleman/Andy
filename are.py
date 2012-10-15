@@ -1,10 +1,12 @@
 import os, re, pickle
+import config
 
 class Are():
 	def __init__( self, filename ):
 		# relies on os, re, pickle
 		# feed it a filename, it'll either load a pickle of the facts or create a new empty file
-		self.filename = filename
+		self.pluginname = "are"
+		self.filename = config.filename[self.pluginname]
 		self.changed = False
 		if os.path.exists( self.filename ):
 			self.facts = pickle.load( open( self.filename, "rb" ) )
@@ -13,7 +15,7 @@ class Are():
 			#pickle.dump( self.facts, open( self.filename, "wb" ) )
 			self.save()
 		self.re_set = re.compile( "(\S+) (are|is a) (.*)" )	
-		self.pluginname = "are"
+
 
 	def save( self, force = False ):
 		# save the file
