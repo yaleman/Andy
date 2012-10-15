@@ -12,12 +12,6 @@ class Note( toolbox.base_plugin ):
 		self.load( preload )
 		self.changed = False
 
-
-	def __del__( self ):
-		#print "Saving notes on destruction"
-		#pickle.dump( self.notes, open( self.filename, "wb" ) )
-		pass
-
 	def search( self, text ):
 		foundany = False
 		terms = text.split()
@@ -45,30 +39,22 @@ class Note( toolbox.base_plugin ):
 		h = toolbox.md5( text )
 		if h not in self.notes:
 			self.notes[h] = text
-			self.changed = True
-			#return True
+			self.save()
 			return "Added"
-		#return False
 		return "Note already exists"
 
-	def load( self, learn = True ):
+	def load( self ):
 		# loads notes from file into a variable called notes
 		# if learn == True, stores the notes into self.notes
 		# if the file doesn't exist, create one
 		if( os.path.exists( self.filename ) ):
-			notes = pickle.load( open( self.filename, "rb" ) )
-			if( learn ):
-				self.notes = notes
-				self.changed = False
-			return notes
+			self.notes = pickle.load( open( self.filename, "rb" ) )
+			return self.otes
 		else:
-			self.save( True )
-
+			return "Can't find file specified for Notes instance"
 	def save( self, force = False ):
 		# saves the file
 		# checks to see if the file's changed to avoid extra writes
 		# can be forced
-		if( self.changed or force == True ):
-			pickle.dump( self.notes, open( self.filename, "wb" ) )
-			self.changed = False
+		pickle.dump( self.notes, open( self.filename, "wb" ) )
 			
