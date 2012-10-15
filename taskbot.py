@@ -58,8 +58,8 @@ class taskbot( toolbox.base_plugin ):
 	def _task_geturi( self, t, args, data ):
 		uri = args[ 'uris' ][ int( t[1] ) ]
 		print "Grabbing uri: {}".format( uri )
-		data = toolbox.url_get( uri )
-		#data = open( 'data/page.cache', 'r' ).read()
+		# pulls the file from the filecache if possible, caches for config.uricachetime seconds
+		data = self._parent.plugins['filecache'].getfile( uri, config.uricachetime )
 		return args, data
 
 	def _task_strip_nl( self, t, args, data ):

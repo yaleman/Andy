@@ -17,6 +17,7 @@ class Andy():
 					'sense_todo' : 'sense_todo.Todo( self )',
 					'taskbot' : "taskbot.taskbot( self )",
 					}
+		self.register_plugin( toolbox.FileCache( self ) )
 		for plugin in self._init_plugins:
 			# I'm sure I'll go to hell for this.
 			exec( "import {}".format( plugin ) )

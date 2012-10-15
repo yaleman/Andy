@@ -6,10 +6,12 @@ except ImportError:
 	print "Failed to import pexpect"
 
 #import subprocess
+import config
 import pickle
 import re, hashlib
 import urllib2
 import sys, os
+import time
 
 class base_plugin():
 	def __init__( self, parent ):
@@ -98,10 +100,14 @@ def writefile( filename, contents ):
 	f.write( contents )
 	f.close()
 
-class FileCache():
-	def __init__( self, cachefile ):
-		self._cachefile = cachefile
-		self._cachedfiles = {}
+class FileCache( base_plugin ):
+	def __init__( self, parent ):
+		base_plugin.__init__( self, parent )
+		self.pluginname = 'filecache'
+		self._filename = config.filename[self.pluginname]
+		self._data = {}
+		self._load()
+		print self.cachenum()
 	
 	def _filerefislink( self, fileref ):
 		#TODO make FileCache.filerefislink a little less insane
@@ -117,17 +123,12 @@ class FileCache():
 		else:
 			return open( fileref, 'r' ).read()
 
-	def get( self, fileref, expiry = 0 ):
+	def getfile( self, fileref, expiry = 0 ):
 		#TODO  if expiry == 0 ignore it
-		#TODO deal with expiry in FileCache._get
-		#TODO file storage = [ grabtime, expiry, contents ] in FileCache
+		#TODO have something that goes through and deletes expired files - this stops the cache size bloating over time
 		filehash = md5( fileref )
-		if filehash not in self._cachedfiles:
-			self._cachedfiles[ filehash ] = [ 0, 0, self._getfile( fileref ) ]
-			#return self._getfile( 
+
 		else:
-			return self._cachedfiles[filehash][2]
-		#pass
 
 	def delete( self, fileref ):
 		#TODO: add ability to remove file from cache
