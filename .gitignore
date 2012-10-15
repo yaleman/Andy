@@ -3,3 +3,5 @@
 *.swp
 data/*
 config.py
+
+.DS_Store
