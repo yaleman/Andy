@@ -48,6 +48,13 @@ class taskbot( toolbox.base_plugin ):
 # 
 # main task processor 
 #
+	def runall( self, text ):
+		for t in self._gettasks_enabled():
+			print "Running: {}".format( t )
+			self.do( t )
+		return "Done."
+			
+
 	def do( self, taskid ):
 		""" do an individual task """
 		if( not self._is_validtask( taskid ) ):
