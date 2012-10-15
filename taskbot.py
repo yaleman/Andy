@@ -188,7 +188,6 @@ class taskbot( toolbox.base_plugin ):
 	def gettasks( self, text=None ):
 		return self._data['tasks'].keys()
 
-
 	def showtask( self, taskid ):
 		retval = ""
 		if taskid in self._data['tasks']:
@@ -199,12 +198,9 @@ class taskbot( toolbox.base_plugin ):
 			return "'{}' is not a valid task.".format( taskid )
 
 
-	def dotask( self, taskid ):
-		return self._do_tasksequence( self._data['tasks'][taskid], self._data, None )
-
 	def addstep( self, text ):
 		print "Was handed '{}'".format( text )
-		re_addstep_testinput = re.compile( "(?P<taskname>[\S]*) (?P<stepid>[0-9]*) (?P<details>[a-z]*:.*)" )
+		re_addstep_testinput = re.compile( "(?P<taskname>[\S]*) (?P<stepid>[0-9]*) (?P<details>[a-z]*:[\s\S]{0,})" )
 		# check it's a valid task definition
 		s = re_addstep_testinput.match( text )
 		if( s != None ):
@@ -273,7 +269,7 @@ class taskbot( toolbox.base_plugin ):
 		pickle.dump( self._data, open( self._filename, "wb" ) )
 
 if( __name__ == '__main__' ):
-	lf = TaskBot( None, "lookfordata.pickle" )
+	lf = taskbot( None, "lookfordata.pickle" )
 #	lf._data = lookfordata
 #	lf.save()
 	#taskdata = lf.dotask( 'eztv_Bones' )
