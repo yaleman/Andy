@@ -37,7 +37,7 @@ class taskbot( toolbox.base_plugin ):
 		self._basetask = { 'enabled' : False, 'period' : 0, 'lastdone' : 0 }
 		self._re_tr = re.compile( "(<tr[^>]*>(.*?)</tr[^>]*>)" )
 		self._re_table = re.compile( "(<table[^>]*>(.*?)</table[^>]*>)" )
-		self._re_addstep_testinput = re.compile( "(?P<taskname>[\S]*) (?P<stepid>[0-9]*) (?P<details>[a-z]*:[\s\S]{0,})" )
+		self._re_addstep_testinput = re.compile( "(?P<taskname>[\S]*) (?P<stepid>[0-9]*) (?P<details>[\S^\:]*:(.*))" )
 
 		self._re_delstep_testinput = re.compile( "(?P<taskname>[\S]*) (?P<stepid>[0-9]*)" )
 		self._taskswithfunctions = [ 'geturi', 'find_tr_with', 'find_table_with' 'strip_nl' ]
