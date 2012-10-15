@@ -16,7 +16,7 @@ import config
 
 class AP( toolbox.base_plugin ):
 	def __init__( self, parent ):
-        	toolbox.base_plugin.__init__( self, parent )
+		toolbox.base_plugin.__init__( self, parent )
 		self.pluginname = "sense-ap"
 		self._command_current_connection = "airport -I"
 		self._command_scan = "airport -s"

@@ -9,7 +9,7 @@ class Note( toolbox.base_plugin ):
 		self.pluginname = "note"
 		self._filename = config.filename[self.pluginname]
 		self._data = {}
-		self.load()
+		self._load()
 
 	def search( self, text ):
 		foundany = False
@@ -38,7 +38,7 @@ class Note( toolbox.base_plugin ):
 		h = toolbox.md5( text )
 		if h not in self._data:
 			self._data[h] = text
-			self.save()
+			self._save()
 			return "Added"
 		return "Note already exists"
 

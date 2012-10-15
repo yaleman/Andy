@@ -15,7 +15,7 @@ import config
 
 class Todo( toolbox.base_plugin ):
 	def __init__( self, parent ):
-                toolbox.base_plugin.__init__( self, parent )
+		toolbox.base_plugin.__init__( self, parent )
 		self.pluginname = "todo_code"
 
 	def check( self, text ):

@@ -8,10 +8,10 @@ class Are( toolbox.base_plugin ):
 		toolbox.base_plugin.__init__( self, parent )
 		self.pluginname = "are"
 		self._filename = config.filename[self.pluginname]
-		if( not self.load() ):
+		if( not self._load() ):
 			self._data = {}
 			#pickle.dump( self._data, open( self.filename, "wb" ) )
-			self.save()
+			self._save()
 		self.re_set = re.compile( "(\S+) (are|is a) (.*)" )	
 
 

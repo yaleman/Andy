@@ -80,8 +80,8 @@ class Andy():
 	def _save_before_shutdown( self ):
 		# this goes through all the registered plugins and saves them
 		for plugin in self.plugins:
-			if( 'save' in dir( self.plugins[plugin] ) ):
-				self.plugins[plugin].save()
+			if( '_save' in dir( self.plugins[plugin] ) ):
+				self.plugins[plugin]._save()
 	
 
 	def register_plugin( self, plugin ):
@@ -98,7 +98,6 @@ if( __name__ == '__main__' ):
 
 	andy = Andy()
 	andy.plugins['are'].replace( "ipaddr", toolbox.self_ipaddr() )
-	andy.plugins['are'].save()
 
 
 	andy.interact()

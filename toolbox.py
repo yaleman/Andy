@@ -32,14 +32,14 @@ class base_plugin():
 				return eval( 'self.{}( " ".join( text.split()[1:] ) )'.format( f ) )
 		return "Unsure what you meant by '{}'".format( text )
 
-	def load( self ):
+	def _load( self ):
 		if( self._data and self._filename ):
 			if os.path.exists( self._filename ):
 				self._data = pickle.load( open( self._filename , "rb" ) )
 				return True
 			return False
 
-	def save( self ):
+	def _save( self ):
 		# save the file
 		if( self._data and self._filename ):
 			pickle.dump( self._data, open( self._filename, "wb" ) )

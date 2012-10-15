@@ -31,7 +31,7 @@ class taskbot( toolbox.base_plugin ):
 		self._data = { 'uris' : {}, 'tasks' : {} }
 		self._filename = config.filename[self.pluginname]
 		# load the stored data
-		self.load()
+		self._load()
 
 		# hack for when I messed up a key - JH 2012-10-14
 		for task in self._data['tasks']:
@@ -246,27 +246,9 @@ class taskbot( toolbox.base_plugin ):
 			return True
 		return False
 
-###############################
-# 
-# data file tasks
-#
-#
 
 
-	def load( self ):
-		# TODO add documentation
-		if( os.path.exists( self._filename ) ):
-			tmp = pickle.load( open( self._filename, "rb" ) )
-			self._data = tmp
-			return tmp
-		else:
-			print "Couldn't find filename"
-			return False
 
-
-	def save( self ):
-		""" saves the internal data for the class """
-		pickle.dump( self._data, open( self._filename, "wb" ) )
 
 if( __name__ == '__main__' ):
 	lf = taskbot( None, "lookfordata.pickle" )
@@ -287,7 +269,7 @@ if( __name__ == '__main__' ):
 #			foundrows += ( taskdata['data'] )
 #		else:
 #			print "task failed to find info"
-	lf.save()
+	lf._save()
 	if len( foundrows ) > 0:
 		print "Found something you were looking for!"
 		htmlfile = "<html><Head></head><body><table>{}</table></body></html>".format( "\n".join( foundrows ) )
