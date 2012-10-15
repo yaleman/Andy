@@ -13,10 +13,9 @@ import config
 #import json
 
 
-class Todo( config.base_plugin ):
-	def __init__( self, parent, config = config ):
-                config.base_plugin.__init__( self, parent )
-		self._config = config
+class Todo( toolbox.base_plugin ):
+	def __init__( self, parent ):
+                toolbox.base_plugin.__init__( self, parent )
 		self.pluginname = "todo_code"
 
 	def check( self, text ):

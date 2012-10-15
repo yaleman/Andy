@@ -14,10 +14,9 @@ import config
 #TODO check what AP's we're connected to (maybe on a timer?)
 #TODO be able to respond about this
 
-class AP( config.base_plugin ):
-	def __init__( self, parent, config = config ):
-        	config.base_plugin.__init__( self, parent )
-		self._config = config
+class AP( toolbox.base_plugin ):
+	def __init__( self, parent ):
+        	toolbox.base_plugin.__init__( self, parent )
 		self.pluginname = "sense-ap"
 		self._command_current_connection = "airport -I"
 		self._command_scan = "airport -s"

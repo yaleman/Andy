@@ -2,10 +2,10 @@ import config
 import pickle, os
 import toolbox
 
-class Note( config.base_plugin ):
+class Note( toolbox.base_plugin ):
 	def __init__( self, parent, preload = True ):
 		# relies on hashlib, pickle, os
-		config.base_plugin.__init__( self, parent )
+		toolbox.base_plugin.__init__( self, parent )
 		self.pluginname = "note"
 		self.filename = config.filename[self.pluginname]
 		self.notes = {}

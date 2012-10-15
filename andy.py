@@ -41,8 +41,12 @@ class Andy():
 			if len( helpterm ) > 0:
 				#print "Looking for help on {}".format( helpterm[0] )
 				if( helpterm[0] in self.plugins ):
-					helptext = [ f for f in dir( self.plugins[helpterm[0] ] ) if not f.startswith( "_" ) and f != 'pluginname' ]
-					return "Commands in '{}' are {}.".format( helpterm[0], ", ".join( helptext  ) )
+					# see if the plugin has its own help
+					if( "_help" in dir( self.plugins[helpterm[0]] ) ):
+						return self.plugins[helpterm[0]]._help( text )
+					else:
+						helptext = [ f for f in dir( self.plugins[helpterm[0] ] ) if not f.startswith( "_" ) and f != 'pluginname' ]
+						return "Commands in '{}' are {}.".format( helpterm[0], ", ".join( helptext  ) )
 			else:
 				return " #help [command] will give you help on a particular command\n #plugins will give you a list of plugins"
 		else:

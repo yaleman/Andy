@@ -10,6 +10,26 @@ import pickle
 import re, hashlib
 import urllib2
 
+class base_plugin():
+	def __init__( self, parent ):
+		self.pluginname = "base"
+		self._parent = parent
+
+	def _help( self, text ):
+		helptext = [ f for f in dir( self ) if not f.startswith( "_" ) and f != 'pluginname' ]
+		# should probably deal with help sub commands
+		return " Commands in '{}' are {}.".format( self.pluginname, ", ".join( helptext  ) )
+
+
+	def _handle_text( self, text ):
+		text = " ".join( text.split()[1:] )
+		commands = [ func for func in dir( self ) if not func.startswith( "_" ) ]
+		for f in commands:
+			if text.startswith( "{}".format( f ) ):
+				return eval( 'self.{}( " ".join( text.split()[1:] ) )'.format( f ) )
+		return "Unsure what you meant by '{}'".format( text )
+
+
 def sudorun( command, password ):
 	# uses pexpect to run a command with sudo on the command line with a given password and return the results. 
 	# relies on pexpect

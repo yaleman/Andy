@@ -13,16 +13,16 @@ import config
 
 #TODO: deal with ipv6 ('launchd', '1', 'root', '32u', 'IPv6', '0x78aab92d3c18db51', '0t0', 'TCP', '[::1]:631 (LISTEN)')
 
-class SenseNetwork():
+class SenseNetwork( toolbox.base_plugin ):
 	"""  this should be run every x time to check up on what the computer's doing and report back to the database
 		 the basic idea is to get a map of process -> ports/ip's used. things like web browsers will be noisy, but I'm looking
 		 for those strange apps/ports that you don't know about until you're looking on wireshark.
 		"""
 
-	def __init__( self, config = config ):
+	def __init__( self, parent ):
+		toolbox.base_plugin.__init__( self, parent )
 		self._lineparser = re.compile( "(?P<command>[a-zA-Z0-9]+)[\s]+(?P<pid>[0-9]+)[\s]+(?P<username>[\S]+)[\s]+([a-zA-Z0-9]+)[\s]+(?P<sixorfour>[A-Za-z0-9]+)[\s]+(?P<device>[a-zA-Z0-9]+)[\s]+(?P<size>[a-z0-9A-Z]+)[\s]+(?P<transport>[A-Za-z0-9]+)[\s]+(?P<details>.*)" )
 		self._command = "lsof -i4 -L -n -P"
-		self._config = config
 		self._lsof_info = []
 		self._lsof_errors = []
 		self.pluginname = "sense-network"
@@ -52,7 +52,7 @@ class SenseNetwork():
 		return "um...?"
 
 	def _parse_lsof_information( self ):
-		lines = toolbox.sudorun( self._command, self._config.password )
+		lines = toolbox.sudorun( self._command, config.sudopassword )
 		errors = []
 		info = []
 		for l in lines:
