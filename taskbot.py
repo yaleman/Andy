@@ -215,9 +215,13 @@ class taskbot( toolbox.base_plugin ):
 		return "Enabled {}".format( taskid )
 
 
+	def list( self, text=None):
+		return ", ".join( self._data['tasks'].keys() )
+
 	def gettasks( self, text=None ):
 		return self._data['tasks'].keys()
 
+	def show( self, taskid ):
 		retval = ""
 		if taskid in self._data['tasks']:
 			for displaytask in [ "{}\t{}".format( key, value ) for key, value in sorted( self._data['tasks'][taskid].items() ) ]:
@@ -258,6 +262,7 @@ class taskbot( toolbox.base_plugin ):
 			self._data['tasks'][newtask][stepid] = details
 		except KeyError:
 			return "Something broke with self._data['tasks'][newtask][stepid] = details"
+		return "Task #{} added to {}".format( stepid, newtask ) 
 
 	def delstep( self, text ):
 		""" removes a step from a task, delstep [taskname] [stepid] """
@@ -284,6 +289,7 @@ class taskbot( toolbox.base_plugin ):
 			self._data['tasks'][taskname] = self._basetask
 		return "added task"
 
+	def delete( self, taskname ):
 		""" deletes a task """
 		#TODO add some sort of verification?
 		if( taskname in self.gettasks() ):
@@ -322,6 +328,7 @@ if( __name__ == '__main__' ):
 	#taskdata = lf.dotask( 'eztv_Bones' )
 	foundrows = []
 	for task in lf.gettasks():
+		print lf.show( task )
 		if( 'enabled' not in lf._data['tasks'][task] ):
 			lf._data['tasks'][task]['enabled'] = True
 		if( 'period' not in lf._data['tasks'][task] ):
