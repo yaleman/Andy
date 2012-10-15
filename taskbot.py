@@ -24,20 +24,26 @@ re.compile( regex:[hash] )
 tr's = apply the regex to the data
 """
 
-class taskbot( config.base_plugin ):
-	def __init__( self, parent, filename, config=config ):
-		config.base_plugin.__init__( self, parent )
-		self._config = config
+class taskbot( toolbox.base_plugin ):
+	def __init__( self, parent ):
+		toolbox.base_plugin.__init__( self, parent )
 		self.pluginname = "taskbot"
 		self._data = { 'uris' : {}, 'tasks' : {} }
-		self._filename = config.filename[self.plugginname]
+		self._filename = config.filename[self.pluginname]
 		# load the stored data
 		self.load()
+
+		# hack for when I messed up a key - JH 2012-10-14
+		for task in self._data['tasks']:
+			if( self._data['tasks'][task].get( 'enable', None ) != None ):
+				del( self._data['tasks'][task]['enable'] )
+
 		self._basetask = { 'enabled' : False, 'period' : 0, 'lastdone' : 0 }
 		self._re_tr = re.compile( "(<tr[^>]*>(.*?)</tr[^>]*>)" )
 		self._re_table = re.compile( "(<table[^>]*>(.*?)</table[^>]*>)" )
 
 		self._taskswithfunctions = [ 'geturi', 'find_tr_with', 'find_table_with' 'strip_nl' ]
+
 
 ###############################
 # 
@@ -100,10 +106,12 @@ class taskbot( config.base_plugin ):
 # 
 # main task processor 
 #
-#
+	def dotask( self, taskid ):
+		""" do an individual task """
+		return self._do_tasksequence( self._data['tasks'][taskid], self._data, None )
 
 	def _do_tasksequence( self, task_sequence, args, data ):
-		# feed this a {} of tasks with the key as an int of the sequence, and it'll do them
+		""" feed this a {} of tasks with the key as an int of the sequence, and it'll do them """
 		tasks = sorted( [ key for key in task_sequence.iterkeys() if isinstance( key, int ) ] )		
 		print "tasks: {}".format( tasks )
 		args['found'] = False
@@ -113,7 +121,8 @@ class taskbot( config.base_plugin ):
 			t = task_sequence[ task ].split( ":" )
 			cmd = t[0]
 			cmdargs = t[1]
-			if( cmd in self._taskswithfunctions ):
+			# for a given task step, check if there's a self.function with the name _task_[step] and use that (all steps should be in these functions)
+			if( "_task_{}".format( cmd ) in dir( self ) ): 
 				args, data = eval( "self._task_{}( t, args, data )".format( cmd ) )
 
 			elif( cmd == "replace" ):
@@ -129,6 +138,12 @@ class taskbot( config.base_plugin ):
 			elif( cmd == "writefile" ):
 				#TODO add file writing functionality to do_tasksequence
 				print "This functionality is not added yet."
+
+			elif( cmd == "tweet" ):
+				#TODO add tweet functionality
+				print "Can't tweet yet"
+
+			#TODO add some way of going "if found, do the next step"
 
 			elif( cmd == "in" ):
 				if( cmdargs in data ):
@@ -151,9 +166,15 @@ class taskbot( config.base_plugin ):
 				return key
 		return False
 
+###############################
+# 
+# setting task flags 
+#
+#
+
 	def _set_enable( self, taskid, value = True ):
 		if( self._is_validtask( taskid ) ):
-			self._data['tasks'][taskid]['enable'] = value
+			self._data['tasks'][taskid]['enabled'] = value
 
 	def disable( self, taskid ):
 		self._set_enable( taskid, False )

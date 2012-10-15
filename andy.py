@@ -14,7 +14,7 @@ class Andy():
 					'note' : "note.Note( self )",
 					'sense_ap' : 'sense_ap.AP( self )',
 					'sense_todo' : 'sense_todo.Todo( self )',
-					'taskbot' : "taskbot.taskbot( self, config.filename['taskbot'] )",
+					'taskbot' : "taskbot.taskbot( self )",
 					}
 		for plugin in self._init_plugins:
 			# I'm sure I'll go to hell for this.
