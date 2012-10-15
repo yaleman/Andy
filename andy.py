@@ -9,6 +9,7 @@ import config
 class Andy():
 	def __init__( self ):
 		self.plugins = {}
+		#to add a new plugin here, all you need to do is add its name to the list
 		self._init_plugins = { 'sense_network' : 'sense_network.SenseNetwork( self )',
 					'are' : "are.Are( self )",
 					'note' : "note.Note( self )",
@@ -35,7 +36,6 @@ class Andy():
 			python = sys.executable
 			print "Restarting now..."
 			os.execl(python, python, * sys.argv)
-			#pass
 		elif( oper.startswith( "help" ) ):
 			helpterm = text.split()[1:]
 			if len( helpterm ) > 0:
