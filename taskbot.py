@@ -155,7 +155,7 @@ class taskbot( toolbox.base_plugin ):
 				if tmp != False:
 					args, data = tmp
 				else:
-					return "Task {} failed at step {}.".format( taskname, step )
+					return "Task {} stopped at step {}.".format( taskname, step )
 
 			elif( cmd == "email" ):
 				#TODO add email functionality to do_tasksequence
