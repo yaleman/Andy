@@ -116,10 +116,12 @@ class FileCache( base_plugin ):
 		self._data = {}
 		self._load()
 		print self.cachenum()
+		self._re_filerefislink = re.compile( "[a-zA-Z]{3,4}:\/\/[\S]*" )
 	
 	def _filerefislink( self, fileref ):
 		#TODO make FileCache.filerefislink a little less insane
-		if( fileref.startswith( "http://" ) or fileref.startswith( "https://" ) ):
+#		if( fileref.startswith( "http://" ) or fileref.startswith( "https://" ) ):
+		if( self._re_filerefislink.match( fileref ) != None ):
 			return True
 		return False
 		

@@ -120,7 +120,7 @@ class taskbot( toolbox.base_plugin ):
 
 	def _task_dotask( self, t, args, data ):
 		if( self._is_validtask( t[1] ) ):
-			tmp = self.dotask( t[1] )
+			tmp = self.do	( t[1] )
 			args = tmp
 			data = tmp['data']
 			return args, data
@@ -131,7 +131,7 @@ class taskbot( toolbox.base_plugin ):
 # 
 # main task processor 
 #
-	def dotask( self, taskid ):
+	def do( self, taskid ):
 		""" do an individual task """
 		return self._do_tasksequence( taskid, self._data, None )
 
