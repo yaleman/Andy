@@ -27,16 +27,11 @@ tr's = apply the regex to the data
 class taskbot( toolbox.base_plugin ):
 	def __init__( self, parent ):
 		toolbox.base_plugin.__init__( self, parent )
-		self.pluginname = "taskbot"
+		self.pluginname = "task"
 		self._data = { 'uris' : {}, 'tasks' : {} }
 		self._filename = config.filename[self.pluginname]
 		# load the stored data
 		self._load()
-
-		# hack for when I messed up a key - JH 2012-10-14
-		for t in self._data['tasks']:
-			if( self._data['tasks'][t].get( 'enable', None ) != None ):
-				del( self._data['tasks'][t]['enable'] )
 
 		#TODO move the compiled regexes to a dict
 		self._basetask = { 'enabled' : False, 'period' : 0, 'lastdone' : 0 }
