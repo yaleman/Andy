@@ -41,6 +41,7 @@ class taskbot( toolbox.base_plugin ):
 		self._basetask = { 'enabled' : False, 'period' : 0, 'lastdone' : 0 }
 		self._re_tr = re.compile( "(<tr[^>]*>(.*?)</tr[^>]*>)" )
 		self._re_table = re.compile( "(<table[^>]*>(.*?)</table[^>]*>)" )
+		self._re_addstep_testinput = re.compile( "(?P<taskname>[\S]*) (?P<stepid>[0-9]*) (?P<details>[a-z]*:[\s\S]{0,})" )
 
 		self._taskswithfunctions = [ 'geturi', 'find_tr_with', 'find_table_with' 'strip_nl' ]
 
@@ -199,10 +200,9 @@ class taskbot( toolbox.base_plugin ):
 
 
 	def addstep( self, text ):
-		print "Was handed '{}'".format( text )
-		re_addstep_testinput = re.compile( "(?P<taskname>[\S]*) (?P<stepid>[0-9]*) (?P<details>[a-z]*:[\s\S]{0,})" )
-		# check it's a valid task definition
-		s = re_addstep_testinput.match( text )
+		#print "Was handed '{}'".format( text )
+				# check it's a valid task definition
+		s = self._re_addstep_testinput.match( text )
 		if( s != None ):
 			print "Details definition valid"
 		else:
