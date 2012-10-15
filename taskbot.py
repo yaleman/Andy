@@ -133,6 +133,12 @@ class taskbot( toolbox.base_plugin ):
 			args['found'] = False
 		return args, data
 
+	def _task_writefile( self, t, args, data ):
+		print "Writing to {}".format( t[1] )
+		f = open( t[1], 'w' )
+		f.write( data )
+		f.close
+		return args, data
 	
 ###############################
 # 
