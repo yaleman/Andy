@@ -35,16 +35,24 @@ class base_plugin():
 		return "Unsure what you meant by '{}'".format( text )
 
 	def _load( self ):
-		if( self._data and self._filename ):
+		if( self._filename != "" ):
 			if os.path.exists( self._filename ):
 				self._data = pickle.load( open( self._filename , "rb" ) )
 				return True
+			# no file? return false
+			return False
+		else:
+			# if the filename's not set, return False as it can't load
 			return False
 
 	def _save( self ):
-		# save the file
-		if( self._data and self._filename ):
-			pickle.dump( self._data, open( self._filename, "wb" ) )
+		# if there's data, save it
+		if( self._data != "" and self._filename != "" ):
+			#save the file
+			pickle.dump( self._data, open( self._filename, 'wb' ) )
+		# if not, return false
+		else:
+			return False	
 
 
 def sudorun( command, password ):
