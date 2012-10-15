@@ -57,7 +57,7 @@ class taskbot( toolbox.base_plugin ):
 		data = self._parent.plugins['filecache'].getfile( uri, config.uricachetime )
 		return args, data
 
-	def _task_strip_nl( self, t, args, data ):
+	def _task_stripnl( self, t, args, data ):
 		return args, data.replace( "\n", " " )
 
 	def _task_find_tr_with( self, t, args, data ):
