@@ -64,11 +64,11 @@ class taskbot( toolbox.base_plugin ):
 		needle = t[1]
 		print "Looking for {}".format( needle )
 		rows = self._re_tr.findall( data )
-		found_rows = []
 		if( len( rows ) > 0 ):
-			for row in [ row[0] for row in rows ]:
-				if( needle in row ):
-					found_rows.append( row )
+			found_rows = [ row[0] for row in rows if needle in row ]
+#			for row in [ row[0] for row in rows ]:
+#				if( needle in row ):
+#					found_rows.append( row )
 			if( len( found_rows ) > 0 ):
 				data = found_rows
 				print "Found {} matching rows".format( len( found_rows ) )
@@ -90,17 +90,10 @@ class taskbot( toolbox.base_plugin ):
 		#print tables
 		args['found'] = False
 		if( len( tables ) > 0 ): # if found a table or two
-			for table in [ table[0] for table in tables ]:
-				if( needle in table ):
-					data = table
-					print "\t Found a table with {} in it".format( needle )
-					args['found'] = True
-					break
-				else:
-					# table didn't match search
-					pass
-		if( args['found'] == True ):
-			return args, data
+			data = "\n".join( [ table[0] for table in tables if needle in table ] )
+			if( len( data ) > 0 ):
+				args['found'] = True
+				return args, data
 		return False
 
 	def _task_replace( self, t, args, data ):
