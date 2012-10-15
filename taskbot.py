@@ -325,23 +325,10 @@ class taskbot( toolbox.base_plugin ):
 
 if( __name__ == '__main__' ):
 	lf = taskbot( None, "lookfordata.pickle" )
-#	lf._data = lookfordata
-#	lf.save()
-	#taskdata = lf.dotask( 'eztv_Bones' )
+
 	foundrows = []
 	for task in lf.gettasks():
-		print lf.show( task )
-		if( 'enabled' not in lf._data['tasks'][task] ):
-			lf._data['tasks'][task]['enabled'] = True
-		if( 'period' not in lf._data['tasks'][task] ):
-			lf._data['tasks'][task]['period'] = 60 * 60 * 2
-		if( 'lastdone' not in lf._data['tasks'][task] ):
-			lf._data['tasks'][task]['lastdone'] = 0
-#		taskdata = lf.dotask( task )
-#		if( taskdata['found'] ):
-#			foundrows += ( taskdata['data'] )
-#		else:
-#			print "task failed to find info"
+		lf.dotask( tas )
 	lf._save()
 	if len( foundrows ) > 0:
 		print "Found something you were looking for!"
