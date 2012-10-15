@@ -9,11 +9,14 @@ except ImportError:
 import pickle
 import re, hashlib
 import urllib2
+import sys, os
 
 class base_plugin():
 	def __init__( self, parent ):
 		self.pluginname = "base"
 		self._parent = parent
+		self._filename = ""
+		self._data = ""
 
 	def _help( self, text ):
 		helptext = [ f for f in dir( self ) if not f.startswith( "_" ) and f != 'pluginname' ]
@@ -28,6 +31,18 @@ class base_plugin():
 			if text.startswith( "{}".format( f ) ):
 				return eval( 'self.{}( " ".join( text.split()[1:] ) )'.format( f ) )
 		return "Unsure what you meant by '{}'".format( text )
+
+	def load( self ):
+		if( self._data and self._filename ):
+			if os.path.exists( self._filename ):
+				self._data = pickle.load( open( self._filename , "rb" ) )
+				return True
+			return False
+
+	def save( self ):
+		# save the file
+		if( self._data and self._filename ):
+			pickle.dump( self._data, open( self._filename, "wb" ) )
 
 
 def sudorun( command, password ):

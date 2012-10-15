@@ -3,14 +3,13 @@ import pickle, os
 import toolbox
 
 class Note( toolbox.base_plugin ):
-	def __init__( self, parent, preload = True ):
+	def __init__( self, parent ):
 		# relies on hashlib, pickle, os
 		toolbox.base_plugin.__init__( self, parent )
 		self.pluginname = "note"
-		self.filename = config.filename[self.pluginname]
-		self.notes = {}
-		self.load( preload )
-		self.changed = False
+		self._filename = config.filename[self.pluginname]
+		self._data = {}
+		self.load()
 
 	def search( self, text ):
 		foundany = False
@@ -43,18 +42,4 @@ class Note( toolbox.base_plugin ):
 			return "Added"
 		return "Note already exists"
 
-	def load( self ):
-		# loads notes from file into a variable called notes
-		# if learn == True, stores the notes into self.notes
-		# if the file doesn't exist, create one
-		if( os.path.exists( self.filename ) ):
-			self.notes = pickle.load( open( self.filename, "rb" ) )
-			return self.otes
-		else:
-			return "Can't find file specified for Notes instance"
-	def save( self, force = False ):
-		# saves the file
-		# checks to see if the file's changed to avoid extra writes
-		# can be forced
-		pickle.dump( self.notes, open( self.filename, "wb" ) )
-			
+

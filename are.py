@@ -7,26 +7,12 @@ class Are( toolbox.base_plugin ):
 		# feed it a filename, it'll either load a pickle of the facts or create a new empty file
 		toolbox.base_plugin.__init__( self, parent )
 		self.pluginname = "are"
-		self.filename = config.filename[self.pluginname]
-		self.changed = False
-		if os.path.exists( self.filename ):
-			self.facts = pickle.load( open( self.filename, "rb" ) )
-		else:
-			self.facts = {}
-			#pickle.dump( self.facts, open( self.filename, "wb" ) )
 		self._filename = config.filename[self.pluginname]
 		if( not self.load() ):
 			self._data = {}
 			#pickle.dump( self._data, open( self.filename, "wb" ) )
 			self.save()
 		self.re_set = re.compile( "(\S+) (are|is a) (.*)" )	
-
-
-	def save( self, force = False ):
-		# save the file
-		if self.changed or force:
-			#print "Saving facts"
-			pickle.dump( self.facts, open( self.filename, "wb" ) )
 
 
 	def _handle_text( self, text ):
