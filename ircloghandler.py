@@ -47,6 +47,6 @@ class LogHandler():
 
 if __name__ == "__main__":
 	datadir = "./data/irclogs/"
-	for filename in os.listdir( datadir ):
-		loghandler = LogHandler( "{}{}".format( datadir, filename ) )
+	for file_name in os.listdir( datadir ):
+		loghandler = LogHandler( "{}{}".format( datadir, file_name ) )
 		loghandler.process()
