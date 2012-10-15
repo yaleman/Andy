@@ -43,104 +43,6 @@ class taskbot( toolbox.base_plugin ):
 		self._taskswithfunctions = [ 'geturi', 'find_tr_with', 'find_table_with' 'strip_nl' ]
 
 
-###############################
-# 
-# task steps
-#
-#
-
-
-	def _task_geturi( self, t, args, data ):
-		uri = args[ 'uris' ][ int( t[1] ) ]
-		print "Grabbing uri: {}".format( uri )
-		# pulls the file from the filecache if possible, caches for config.uricachetime seconds
-		data = self._parent.plugins['filecache'].getfile( uri, config.uricachetime )
-		return args, data
-
-	def _task_stripnl( self, t, args, data ):
-		return args, data.replace( "\n", " " )
-
-	def _task_striptab( self, t, args, data ):
-		return args, data.replace( "\t", " " )
-
-	def _task_find_tr_with( self, t, args, data ):
-		needle = t[1]
-		print "Looking for {}".format( needle )
-		rows = self._re_tr.findall( data )
-		if( len( rows ) > 0 ):
-			found_rows = [ row[0] for row in rows if needle in row[0] ]
-#			for row in [ row[0] for row in rows ]:
-#				if( needle in row ):
-#					found_rows.append( row )
-			if( len( found_rows ) > 0 ):
-				data = "\n".join( found_rows )
-				print "Found {} matching rows".format( len( found_rows ) )
-				args['found'] = True
-			else:
-				print "Found rows, but no matches."
-				args['found'] = False
-		else:
-			print "Found no rows in data"
-			args['found'] = False
-		if args['found']:
-			return args, data
-		return False
-
-	def _task_find_table_with( self, t, args, data ):
-		needle = t[1]
-		tables = self._re_table.findall( data )
-		args['found'] = False
-		if( len( tables ) > 0 ): # if found a table or two
-			goodtables = [ table[0] for table in tables if needle in table[0] ] 
-			data = "\n".join( goodtables )
-			if( len( data ) > 0 ):
-				args['found'] = True
-				print "Found {} tables, {} had the needle.".format( len( tables ), len( goodtables ) )
-				return args, data
-			else:
-				print "Found {} tables, 0 had the needle. ({})".format( len( tables ), needle )
-				args['found'] == False
-				return False
-		else:
-			print "Found no tables"
-		return False
-
-	def _task_replace( self, t, args, data ):
-		search, replace = t[1].split( "|" )
-		data = data.replace( search, replace )
-		return args, data
-	
-	def _task_replacewithspace( self, t, args, data ):
-		""" replaces the input data with spaces """
-		data = data.replace( t[1].strip(), " " )
-		return args, data
-
-	def _task_dotask( self, t, args, data ):
-		""" does another task """
-		if( self._is_validtask( t[1] ) ):
-			print "Doing task: {}".format( t[1] )
-			tmp = self.do( t[1] )
-			args = tmp
-			data = tmp['data']
-			return args, data
-		else:
-			return False
-
-	def _task_in( self, t, args, data ):
-		if( t[1] in data ):
-			print "Found '{}' in data.".format( cmdargs ) 
-			args['found'] = True
-		else:
-			print "Couldn't find '{}' in data.".format( cmdargs )
-			args['found'] = False
-		return args, data
-
-	def _task_writefile( self, t, args, data ):
-		print "Writing to {}".format( t[1] )
-		f = open( t[1], 'w' )
-		f.write( data )
-		f.close
-		return args, data
 	
 ###############################
 # 
@@ -320,6 +222,105 @@ class taskbot( toolbox.base_plugin ):
 	def _get_tasksteps( self, taskname ):
 		if( self._is_validtask( taskname ) ):
 			return sorted( [ key for key in self._data['tasks'][taskname].iterkeys() if isinstance( key, int ) ] )
+
+###############################
+# 
+# task steps
+#
+#
+
+
+	def _task_geturi( self, t, args, data ):
+		uri = args[ 'uris' ][ int( t[1] ) ]
+		print "Grabbing uri: {}".format( uri )
+		# pulls the file from the filecache if possible, caches for config.uricachetime seconds
+		data = self._parent.plugins['filecache'].getfile( uri, config.uricachetime )
+		return args, data
+
+	def _task_stripnl( self, t, args, data ):
+		return args, data.replace( "\n", " " )
+
+	def _task_striptab( self, t, args, data ):
+		return args, data.replace( "\t", " " )
+
+	def _task_find_tr_with( self, t, args, data ):
+		needle = t[1]
+		print "Looking for {}".format( needle )
+		rows = self._re_tr.findall( data )
+		if( len( rows ) > 0 ):
+			found_rows = [ row[0] for row in rows if needle in row[0] ]
+			if( len( found_rows ) > 0 ):
+				data = "\n".join( found_rows )
+				print "Found {} matching rows".format( len( found_rows ) )
+				args['found'] = True
+			else:
+				print "Found rows, but no matches."
+				args['found'] = False
+		else:
+			print "Found no rows in data"
+			args['found'] = False
+		if args['found']:
+			return args, data
+		return False
+
+	def _task_find_table_with( self, t, args, data ):
+		needle = t[1]
+		tables = self._re_table.findall( data )
+		args['found'] = False
+		if( len( tables ) > 0 ): # if found a table or two
+			goodtables = [ table[0] for table in tables if needle in table[0] ] 
+			data = "\n".join( goodtables )
+			if( len( data ) > 0 ):
+				args['found'] = True
+				print "Found {} tables, {} had the needle.".format( len( tables ), len( goodtables ) )
+				return args, data
+			else:
+				print "Found {} tables, 0 had the needle. ({})".format( len( tables ), needle )
+				args['found'] == False
+				return False
+		else:
+			print "Found no tables"
+		return False
+
+	def _task_replace( self, t, args, data ):
+		""" replaces whatever's between the : and the | with whatever's after the | """
+		search, replace = t[1].split( "|" )
+		data = data.replace( search, replace )
+		return args, data
+	
+	def _task_replacewithspace( self, t, args, data ):
+		""" replaces the input data with spaces """
+		data = data.replace( t[1].strip(), " " )
+		return args, data
+
+	def _task_dotask( self, t, args, data ):
+		""" does another task """
+		if( self._is_validtask( t[1] ) ):
+			print "Doing task: {}".format( t[1] )
+			tmp = self.do( t[1] )
+			args = tmp
+			data = tmp['data']
+			return args, data
+		else:
+			return False
+
+	def _task_in( self, t, args, data ):
+		""" check if something's in the input data """
+		if( t[1] in data ):
+			#print "Found '{}' in data.".format( cmdargs ) 
+			args['found'] = True
+			return args, data
+		else:
+			#print "Couldn't find '{}' in data.".format( cmdargs )
+			args['found'] = False
+			return False
+
+	def _task_writefile( self, t, args, data ):
+		print "Writing to {}".format( t[1] )
+		f = open( t[1], 'w' )
+		f.write( data )
+		f.close
+		return args, data
 
 
 

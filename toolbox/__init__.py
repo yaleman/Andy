@@ -113,11 +113,27 @@ class FileCache( base_plugin ):
 		base_plugin.__init__( self, parent )
 		self.pluginname = 'filecache'
 		self._filename = config.filename[self.pluginname]
-		self._data = {}
+		self._blank = [ 0, 0, None ]
 		self._load()
-		print self.cachenum()
+
 		self._re_filerefislink = re.compile( "[a-zA-Z]{3,4}:\/\/[\S]*" )
-	
+		self._delexpired()
+		print self.cachenum()
+		
+
+	def _delexpired( self ):
+		""" this goes through the cached files and deletes the expired ones """
+		keys = self._data.keys()
+		print "Cleaning expired files, {} to process.".format( len( keys ) ),
+		for f in keys:
+			#print f, self._data[f]
+			fc = self._data[f]
+			expirytime = fc[0] + fc[1]
+			if( time.time() < expirytime ):
+				#data[f] = fc
+				del( self._data[f] )
+		print " {} remain.".format( len( keys ) - len( self._data ) )
+
 	def _filerefislink( self, fileref ):
 		#TODO make FileCache.filerefislink a little less insane
 #		if( fileref.startswith( "http://" ) or fileref.startswith( "https://" ) ):
@@ -143,7 +159,6 @@ class FileCache( base_plugin ):
 		if ( self._data.get( filehash, None ) == None ):
 			# File Not Cached
 			getfile = True
-
 
 		else:
 			expirytime = self._data[ filehash ][1] + self._data[ filehash ][0]
