@@ -38,11 +38,13 @@ class taskbot( toolbox.base_plugin ):
 			if( self._data['tasks'][t].get( 'enable', None ) != None ):
 				del( self._data['tasks'][t]['enable'] )
 
+		#TODO move the compiled regexes to a dict
 		self._basetask = { 'enabled' : False, 'period' : 0, 'lastdone' : 0 }
 		self._re_tr = re.compile( "(<tr[^>]*>(.*?)</tr[^>]*>)" )
 		self._re_table = re.compile( "(<table[^>]*>(.*?)</table[^>]*>)" )
 		self._re_addstep_testinput = re.compile( "(?P<taskname>[\S]*) (?P<stepid>[0-9]*) (?P<details>[a-z]*:[\s\S]{0,})" )
 
+		self._re_delstep_testinput = re.compile( "(?P<taskname>[\S]*) (?P<stepid>[0-9]*)" )
 		self._taskswithfunctions = [ 'geturi', 'find_tr_with', 'find_table_with' 'strip_nl' ]
 
 
@@ -109,28 +111,32 @@ class taskbot( toolbox.base_plugin ):
 #
 	def dotask( self, taskid ):
 		""" do an individual task """
-		return self._do_tasksequence( self._data['tasks'][taskid], self._data, None )
+		return self._do_tasksequence( taskid, self._data, None )
 
-	def _do_tasksequence( self, task_sequence, args, data ):
+	def _do_tasksequence( self, taskname, args, data ):
 		""" feed this a {} of tasks with the key as an int of the sequence, and it'll do them """
-		tasks = sorted( [ key for key in task_sequence.iterkeys() if isinstance( key, int ) ] )		
+		if not self._is_validtask( taskname ):
+			return "Invalid task '{}'".format( taskname )
+		tasks = self._get_tasksteps( taskname )		
 		print "tasks: {}".format( tasks )
 		args['found'] = False
 		# a task should be a taskname:stufftodo
 		for step in tasks: 
-			print "Task {}:".format( step),
-			t = task_sequence[ step ].split( ":" )
+			print "Task {}:".format( step ),
+			t = self._data['tasks'][taskname][step].split( ":" )
+			#t = task_sequence[ step ].split( ":" )
 			cmd = t[0]
 			cmdargs = t[1]
 			# for a given task step, check if there's a self.function with the name _task_[step] and use that (all steps should be in these functions)
 			if( "_task_{}".format( cmd ) in dir( self ) ): 
 				args, data = eval( "self._task_{}( t, args, data )".format( cmd ) )
 
-			elif( cmd == "replace" ):
-				search, replace = t[1].split( "|" )
-				print "Replacing '{}' with '{}'".format( search, replace )
-				data = data.replace( search, replace )
-				#print data
+			
+			elif( cmd == "dotask" ):
+				if( self._is_validtask( cmdargs ) ):
+					tmp = self.dotask( cmdargs )
+					args = tmp
+					data = tmp['data']
 
 			elif( cmd == "email" ):
 				#TODO add email functionality to do_tasksequence
@@ -197,36 +203,59 @@ class taskbot( toolbox.base_plugin ):
 			return retval 
 		else:
 			return "'{}' is not a valid task.".format( taskid )
+###############################
+# 
+# manipulating task steps
+#
+#
 
 
 	def addstep( self, text ):
-		#print "Was handed '{}'".format( text )
-				# check it's a valid task definition
+		# check it's a valid task definition
 		s = self._re_addstep_testinput.match( text )
 		if( s != None ):
-			print "Details definition valid"
+			#print "Details definition valid"
+			pass
 		else:
-			return "Invalid task definition supplied, should be '[taskname] [stepid] [details]'"
+			return "Invalid task definition supplied, should be 'addstep [taskname] [stepid] [details]'"
 		newtask = s.group( 'taskname' )
 		stepid = int( s.group( 'stepid' ) )
 		details = s.group( 'details' )
 		# check if the task exists
 		print "Task: '{}'... ".format( newtask ),
 		if( self._is_validtask( newtask ) ):
-			print "[OK]"
+			pass
+			#print "[OK]"
 		else:
 			print "[ERR]"
 			return "Invalid task specified, please try one of these: {}".format( ", ".join( self.gettasks() ) )
 		# check if the step's already there, don't want to overwrite
 		if( self._data['tasks'][newtask].get( stepid, None ) != None ):
 			return "Step already set, stopping"
-		print "Step number: {}".format( stepid )
-		print "Step definition: '{}'".format( details )
 		try:
 			self._data['tasks'][newtask][stepid] = details
 		except KeyError:
-			return "Fucked it."
+			return "Something broke with self._data['tasks'][newtask][stepid] = details"
 		return "Task #{} added to {}, new definition:\n{}".format( stepid, newtask, self.showtask( newtask ) ) 
+
+	def delstep( self, text ):
+		""" removes a step from a task, delstep [taskname] [stepid] """
+		s = self._re_delstep_testinput.match( text )
+		if( s != None ):
+			pass
+		else:
+			return "Invalid delstep request, should be 'delstep [taskname] [stepid]'"
+		taskname = s.group( 'taskname' )
+		# check if it's a valid task
+		if( self._is_validtask( taskname ) ):	
+			stepid = int( s.group( 'stepid' ) )
+			# check if the step is valid
+			if( stepid in self._data['tasks'][taskname] ):
+				del( self._data['tasks'][taskname][stepid] )
+				#TODO check if still has steps and disable if none
+				return "Successfully removed step #{} from {}.".format( stepid, taskname )
+			return "Step #{} doesn't exist in task {}.".format( stepid, taskname )
+		return "Invalid task '{}' requested.".format( taskname )
 
 	def addtask( self, taskname ):
 		""" adds a new task to the stored tasks """
@@ -246,7 +275,16 @@ class taskbot( toolbox.base_plugin ):
 			return True
 		return False
 
+	def _task_hassteps( self, tasktocheck ):
+		""" will return true if the task has valid steps, false if not """
+		if( self._is_validtask( tasktocheck ) ):
+			if( len( self._get_tasksteps( tasktocheck ) ) > 0 ):
+				return True
+		return False
 
+	def _get_tasksteps( self, taskname ):
+		if( self._is_validtask( taskname ) ):
+			return sorted( [ key for key in self._data['tasks'][taskname].iterkeys() if isinstance( key, int ) ] )
 
 
 
