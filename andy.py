@@ -22,8 +22,9 @@ class Andy():
 		for plugin in self._init_plugins:
 			# I'm sure I'll go to hell for this.
 			exec( "import {}".format( plugin ) )
-			print "Loading plugin {}".format( plugin )
+			#print "Loading plugin {}".format( plugin )
 			eval( 'self.register_plugin( {} )'.format( self._init_plugins[plugin] ) )
+		print "Andy started."
 
 	def _command_hash( self, text ):
 		""" this handles #command style things in the interact loop """

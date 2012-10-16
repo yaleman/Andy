@@ -120,13 +120,13 @@ class FileCache( base_plugin ):
 
 		self._re_filerefisuri = re.compile( "^[a-z]{3,5}:\/\/[\S]+", re.IGNORECASE )
 		self._delexpired()
-		print self.cachenum()
+		#print self.cachenum()
 		
 
 	def _delexpired( self ):
 		""" this goes through the cached files and deletes the expired ones """
 		keys = self._data.keys()
-		print "Cleaning expired files, {} to process.".format( len( keys ) ),
+		#print "Cleaning expired files, {} to process.".format( len( keys ) ),
 		for f in keys:
 			#print f, self._data[f]
 			fc = self._data[f]
@@ -134,7 +134,7 @@ class FileCache( base_plugin ):
 			if( time.time() < expirytime ):
 				#data[f] = fc
 				del( self._data[f] )
-		print " {} remain.".format( len( keys ) - len( self._data ) )
+		#print " {} remain.".format( len( keys ) - len( self._data ) )
 
 	def _filerefisuri( self, fileref ):
 		if( self._re_filerefisuri.match( fileref ) != None ):
