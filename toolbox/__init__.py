@@ -115,6 +115,7 @@ class FileCache( base_plugin ):
 		self.pluginname = 'filecache'
 		self._filename = config.filename[self.pluginname]
 		self._blank = [ 0, 0, None ]
+		self._data = {}
 		self._load()
 
 		self._re_filerefisuri = re.compile( "^[a-z]{3,5}:\/\/[\S]+", re.IGNORECASE )
@@ -135,7 +136,7 @@ class FileCache( base_plugin ):
 				del( self._data[f] )
 		print " {} remain.".format( len( keys ) - len( self._data ) )
 
-	def _filerefislink( self, fileref ):
+	def _filerefisuri( self, fileref ):
 		if( self._re_filerefisuri.match( fileref ) != None ):
 			return True
 		return False
