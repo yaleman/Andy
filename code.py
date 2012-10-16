@@ -16,7 +16,8 @@ import config
 class Code( toolbox.base_plugin ):
 	def __init__( self, parent ):
 		toolbox.base_plugin.__init__( self, parent )
-		self.pluginname = "todo_code"
+		self.pluginname = "code"
+
 
 	def todo( self, text ):
 		# search through .py files in the current folder and look for to-do's
