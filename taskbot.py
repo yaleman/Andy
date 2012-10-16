@@ -35,12 +35,9 @@ class taskbot( toolbox.base_plugin ):
 
 		#TODO move the compiled regexes to a dict
 		self._basetask = { 'enabled' : False, 'period' : 0, 'lastdone' : 0 }
-		self._re_tr = re.compile( "(<tr[^>]*>(.*?)</tr[^>]*>)" )
-		self._re_table = re.compile( "(<table[^>]*>(.*?)</table[^>]*>)" )
 		self._re_addstep_testinput = re.compile( "(?P<taskname>[\S]*) (?P<stepid>[0-9]*) (?P<details>[\S^\:]*:(.*))" )
 
 		self._re_delstep_testinput = re.compile( "(?P<taskname>[\S]*) (?P<stepid>[0-9]*)" )
-		self._taskswithfunctions = [ 'geturi', 'find_tr_with', 'find_table_with' 'strip_nl' ]
 
 
 	
@@ -254,44 +251,39 @@ class taskbot( toolbox.base_plugin ):
 	def _task_striptab( self, t, args, data ):
 		return args, data.replace( "\t", " " )
 
-	def _task_find_tr_with( self, t, args, data ):
+	def __task_find_tag_with( self, tag, t, args, data ):
+		""" searches data for html tags with needle (or t[1]) inside them """
 		needle = t[1]
-		print "Looking for {}".format( needle )
-		rows = self._re_tr.findall( data )
-		if( len( rows ) > 0 ):
-			found_rows = [ row[0] for row in rows if needle in row[0] ]
-			if( len( found_rows ) > 0 ):
-				data = "\n".join( found_rows )
-				print "Found {} matching rows".format( len( found_rows ) )
+		print "Looking for '{}' in tag {}".format( needle, tag )
+		tagre = "(<{}[^>]*>(.*?)</{}[^>]*>)".format( tag, tag )
+		tagfinder = re.compile( tagre )
+		tagpairs = tagfinder.findall( data )
+		if( len( tagpairs ) > 0 ):
+			found_tags = [ x[0] for x in tagpairs if needle in x[0] ]
+			if( len( found_tags ) > 0 ):
+				print "Found {} matching {}.".format( len( found_tags ), tag )
 				args['found'] = True
 			else:
-				print "Found rows, but no matches."
-				args['found'] = False
+				print "Found {} but no matches.".format( tag )
+				return False
 		else:
-			print "Found no rows in data"
-			args['found'] = False
+			print "Found no {} in data.".format( tag )
 		if args['found']:
 			return args, data
 		return False
+	
+	def _task_find_td_with( self, t, args, data ):
+		""" see __task_find_tag_with, searches for td's """
+		return self.__task_find_tag_with( "td", t, args, data )
+
+	def _task_find_tr_with( self, t, args, data ):
+		""" see __task_find_tag_with, searches for tr's """
+		return self.__task_find_tag_with( "tr", t, args, data )
 
 	def _task_find_table_with( self, t, args, data ):
-		needle = t[1]
-		tables = self._re_table.findall( data )
-		args['found'] = False
-		if( len( tables ) > 0 ): # if found a table or two
-			goodtables = [ table[0] for table in tables if needle in table[0] ] 
-			data = "\n".join( goodtables )
-			if( len( data ) > 0 ):
-				args['found'] = True
-				print "Found {} tables, {} had the needle.".format( len( tables ), len( goodtables ) )
-				return args, data
-			else:
-				print "Found {} tables, 0 had the needle. ({})".format( len( tables ), needle )
-				args['found'] == False
-				return False
-		else:
-			print "Found no tables"
-		return False
+		""" see __task_find_tag_with, searches for tables """
+		return self.__task_find_tag_with( "table", t, args, data )
+
 
 	def _task_replace( self, t, args, data ):
 		""" replaces whatever's between the : and the | with whatever's after the | """
