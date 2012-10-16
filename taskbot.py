@@ -325,6 +325,16 @@ class taskbot( toolbox.base_plugin ):
 		f.close
 		return args, data
 
+	def _task_setperiod( self, t, args, data ):
+		""" this should be able to set the period on a task out to x time if it's triggered, useful for things like periodic checkers 
+		that can delay themselves for normaltime x 3 on success or similar, then reset it back next time """
+		#TODO finish taskbox._task_selfdelay
+		tmp = t[1].split( "|" )
+		if( len( tmp ) == 2 ):
+			target, newperiod = tmp
+		else:
+			return False
+		return args, data
 
 if( __name__ == '__main__' ):
 	lf = taskbot( None, "lookfordata.pickle" )
