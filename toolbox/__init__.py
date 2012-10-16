@@ -8,9 +8,11 @@ except ImportError:
 #import subprocess
 import config
 import pickle
-import re, hashlib
+import re
+import hashlib
 import urllib2
-import sys, os
+import sys
+import os
 import time
 
 class base_plugin():

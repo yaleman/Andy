@@ -1,5 +1,6 @@
 import config
-import pickle, os
+import pickle
+import os
 import toolbox
 
 class Note( toolbox.base_plugin ):

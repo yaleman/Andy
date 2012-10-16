@@ -1,5 +1,6 @@
-import os, re, pickle
-import config, toolbox 
+import re
+import config
+import toolbox 
 
 class Are( toolbox.base_plugin ):
 	def __init__( self, parent ):

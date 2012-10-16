@@ -7,7 +7,8 @@ except ImportError:
 import re
 import toolbox
 import config
-import os, pickle
+import os
+import pickle
 
 #TODO add a step to the eztv tasks that deal with the silly magnet links?
 

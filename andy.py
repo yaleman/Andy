@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
-import os, sys
+import os
+import sys
 import toolbox
 import config
 # TODO deal with calendars, look at upcoming agenda, set alarms etc? - http://code.google.com/p/gdata-python-client/
