@@ -77,7 +77,7 @@ class Code( toolbox.base_plugin ):
 	def pylint( self, text ):
 		passed = []
 		for f in [ f for f in self._filelist() if f.endswith( ".py" ) ]:
-			output = [ line for line in toolbox.run( "pylint "+f ) if ("TODO" not in line and line.strip() != "" ) ]
+			output = [ line for line in toolbox.run( "pylint "+f ) if ("TODO" not in line and "Unused import" not in line and line.strip() != "" ) ]
 			if len( output ) > 1:
 				print "\n".join( output )
 			else:
