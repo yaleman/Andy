@@ -76,7 +76,9 @@ class Code( toolbox.base_plugin ):
 		for f in [ f for f in self._filelist() if f.endswith( ".py" ) ]:
 			output = toolbox.run( "pylint "+f )
 			if len( output ) > 1:
-				print "\n".join( output )
+				print "\n".join( [ line.strip() for line in output ] )
+			else:
+				print "{} passed".format( f )
 		return "Pylint!"
 		
 if( __name__ == '__main__' ):
