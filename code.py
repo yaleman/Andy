@@ -19,19 +19,13 @@ class Code( toolbox.base_plugin ):
 		self.pluginname = "code"
 
 	def _filelist( self ):
+		""" returns basically the results of `find .` but in an array etc."""
 		filelist = []
 		for (path, dirs, files) in os.walk( "."):
 			for f in files:
-				filelist.append( "{}/{}".format( path, f ) )
-		return filelist
-#		    print path
-#		    print dirs
-#		    print files
-#		    print "----"
-		  #  i += 1
-		 #   if i >= 4:
-		#        break
-
+				#filelist.append( "{}/{}".format( path, f ) )
+				yield "{}/{}".format( path, f )
+		#return filelist
 
 	def todo( self, text ):
 		# search through .py files in the current folder and look for to-do's
