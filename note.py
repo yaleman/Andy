@@ -14,25 +14,11 @@ class Note( toolbox.base_plugin ):
 
 	def search( self, text ):
 		foundany = False
-		terms = text.split()
-		#print "Searching for: {}".format( ", ".join( terms ) )
-		for note in self._data:
-			found = False
-			notelow = self._data[note].lower()	
-			for term in terms:
-				if( term.lower() in notelow ):
-					found = True
-					if not foundany:
-						retval = "##################\n"
-					foundany = True
-					break
-			if found:	
-				retval += self._data[note]
-				retval += "\n##################\n"
-		if not foundany:
-			return "Sorry, nothing found in {}.".format( self.pluginname )
-		else:
-			return retval
+		terms = [ term.lower() for term in text.split() ]
+		# python list comprehensions are mental
+		# this will return all results, if ANY term matches.
+		notes = "\n##################\n".join( set( [ self._data[note] for note in self._data for term in terms if term in self._data[note].lower() ] ) )
+		return notes
 
 	
 	def add( self, text ):
