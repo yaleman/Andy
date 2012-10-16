@@ -73,13 +73,14 @@ class Code( toolbox.base_plugin ):
 		return "All clear"
 		
 	def pylint( self, text ):
+		passed = []
 		for f in [ f for f in self._filelist() if f.endswith( ".py" ) ]:
-			output = toolbox.run( "pylint "+f )
+			output = [ line for line in toolbox.run( "pylint "+f ) if ("TODO" not in line and line.strip() != "" ) ]
 			if len( output ) > 1:
-				print "\n".join( [ line.strip() for line in output ] )
+				print "\n".join( output )
 			else:
-				print "{} passed".format( f )
-		return "Pylint!"
+				passed.append( f )
+		return "The following files passed: {}".format( ", ".join( passed ) )
 		
 if( __name__ == '__main__' ):
 	pass
