@@ -35,6 +35,7 @@ class Code( toolbox.base_plugin ):
 
 	def todo( self, text ):
 		# search through .py files in the current folder and look for to-do's
+		retval = ""
 		for f in [ f for f in self._filelist() if f.endswith( ".py" )]:
 			found = False
 			lines = []
