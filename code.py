@@ -72,6 +72,12 @@ class Code( toolbox.base_plugin ):
 			return "Found unused imports"
 		return "All clear"
 		
+	def pylint( self, text ):
+		for f in [ f for f in self._filelist() if f.endswith( ".py" ) ]:
+			output = toolbox.run( "pylint "+f )
+			if len( output ) > 1:
+				print "\n".join( output )
+		return "Pylint!"
 		
 if( __name__ == '__main__' ):
 	pass
