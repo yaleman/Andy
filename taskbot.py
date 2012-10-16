@@ -125,10 +125,10 @@ class taskbot( toolbox.base_plugin ):
 		return ", ".join( self._data['tasks'].keys() )
 
 	def _gettasks_enabled( self, text=None ):
-		return [ t for t in self._data['tasks'] if self._data['tasks'][t]['enabled'] == True ]
+		return [ t for t in self.gettasks() if self._data['tasks'][t]['enabled'] == True ]
 
 	def _gettasks_disabled( self, text=None ):
-		return [ t for t in self._data['tasks'] if self._data['tasks'][t]['enabled'] == False ]
+		return [ t for t in self.gettasks() if self._data['tasks'][t]['enabled'] == False ]
 
 
 	def gettasks( self, text=None ):
