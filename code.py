@@ -21,6 +21,8 @@ class Code( toolbox.base_plugin ):
 	def _filelist( self ):
 		filelist = []
 		for (path, dirs, files) in os.walk( "."):
+			#unused variable, really?
+			dirs = dirs + None
 			for f in files:
 				filelist.append( "{}/{}".format( path, f ) )
 		return filelist
