@@ -5,7 +5,6 @@ try:
 except ImportError:
 	print "Failed to import pexpect"
 
-#import subprocess
 import config
 import pickle
 import re
@@ -118,7 +117,7 @@ class FileCache( base_plugin ):
 		self._blank = [ 0, 0, None ]
 		self._load()
 
-		self._re_filerefislink = re.compile( "[a-zA-Z]{3,4}:\/\/[\S]*" )
+		self._re_filerefisuri = re.compile( "^[a-z]{3,5}:\/\/[\S]+", re.IGNORECASE )
 		self._delexpired()
 		print self.cachenum()
 		
@@ -137,15 +136,13 @@ class FileCache( base_plugin ):
 		print " {} remain.".format( len( keys ) - len( self._data ) )
 
 	def _filerefislink( self, fileref ):
-		#TODO make FileCache.filerefislink a little less insane
-#		if( fileref.startswith( "http://" ) or fileref.startswith( "https://" ) ):
-		if( self._re_filerefislink.match( fileref ) != None ):
+		if( self._re_filerefisuri.match( fileref ) != None ):
 			return True
 		return False
 		
 
 	def _getfile( self, fileref ):
-		if self._filerefislink( fileref ):
+		if self._filerefisuri( fileref ):
 			#TODO deal with failures in FileCache._getfile
 			return url_get( fileref )
 		else:
@@ -153,7 +150,6 @@ class FileCache( base_plugin ):
 
 	def getfile( self, fileref, expiry = 0 ):
 		#TODO  if expiry == 0 ignore it
-		#TODO have something that goes through and deletes expired files - this stops the cache size bloating over time
 		filehash = md5( fileref )
 		curr_time = time.time()
 		# if the file has expired, re-get it
@@ -185,4 +181,8 @@ class FileCache( base_plugin ):
 	def cachenum( self, text=None ):
 		return "Number of files cached: {}".format( len( self._data ) )
 
+if __name__ == "__main__":
+	filerefisuri = re.compile( "^[a-z]{3,5}:\/\/[\S]+", re.IGNORECASE )
+	for test in [ 'http://lol.com', 'HttPs://buggts.com:80', '/hello/world' ]:
+		print "{} {}".format( test, filerefisuri.match( test ) )
 
