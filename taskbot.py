@@ -73,7 +73,6 @@ class taskbot( toolbox.base_plugin ):
 			if( len( t ) > 2 ):
 				t[1] = ":".join( t[1:] )
 			cmd = t[0]
-			cmdargs = t[1]
 			# for a given task step, check if there's a self.function with the name _task_[step] and use that (all steps should be in these functions)
 			if( "_task_{}".format( cmd ) in dir( self ) ): 
 				tmp = eval( "self._task_{}( t, args, data )".format( cmd ) )
@@ -335,13 +334,12 @@ class taskbot( toolbox.base_plugin ):
 		return args, data
 
 
-
 if( __name__ == '__main__' ):
 	lf = taskbot( None, "lookfordata.pickle" )
 
 	foundrows = []
 	for task in lf.gettasks():
-		lf.dotask( tas )
+		lf.do( task )
 	lf._save()
 	if len( foundrows ) > 0:
 		print "Found something you were looking for!"
