@@ -28,7 +28,7 @@ class Note( toolbox.base_plugin ):
 					break
 			if found:	
 				retval += self._data[note]
-				retval += "\n##################"
+				retval += "\n##################\n"
 		if not foundany:
 			return "Sorry, nothing found in {}.".format( self.pluginname )
 		else:
