@@ -191,7 +191,8 @@ class taskbot( toolbox.base_plugin ):
 			# check if the step is valid
 			if( stepid in self._data['tasks'][taskname] ):
 				del( self._data['tasks'][taskname][stepid] )
-				#TODO check if still has steps and disable if none
+				if not self._task_hassteps( taskname ):
+					self.disable( taskname )
 				return "Successfully removed step #{} from {}.".format( stepid, taskname )
 			return "Step #{} doesn't exist in task {}.".format( stepid, taskname )
 		return "Invalid task '{}' requested.".format( taskname )
@@ -204,7 +205,6 @@ class taskbot( toolbox.base_plugin ):
 
 	def delete( self, taskname ):
 		""" deletes a task """
-		#TODO add some sort of verification?
 		if( taskname in self.gettasks() ):
 			del( self._data['tasks'][taskname] )
 		return "removed task '{}'".format( taskname )
