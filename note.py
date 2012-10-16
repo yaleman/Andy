@@ -18,7 +18,7 @@ class Note( toolbox.base_plugin ):
 		#print "Searching for: {}".format( ", ".join( terms ) )
 		for note in self._data:
 			found = False
-			notelow = self._data[note]
+			notelow = self._data[note].lower()	
 			for term in terms:
 				if( term.lower() in notelow ):
 					found = True
@@ -43,4 +43,6 @@ class Note( toolbox.base_plugin ):
 			return "Added"
 		return "Note already exists"
 
-
+	def dump( self, text ):
+		for notekey in self._data:
+			print "# {}".format( self._data[notekey] )
