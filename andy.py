@@ -15,7 +15,7 @@ class Andy():
 					'are' : "are.Are( self )",
 					'note' : "note.Note( self )",
 					'sense_ap' : 'sense_ap.AP( self )',
-					'code' : 'code.code( self )',
+					'code' : 'code.Code( self )',
 					'taskbot' : "taskbot.taskbot( self )",
 					}
 		self.register_plugin( toolbox.FileCache( self ) )
