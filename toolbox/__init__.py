@@ -175,9 +175,11 @@ class FileCache( base_plugin ):
 		return self._data[filehash][2]
 
 	def delete( self, fileref ):
-		#TODO: add ability to remove file from cache
-		# delete from cachedfiles
-		pass
+		""" deletes a hash from the file cache, not sure how often you'd actually use this """
+		if self._data.get( fileref, None ) != None:
+			del( self._data[fileref] )
+			return True
+		return False
 
 	def cachenum( self, text=None ):
 		return "Number of files cached: {}".format( len( self._data ) )
