@@ -173,6 +173,29 @@ class taskbot( toolbox.base_plugin ):
 #
 
 
+	def movestep( self, text ):
+		re_movestep_testinput = re.compile( "^(?P<taskname>[\S]+) (?P<oldstep>[\d]+) (?P<newstep>[\d]+).*" )
+		s = re_movestep_testinput.match( text )
+		if( s != None ):
+			taskname = s.group( 'taskname' )
+			oldstep = int( s.group( 'oldstep' ) )
+			newstep = int( s.group( 'newstep' ) )
+			force = False
+			if( text.lower().endswith( 'force' ) ):
+				force = True
+			if( self._is_validtask( taskname ) ):
+				taskobject = self._data['tasks'][taskname]
+				if( taskobject.get( oldstep, None ) != None ):
+					if( taskobject.get( newstep, None ) == None or force == True ):
+
+						taskobject[newstep] = taskobject.get( oldstep )
+						del( taskobject[oldstep] )
+						return "Movestep valid, moving task {} step #{} to #{}".format( taskname, oldstep, newstep )
+					return "Can't overwrite steps without force"
+				return "Can't move steps, oldstep doesn't exist"
+			return "Invalid task specified"
+		return "Movestep usage: movestep [taskname] [oldstep] [newstep] [force(optional)]"
+
 	def addstep( self, text ):
 		# check it's a valid task definition
 		s = self._re_addstep_testinput.match( text )
