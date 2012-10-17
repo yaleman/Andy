@@ -10,6 +10,7 @@ import config
 class Andy():
 	def __init__( self ):
 		self.plugins = {}
+		self._pluginname = "Andy"
 		#to add a new plugin here, all you need to do is add its name to the list
 		self._init_plugins = { 'sense_network' : 'sense_network.SenseNetwork( self )',
 					'are' : "are.Are( self )",
@@ -23,7 +24,7 @@ class Andy():
 			# I'm sure I'll go to hell for this.
 			exec( "import {}".format( plugin ) )
 			eval( 'self.register_plugin( {} )'.format( self._init_plugins[plugin] ) )
-		print "Andy started."
+		print "{} started.".format( self._pluginname )
 
 	def _command_hash( self, text ):
 		""" this handles #command style things in the interact loop """
