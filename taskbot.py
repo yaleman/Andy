@@ -68,6 +68,7 @@ class taskbot( toolbox.base_plugin ):
 		# a task should be a taskname:stufftodo
 		for step in tasks: 
 			t = self._data['tasks'][taskname][step].split( ":" )
+			# deal with steps that have : in their commands
 			if( len( t ) > 2 ):
 				t[1] = ":".join( t[1:] )
 			cmd = t[0]
@@ -79,15 +80,6 @@ class taskbot( toolbox.base_plugin ):
 				else:
 					args, data = tmp
 					
-			elif( cmd == "email" ):
-				#TODO add email functionality to do_tasksequence
-				print "This functionality is not added yet."
-
-
-			elif( cmd == "tweet" ):
-				#TODO add tweet functionality
-				print "Can't tweet yet"
-
 			else:
 				print "Unknown task cmd '{}'".format( cmd )
 		args['data'] = data
@@ -237,7 +229,15 @@ class taskbot( toolbox.base_plugin ):
 # task steps
 #
 #
+	def _task_email( self, t, args, data ):
+		#TODO add email functionality to do_tasksequence
+		print "Email functionality is not added yet, failing just in case."
+		return False
 
+	def _task_tweet( self, t, args, data ):
+		#TODO add tweeting function to taskbot
+		print "Tweet functionality is not added yet, failing just in case."
+		return False
 
 	def _task_geturi( self, t, args, data ):
 		uri = args[ 'uris' ][ int( t[1] ) ]
