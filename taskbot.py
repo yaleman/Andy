@@ -6,6 +6,7 @@ except ImportError:
 	print "Couldn't load pexpect"
 import re
 import toolbox
+import toolbox.steps
 import config
 import os
 import time
@@ -34,15 +35,19 @@ class taskbot( toolbox.base_plugin ):
 		self._filename = config.filename[self.pluginname]
 		# load the stored data
 		self._load()
-		self._validsteps = [ step for step in dir( self ) if step.startswith( "_task_" ) ]
-
+		self._validsteps = self._buildvalidsteps()
 		#TODO move the compiled regexes to a dict
 		self._basetask = { 'enabled' : False, 'period' : 300, 'lastdone' : 0 }
+
 		self._re_addstep_testinput = re.compile( "(?P<taskname>[\S]*) (?P<stepid>[0-9]*) (?P<details>[\S^\:]*:(.*))" )
 		self._re_movestep_testinput = re.compile( "^(?P<taskname>[\S]+) (?P<oldstep>[\d]+) (?P<newstep>[\d]+).*" )
 		self._re_delstep_testinput = re.compile( "(?P<taskname>[\S]*) (?P<stepid>[0-9]*)" )
 		self._re_magnetfinder = re.compile( 'href="(magnet:\?[^\"]+)"' )
 
+
+	def _buildvalidsteps( self ):
+		self._validsteps = [ "toolbox.steps.{}".format( step ) for step in dir( toolbox.steps ) if not step.startswith( "_" ) ]
+		return self._validsteps
 	
 ###############################
 # 
@@ -67,12 +72,6 @@ class taskbot( toolbox.base_plugin ):
 			return data
 		else:
 			return "Task failed"
-	
-
-	def _task_dotask( self, t, args, data ):
-		""" does another task """
-		print "Doing subtask: {}".format( t[1] )
-		return self._do_tasksequence( t[1], args, data )
 
 	def _do_tasksequence( self, taskname, args, data ):
 		""" feed this a {} of tasks with the key as an int of the sequence, and it'll do them """
@@ -87,10 +86,9 @@ class taskbot( toolbox.base_plugin ):
 			# deal with steps that have : in their commands
 			if( len( t ) > 2 ):
 				t[1] = ":".join( t[1:] )
-			cmd = t[0]
-			# for a given task step, check if there's a self.function with the name _task_[step] and use that (all steps should be in these functions)
-			if( "_task_{}".format( cmd ) in self._validsteps ): 
-				tmp = eval( "self._task_{}( t, args, data )".format( cmd ) )
+			cmd = "toolbox.steps.{}".format( t[0] )
+			if cmd in self._validsteps:
+				tmp = eval( "{}( self, t, args, data )".format( cmd ) )
 				if tmp == False:
 					print "Task {} stopped at step {}.".format( taskname, step )
 				# 	either return the false or the invalid data
@@ -172,8 +170,8 @@ class taskbot( toolbox.base_plugin ):
 
 	def _readytorun( self, taskname ):
 		""" checks if a task is due to run """
-		taskdata = self._gettask
-		if taskdata None:
+		taskdata = self._gettask( taskname )
+		if taskdata:
 			runtime = taskdata['lastdone'] + taskdata['period']
 			if time.time() > runtime:
 				return True
@@ -302,151 +300,6 @@ class taskbot( toolbox.base_plugin ):
 # task steps
 #
 #
-	def _task_email( self, t, args, data ):
-		#TODO add email functionality to do_tasksequence
-		print "Email functionality is not added yet, failing just in case."
-		return False
-
-	def _task_tweet( self, t, args, data ):
-		#TODO add tweeting function to taskbot
-		print "Tweet functionality is not added yet, failing just in case."
-		return False
-
-
-	def _task_findhref_magnet( self, t, args, data ):
-		
-		s = self._re_magnetfinder.findall( data )
-		if s != None:
-			return args, "\n".join( s )
-
-	def _task_retstring( self, text ):
-		print "retstring not implemented yet, failing"
-		return False
-
-
-	def _task_geturi( self, t, args, data ):
-		uri = args[ 'uris' ][ int( t[1] ) ]
-		print "Grabbing uri: {}".format( uri ),
-		# pulls the file from the filecache if possible, caches for config.uricachetime seconds
-		data = self._parent.plugins['filecache'].getfile( uri, config.uricachetime )
-		print "[OK] Filesize: {}".format( len( data ) )
-		return args, data
-
-	def _task_stripnl( self, t, args, data ):
-		return args, data.replace( "\n", " " )
-
-	def _task_striptab( self, t, args, data ):
-		return args, data.replace( "\t", " " )
-
-	def __task_find_tag_with( self, tag, t, args, data ):
-		""" searches data for html tags with needle (or t[1]) inside them """
-		needle = t[1]
-		print "Looking for '{}' in tag {}".format( needle, tag )
-		tagre = "(<{}[^>]*>(.*?)</{}[^>]*>)".format( tag, tag )
-		tagfinder = re.compile( tagre )
-		tagpairs = tagfinder.findall( data )
-		if( len( tagpairs ) > 0 ):
-			found_tags = [ x[0] for x in tagpairs if needle in x[0] ]
-			if( len( found_tags ) > 0 ):
-				print "Found {} matching {}.".format( len( found_tags ), tag )
-				data = "\n".join( found_tags )
-				args['found'] = True
-			else:
-				print "Found {} but no matches.".format( tag )
-				return False
-		else:
-			print "Found no {} in data.".format( tag )
-		if args['found']:
-			return args, data
-		print "No tag {} found in data.".format( tag )
-		return False
-
-	def __task_find_tag_without( self, tag, t, args, data ):
-		""" searches data for html tags and returns the tags without needle (or t[1]) in them """
-		needle = t[1]
-		print "Looking for '{}' in tag {}".format( needle, tag )
-		tagre = "(<{}[^>]*>(.*?)</{}[^>]*>)".format( tag, tag )
-		tagfinder = re.compile( tagre )
-		tagpairs = tagfinder.findall( data )
-		if( len( tagpairs ) > 0 ):
-			found_without_tags = [ x[0] for x in tagpairs if needle not in x[0] ]
-			if( len( found_without_tags ) > 0 ):
-				print "Found {} matching {}.".format( len( found_without_tags ), tag )
-				data = "\n".join( found_without_tags )
-				args['found'] = True
-			else:
-				print "Found {} but no valid matches.".format( tag )
-				return False
-		else:
-			print "Found no valid {} in data.".format( tag )
-		if args['found']:
-			return args, data
-		return False
-
-	def _task_find_td_without( self, t, args, data ):
-		""" see __task_find_tag_with, searches for td's """
-		return self.__task_find_tag_without( "td", t, args, data )
-
-	def _task_find_tr_without( self, t, args, data ):
-		""" see __task_find_tag_with, searches for tr's """
-		return self.__task_find_tag_without( "tr", t, args, data )
-
-	def _task_find_table_without( self, t, args, data ):
-		""" see __task_find_tag_with, searches for tables """
-		return self.__task_find_tag_without( "table", t, args, data )
-	
-	def _task_find_td_with( self, t, args, data ):
-		""" see __task_find_tag_with, searches for td's """
-		return self.__task_find_tag_with( "td", t, args, data )
-
-	def _task_find_tr_with( self, t, args, data ):
-		""" see __task_find_tag_with, searches for tr's """
-		return self.__task_find_tag_with( "tr", t, args, data )
-
-	def _task_find_table_with( self, t, args, data ):
-		""" see __task_find_tag_with, searches for tables """
-		return self.__task_find_tag_with( "table", t, args, data )
-
-
-	def _task_replace( self, t, args, data ):
-		""" replaces whatever's between the : and the | with whatever's after the | """
-		search, replace = t[1].split( "|" )
-		data = data.replace( search, replace )
-		return args, data
-	
-	def _task_replacewithspace( self, t, args, data ):
-		""" replaces the input data with spaces """
-		data = data.replace( t[1].strip(), " " )
-		return args, data
-
-	def _task_in( self, t, args, data ):
-		""" check if something's in the input data """
-		if( t[1] in data ):
-			#print "Found '{}' in data.".format( cmdargs ) 
-			args['found'] = True
-			return args, data
-		else:
-			#print "Couldn't find '{}' in data.".format( cmdargs )
-			args['found'] = False
-			return False
-
-	def _task_writefile( self, t, args, data ):
-		print "Writing to {}".format( t[1] )
-		f = open( t[1], 'w' )
-		f.write( data )
-		f.close
-		return args, data
-
-	def _task_setperiod( self, t, args, data ):
-		""" this should be able to set the period on a task out to x time if it's triggered, useful for things like periodic checkers 
-		that can delay themselves for normaltime x 3 on success or similar, then reset it back next time """
-		#TODO finish taskbox._task_selfdelay
-		tmp = t[1].split( "|" )
-		if( len( tmp ) == 2 ):
-			target, newperiod = tmp
-		else:
-			return False
-		return args, data
 
 if( __name__ == '__main__' ):
 	lf = taskbot( None, "lookfordata.pickle" )
