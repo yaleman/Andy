@@ -120,13 +120,14 @@ class taskbot( toolbox.base_plugin ):
 		return ", ".join( self._data['tasks'].keys() )
 
 	def _gettasks_enabled( self, text=None ):
-		return [ t for t in self.gettasks() if self._data['tasks'][t]['enabled'] == True ]
+		return [ t for t in self._gettasks() if self._data['tasks'][t]['enabled'] == True ]
 
 	def _gettasks_disabled( self, text=None ):
-		return [ t for t in self.gettasks() if self._data['tasks'][t]['enabled'] == False ]
+		return [ t for t in self._gettasks() if self._data['tasks'][t]['enabled'] == False ]
 
 
-	def gettasks( self, text=None ):
+	def _gettasks( self, text=None ):
+		""" returns a list of all task-keys """
 		return self._data['tasks'].keys()
 
 	def show( self, taskid ):
@@ -162,7 +163,7 @@ class taskbot( toolbox.base_plugin ):
 			#print "[OK]"
 		else:
 			print "[ERR]"
-			return "Invalid task specified, please try one of these: {}".format( ", ".join( self.gettasks() ) )
+			return "Invalid task specified, please try one of these: {}".format( ", ".join( self._gettasks() ) )
 		# check if the step's already there, don't want to overwrite
 		if( self._data['tasks'][newtask].get( stepid, None ) != None ):
 			return "Step already set, stopping"
@@ -194,13 +195,13 @@ class taskbot( toolbox.base_plugin ):
 
 	def addtask( self, taskname ):
 		""" adds a new task to the stored tasks """
-		if( taskname not in self.gettasks() ):
+		if( taskname not in self._gettasks() ):
 			self._data['tasks'][taskname] = self._basetask
 		return "added task"
 
 	def delete( self, taskname ):
 		""" deletes a task """
-		if( taskname in self.gettasks() ):
+		if( taskname in self._gettasks() ):
 			del( self._data['tasks'][taskname] )
 		return "removed task '{}'".format( taskname )
 
@@ -344,7 +345,7 @@ if( __name__ == '__main__' ):
 	lf = taskbot( None, "lookfordata.pickle" )
 
 	foundrows = []
-	for task in lf.gettasks():
+	for task in lf._gettasks():
 		lf.do( task )
 	lf._save()
 	if len( foundrows ) > 0:
