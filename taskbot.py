@@ -299,6 +299,18 @@ class taskbot( toolbox.base_plugin ):
 		print "Tweet functionality is not added yet, failing just in case."
 		return False
 
+
+	def _task_findhref_magnet( self, t, args, data ):
+		
+		s = self._re_magnetfinder.findall( data )
+		if s != None:
+			return args, "\n".join( s )
+
+	def _task_retstring( self, text ):
+		print "retstring not implemented yet, failing"
+		return False
+
+
 	def _task_geturi( self, t, args, data ):
 		uri = args[ 'uris' ][ int( t[1] ) ]
 		print "Grabbing uri: {}".format( uri ),
