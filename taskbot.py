@@ -36,7 +36,7 @@ class taskbot( toolbox.base_plugin ):
 		self._validsteps = [ step for step in dir( self ) if step.startswith( "_task_" ) ]
 
 		#TODO move the compiled regexes to a dict
-		self._basetask = { 'enabled' : False, 'period' : 0, 'lastdone' : 0 }
+		self._basetask = { 'enabled' : False, 'period' : 300, 'lastdone' : 0 }
 		self._re_addstep_testinput = re.compile( "(?P<taskname>[\S]*) (?P<stepid>[0-9]*) (?P<details>[\S^\:]*:(.*))" )
 		self._re_movestep_testinput = re.compile( "^(?P<taskname>[\S]+) (?P<oldstep>[\d]+) (?P<newstep>[\d]+).*" )
 		self._re_delstep_testinput = re.compile( "(?P<taskname>[\S]*) (?P<stepid>[0-9]*)" )
