@@ -38,6 +38,7 @@ class Code( toolbox.base_plugin ):
 		return retval
 
 	def unusedimports( self, text ):
+		""" does a pretty good job of trying to find unused imports in the codebase """
 		foundunused = False
 		# go through every .py file in the codebase
 		for f in [ f for f in self._filelist() if f.endswith( ".py" )]:
@@ -61,6 +62,7 @@ class Code( toolbox.base_plugin ):
 		return "All clear"
 		
 	def pylint( self, text ):
+		""" runs pylint on all the .py files in the current codebase, skips todo's and unused imports """
 		passed = []
 		for f in [ f for f in self._filelist() if f.endswith( ".py" ) ]:
 			output = [ line for line in toolbox.run( "pylint "+f ) if ("TODO" not in line and "Unused import" not in line and line.strip() != "" ) ]
