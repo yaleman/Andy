@@ -1,4 +1,6 @@
-Andy is the little bot that could.
+# About this codebase 
+
+Andy is the little Bot that Could.
 
 I guess the aim is to make my own little intelligent agent, pulling in information from everywhere I can and generally making my day easier. I'll try and make it as modular as possible so code reuse is possible wherever I can :)
 
@@ -20,3 +22,6 @@ You should be able to call the plugin in *Andy.interact()* by typing *pluginname
 * *self._save* and *self._load* - save/load functionality for pickling *self._data*
 * *self._help* - returns a list of non-private functions, will be expanding to use docstrings Some Day Soon. :)
 * *self._handle_text* - parses the default data from *Andy.interact()* and runs public functions. *[pluginname] [publicfuncname]* will run said function.
+
+# File Caching Notes
+* If a file has an expiry of -1, it'll be cached forever
