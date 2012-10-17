@@ -192,9 +192,17 @@ class FileCache( base_plugin ):
 		tmp = self._data.get( filehash, None )
 		if( tmp != None ):
 			self._data[filehash]['locked'] = False
+	def _genhash( self, fileref ):
+		return md5( fileref )
+
+	def _cached( self, filehash ):
+		if self._data.get( filehash, None ) != None:
 			return True
 		return False
 
+	def _contentlength( self, filehash ):
+		""" returns the size of the stored content, ignoring metadata """
+		return len( self._data[filehash]['contents'] )
 	def delete( self, filehash ):
 		""" deletes a hash from the file cache, not sure how often you'd actually use this """
 		if self._data.get( filehash, None ) != None:
