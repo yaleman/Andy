@@ -33,6 +33,7 @@ class taskbot( toolbox.base_plugin ):
 		self._filename = config.filename[self.pluginname]
 		# load the stored data
 		self._load()
+		self._validsteps = [ step for step in dir( self ) if step.startswith( "_task_" ) ]
 
 		#TODO move the compiled regexes to a dict
 		self._basetask = { 'enabled' : False, 'period' : 0, 'lastdone' : 0 }
@@ -57,8 +58,19 @@ class taskbot( toolbox.base_plugin ):
 	def do( self, taskid ):
 		""" do an individual task """
 		if( not self._is_validtask( taskid ) ):
-			return "Invalid task requested in do( '{}' )".format( taskid )
+			print  "Invalid task requested in do( '{}' )".format( taskid )
+			return False
 		return self._do_tasksequence( taskid, self._data, None )
+
+	def _task_dotask( self, t, args, data ):
+		""" does another task """
+		if( self._is_validtask( t[1] ) ):
+			print "Doing subtask: {}".format( t[1] )
+			tmp = self.do( t[1] )
+			return tmp
+		return False
+
+
 
 	def _do_tasksequence( self, taskname, args, data ):
 		""" feed this a {} of tasks with the key as an int of the sequence, and it'll do them """
@@ -74,7 +86,7 @@ class taskbot( toolbox.base_plugin ):
 				t[1] = ":".join( t[1:] )
 			cmd = t[0]
 			# for a given task step, check if there's a self.function with the name _task_[step] and use that (all steps should be in these functions)
-			if( "_task_{}".format( cmd ) in dir( self ) ): 
+			if( "_task_{}".format( cmd ) in self._validsteps ): 
 				tmp = eval( "self._task_{}( t, args, data )".format( cmd ) )
 				if tmp == False:
 					return "Task {} stopped at step {}.".format( taskname, step )
@@ -84,7 +96,10 @@ class taskbot( toolbox.base_plugin ):
 			else:
 				print "Unknown task cmd '{}'".format( cmd )
 		args['data'] = data
-		return args
+		if tmp == False:
+			return False
+		else:
+			return args, data
 
 	def geturis( self, text=None ):
 		""" returns a list of all uri's """
@@ -343,17 +358,6 @@ class taskbot( toolbox.base_plugin ):
 		""" replaces the input data with spaces """
 		data = data.replace( t[1].strip(), " " )
 		return args, data
-
-	def _task_dotask( self, t, args, data ):
-		""" does another task """
-		if( self._is_validtask( t[1] ) ):
-			print "Doing subtask: {}".format( t[1] )
-			tmp = self.do( t[1] )
-			args = tmp
-			data = tmp['data']
-			return args, data
-		else:
-			return False
 
 	def _task_in( self, t, args, data ):
 		""" check if something's in the input data """
