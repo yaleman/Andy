@@ -187,11 +187,6 @@ class FileCache( base_plugin ):
 		self._data[filehash]
 		return self._data[filehash]['contents']
 
-	def _unlock( self, fileref ):
-		filehash = md5( fileref )
-		tmp = self._data.get( filehash, None )
-		if( tmp != None ):
-			self._data[filehash]['locked'] = False
 	def _genhash( self, fileref ):
 		return md5( fileref )
 
@@ -199,6 +194,24 @@ class FileCache( base_plugin ):
 		if self._data.get( filehash, None ) != None:
 			return True
 		return False
+
+	def __setlock( self, lock, fileref=None, filehash=None ):
+		if fileref != None and filehash == None:
+			filehash = self._genhash( fileref )
+		elif filehash == None:
+			return None
+		if not self._cached( filehash ):
+			return None
+		elif isinstance( lock, bool ):
+			self._data[filehash]['locked'] = lock
+			return lock
+
+	def _lock( self, fileref=None, filehash=None ):
+		return self.__setlock( True, fileref=fileref, filehash=filehash )
+
+	def _unlock( self, fileref=None, filehash=None ):
+		""" resets the locking on a cached file """
+		return self.__setlock( False, fileref=fileref, filehash=filehash )
 
 	def _contentlength( self, filehash ):
 		""" returns the size of the stored content, ignoring metadata """
