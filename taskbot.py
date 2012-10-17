@@ -119,6 +119,23 @@ class taskbot( toolbox.base_plugin ):
 	def list( self, text=None):
 		return ", ".join( self._data['tasks'].keys() )
 
+	
+	def show( self, taskid ):
+		retval = ""
+		if taskid in self._data['tasks']:
+			for displaytask in [ "{}\t{}".format( key, value ) for key, value in sorted( self._data['tasks'][taskid].items() ) ]:
+				retval += "{}\n".format( displaytask )
+			return retval 
+		else:
+			return "'{}' is not a valid task.".format( taskid )
+
+###############################
+# 
+# private task listing steps
+#
+#
+
+
 	def _gettasks_enabled( self, text=None ):
 		return [ t for t in self._gettasks() if self._data['tasks'][t]['enabled'] == True ]
 
@@ -130,14 +147,7 @@ class taskbot( toolbox.base_plugin ):
 		""" returns a list of all task-keys """
 		return self._data['tasks'].keys()
 
-	def show( self, taskid ):
-		retval = ""
-		if taskid in self._data['tasks']:
-			for displaytask in [ "{}\t{}".format( key, value ) for key, value in sorted( self._data['tasks'][taskid].items() ) ]:
-				retval += "{}\n".format( displaytask )
-			return retval 
-		else:
-			return "'{}' is not a valid task.".format( taskid )
+
 ###############################
 # 
 # manipulating task steps
