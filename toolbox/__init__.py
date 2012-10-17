@@ -179,13 +179,13 @@ class FileCache( base_plugin ):
 			self._data[ filehash ]['lastupdate'] = curr_time
 			self._data[ filehash ]['expiry'] = expiry
 			self._data[ filehash ]['contents'] = self._getfile( fileref )
-			self.unlock( fileref )
+			self._unlock( fileref )
 
 		expirytime = self._data[ filehash ]['expiry'] + self._data[ filehash ]['lastupdate']
 		self._data[filehash]
 		return self._data[filehash]['contents']
 
-	def unlock( self, fileref ):
+	def _unlock( self, fileref ):
 		filehash = md5( fileref )
 		tmp = self._data.get( filehash, None )
 		if( tmp != None ):
