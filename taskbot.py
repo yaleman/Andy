@@ -255,7 +255,7 @@ class taskbot( toolbox.base_plugin ):
 			return "Step #{} doesn't exist in task {}.".format( stepid, taskname )
 		return "Invalid task '{}' requested.".format( taskname )
 
-	def addtask( self, taskname ):
+	def add( self, taskname ):
 		""" adds a new task to the stored tasks """
 		if( taskname not in self._gettasks() ):
 			self._data['tasks'][taskname] = self._basetask
