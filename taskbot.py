@@ -60,7 +60,13 @@ class taskbot( toolbox.base_plugin ):
 		if( not self._is_validtask( taskid ) ):
 			print  "Invalid task requested in do( '{}' )".format( taskid )
 			return False
-		return self._do_tasksequence( taskid, self._data, None )
+		tmp = self._do_tasksequence( taskid, self._data, None )
+		if tmp != False:
+			args, data = tmp
+			return "Returning from do: {}".format( args['found'] )
+		else:
+			return "Task failed"
+	
 
 	def _task_dotask( self, t, args, data ):
 		""" does another task """
@@ -71,11 +77,12 @@ class taskbot( toolbox.base_plugin ):
 		""" feed this a {} of tasks with the key as an int of the sequence, and it'll do them """
 		if not self._is_validtask( taskname ):
 			return "Invalid task '{}'".format( taskname )
-		tasks = self._get_tasksteps( taskname )		
+		# pull the task out as an object
+		taskobject = self._data['tasks'][taskname]
 		args['found'] = False
 		# a task should be a taskname:stufftodo
-		for step in tasks: 
-			t = self._data['tasks'][taskname][step].split( ":" )
+		for step in self._get_tasksteps( taskobject ):
+			t = taskobject[step].split( ":" )
 			# deal with steps that have : in their commands
 			if( len( t ) > 2 ):
 				t[1] = ":".join( t[1:] )
@@ -85,13 +92,16 @@ class taskbot( toolbox.base_plugin ):
 				tmp = eval( "self._task_{}( t, args, data )".format( cmd ) )
 				if tmp == False:
 					print "Task {} stopped at step {}.".format( taskname, step )
-				# either return the false or the invalid data
-				return tmp	
+				# 	either return the false or the invalid data
+					return tmp
+				else:
+					args, data = tmp	
 			else:
 				print "Unknown task cmd '{}'".format( cmd )
 		args['data'] = data
 		if tmp != False:
 			return args, data
+		print "_do_tasksequence stopped"
 		return False
 
 	def geturis( self, text=None ):
@@ -229,22 +239,27 @@ class taskbot( toolbox.base_plugin ):
 #
 #
 
+	def _is_validtaskobject( self, taskobject ):	
+		if taskobject in self._data['tasks'].items():
+			return True
+		return False
+
 	def _is_validtask( self, tasktocheck ):
 		""" should return True if a task by that name exists """
 		if( tasktocheck in self._data['tasks'] ):
 			return True
 		return False
 
-	def _task_hassteps( self, tasktocheck ):
+	def _task_hassteps( self, taskobject ):
 		""" will return true if the task has valid steps, false if not """
-		if( self._is_validtask( tasktocheck ) ):
-			if( len( self._get_tasksteps( tasktocheck ) ) > 0 ):
+		if self._is_validtaskobject( taskobject ):
+			if( len( self._get_tasksteps( taskobject ) ) > 0 ):
 				return True
 		return False
 
-	def _get_tasksteps( self, taskname ):
-		if( self._is_validtask( taskname ) ):
-			return sorted( [ key for key in self._data['tasks'][taskname].iterkeys() if isinstance( key, int ) ] )
+	def _get_tasksteps( self, taskobject ):
+		ret_steps = sorted( [ key for key in taskobject if isinstance( key, int ) ] )
+		return ret_steps
 
 ###############################
 # 
@@ -263,9 +278,10 @@ class taskbot( toolbox.base_plugin ):
 
 	def _task_geturi( self, t, args, data ):
 		uri = args[ 'uris' ][ int( t[1] ) ]
-		print "Grabbing uri: {}".format( uri )
+		print "Grabbing uri: {}".format( uri ),
 		# pulls the file from the filecache if possible, caches for config.uricachetime seconds
 		data = self._parent.plugins['filecache'].getfile( uri, config.uricachetime )
+		print "[OK] Filesize: {}".format( len( data ) )
 		return args, data
 
 	def _task_stripnl( self, t, args, data ):
@@ -293,6 +309,7 @@ class taskbot( toolbox.base_plugin ):
 			print "Found no {} in data.".format( tag )
 		if args['found']:
 			return args, data
+		print "No tag {} found in data.".format( tag )
 		return False
 
 	def __task_find_tag_without( self, tag, t, args, data ):
