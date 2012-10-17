@@ -114,7 +114,9 @@ class FileCache( base_plugin ):
 		base_plugin.__init__( self, parent )
 		self.pluginname = 'filecache'
 		self._filename = config.filename[self.pluginname]
-		self._blank = [ 0, 0, None ]
+		# base datatype is [ curr_time, expiry, self._getfile( fileref ) ]
+		#self._blank = [ 0, 0, None ]
+		self._blank = { 'lastupdate' : 0, 'expiry' : 0, 'contents' : None, 'locked' : True } 
 		self._data = {}
 		self._load()
 
@@ -122,19 +124,26 @@ class FileCache( base_plugin ):
 		self._delexpired()
 		#print self.cachenum()
 		
+	def _expirytime( self, filehash ):
+		""" gets the time the file should expire given a hash """
+		fc = self._data[filehash]
+		expirytime = fc['lastupdate'] + fc['expiry']
+		return expirytime
+
+
+	def _expired( self, filehash ):
+		""" checks if a file is expired """
+		if time.time() > self._expirytime( filehash ):
+			return True
+		return False
 
 	def _delexpired( self ):
 		""" this goes through the cached files and deletes the expired ones """
 		keys = self._data.keys()
 		#print "Cleaning expired files, {} to process.".format( len( keys ) ),
 		for f in keys:
-			#print f, self._data[f]
-			fc = self._data[f]
-			expirytime = fc[0] + fc[1]
-			if( time.time() < expirytime ):
-				#data[f] = fc
+			if self._expired( f ):
 				del( self._data[f] )
-		#print " {} remain.".format( len( keys ) - len( self._data ) )
 
 	def _filerefisuri( self, fileref ):
 		if( self._re_filerefisuri.match( fileref ) != None ):
@@ -160,24 +169,34 @@ class FileCache( base_plugin ):
 			getfile = True
 
 		else:
-			expirytime = self._data[ filehash ][1] + self._data[ filehash ][0]
-			if( curr_time > expirytime ):
+			if self._expired( filehash ):
 				# print "File Expired, currtime: {} expirytime: {}".format( curr_time, expirytime )
 				getfile = True
 
 		if getfile:
 			# re-get the file
-			self._data[ filehash ] = [ curr_time, expiry, self._getfile( fileref ) ]
+			self._data[ filehash ] = self._blank #[ curr_time, expiry, self._getfile( fileref ) ]
+			self._data[ filehash ]['lastupdate'] = curr_time
+			self._data[ filehash ]['expiry'] = expiry
+			self._data[ filehash ]['contents'] = self._getfile( fileref )
+			self.unlock( fileref )
 
-		expirytime = self._data[ filehash ][1] + self._data[ filehash ][0]
-		#print "Didn't expire: currtime {} expirytime {}".format( curr_time, expirytime )
-		#print "Seconds to go: {}".format( expirytime - curr_time )
-		return self._data[filehash][2]
+		expirytime = self._data[ filehash ]['expiry'] + self._data[ filehash ]['lastupdate']
+		self._data[filehash]
+		return self._data[filehash]['contents']
 
-	def delete( self, fileref ):
+	def unlock( self, fileref ):
+		filehash = md5( fileref )
+		tmp = self._data.get( filehash, None )
+		if( tmp != None ):
+			self._data[filehash]['locked'] = False
+			return True
+		return False
+
+	def delete( self, filehash ):
 		""" deletes a hash from the file cache, not sure how often you'd actually use this """
-		if self._data.get( fileref, None ) != None:
-			del( self._data[fileref] )
+		if self._data.get( filehash, None ) != None:
+			del( self._data[filehash] )
 			return True
 		return False
 
