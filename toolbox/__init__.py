@@ -132,7 +132,9 @@ class FileCache( base_plugin ):
 
 
 	def _expired( self, filehash ):
-		""" checks if a file is expired """
+		""" checks if a file is expired, if it's set to -1, it'll never expire """
+		if self._data[filehash]['expiry'] == -1:
+			return False
 		if time.time() > self._expirytime( filehash ):
 			return True
 		return False
