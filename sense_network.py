@@ -73,8 +73,8 @@ class SenseNetwork( toolbox.base_plugin ):
 if( __name__ == '__main__' ):
 	senseNetwork = SenseNetwork( config )
 	#errors, info = senseNetwork.parse_lsof_information()
-	zerrors = senseNetwork.geterrors()
-	zinfo = senseNetwork.getinfo()
+	zerrors = senseNetwork.geterrors( None )
+	zinfo = senseNetwork.getinfo( None )
 
 	dets = {}
 	for line in zinfo:
