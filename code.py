@@ -1,10 +1,6 @@
 #!/usr/bin/env python
 
-#try:
-#	import pexpect
-#except ImportError:
-#	print "Couldn't load pexpect"
-#import re
+
 import os
 import toolbox
 import config
@@ -23,9 +19,7 @@ class Code( toolbox.base_plugin ):
 		filelist = []
 		for (path, dirs, files) in os.walk( "."):
 			for f in files:
-				#filelist.append( "{}/{}".format( path, f ) )
 				yield "{}/{}".format( path, f )
-		#return filelist
 
 	def todo( self, text ):
 		# search through .py files in the current folder and look for to-do's
