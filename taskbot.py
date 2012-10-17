@@ -160,6 +160,10 @@ class taskbot( toolbox.base_plugin ):
 	def _gettasks_disabled( self, text=None ):
 		return [ t for t in self._gettasks() if self._data['tasks'][t]['enabled'] == False ]
 
+	def _gettask( self, taskname ):
+		""" returns false if it's not a valid task """
+		return self._data.get( taskname, False )
+
 
 	def _gettasks( self, text=None ):
 		""" returns a list of all task-keys """
