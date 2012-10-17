@@ -84,17 +84,15 @@ class taskbot( toolbox.base_plugin ):
 			if( "_task_{}".format( cmd ) in self._validsteps ): 
 				tmp = eval( "self._task_{}( t, args, data )".format( cmd ) )
 				if tmp == False:
-					return "Task {} stopped at step {}.".format( taskname, step )
-				else:
-					args, data = tmp
-					
+					print "Task {} stopped at step {}.".format( taskname, step )
+				# either return the false or the invalid data
+				return tmp	
 			else:
 				print "Unknown task cmd '{}'".format( cmd )
 		args['data'] = data
-		if tmp == False:
-			return False
-		else:
+		if tmp != False:
 			return args, data
+		return False
 
 	def geturis( self, text=None ):
 		""" returns a list of all uri's """
