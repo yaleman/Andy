@@ -22,7 +22,6 @@ class Andy():
 		for plugin in self._init_plugins:
 			# I'm sure I'll go to hell for this.
 			exec( "import {}".format( plugin ) )
-			#print "Loading plugin {}".format( plugin )
 			eval( 'self.register_plugin( {} )'.format( self._init_plugins[plugin] ) )
 		print "Andy started."
 
@@ -76,9 +75,6 @@ class Andy():
 							print "{} module doesn't have handle_text".format( oper )
 
 		self._save_before_shutdown()
-	
-
-
 
 	def _save_before_shutdown( self ):
 		# this goes through all the registered plugins and saves them
