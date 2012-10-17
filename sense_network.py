@@ -28,28 +28,17 @@ class SenseNetwork( toolbox.base_plugin ):
 		self.pluginname = "sense-network"
 		
 
-	def getinfo( self ):
+	def getinfo( self, text ):
 		if self._lsof_info:
 			return self._lsof_info
 		else:
 			return self._parse_lsof_information()[1]
-	def geterrors( self ):
+	def geterrors( self, text ):
 		if self._lsof_errors:
 			return self._lsof_errors
 		else:
 			return self._parse_lsof_information()[0]
 
-	def _handle_text( self, text ):
-		command = " ".join( text.split()[1:]).strip()
-		if( command == "update" ):
-			self._parse_lsof_information()
-			return "Updated {} information".format( self.pluginname )
-		elif( command.startswith( 'search ' ) ):
-			search = " ".join( command.split()[1:] )
-			print "Searching for '{}'".format( search )
-		else:
-			return "This isn't really supported by {}, sorry".format( self.pluginname )
-		return "um...?"
 
 	def _parse_lsof_information( self ):
 		lines = toolbox.sudorun( self._command, config.sudopassword )
