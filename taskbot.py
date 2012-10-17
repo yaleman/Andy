@@ -46,7 +46,7 @@ class taskbot( toolbox.base_plugin ):
 
 
 	def _buildvalidsteps( self ):
-		self._validsteps = [ "toolbox.steps.{}".format( step ) for step in dir( toolbox.steps ) if not step.startswith( "_" ) ]
+		self._validsteps = [ step for step in dir( toolbox.steps ) if not step.startswith( "_" ) ]
 		return self._validsteps
 	
 ###############################
@@ -86,9 +86,10 @@ class taskbot( toolbox.base_plugin ):
 			# deal with steps that have : in their commands
 			if( len( t ) > 2 ):
 				t[1] = ":".join( t[1:] )
-			cmd = "toolbox.steps.{}".format( t[0] )
+			cmd = t[0]
 			if cmd in self._validsteps:
-				tmp = eval( "{}( self, t, args, data )".format( cmd ) )
+				# user-settable functions, go!
+				tmp = getattr( toolbox.steps, cmd )( self, t, args, data )
 				if tmp == False:
 					print "Task {} stopped at step {}.".format( taskname, step )
 				# 	either return the false or the invalid data
