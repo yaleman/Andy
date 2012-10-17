@@ -65,7 +65,7 @@ class taskbot( toolbox.base_plugin ):
 	def _task_dotask( self, t, args, data ):
 		""" does another task """
 		print "Doing subtask: {}".format( t[1] )
-		return self.do( t[1] )
+		return self._do_tasksequence( t[1], args, data )
 
 	def _do_tasksequence( self, taskname, args, data ):
 		""" feed this a {} of tasks with the key as an int of the sequence, and it'll do them """
