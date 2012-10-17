@@ -47,6 +47,7 @@ class taskbot( toolbox.base_plugin ):
 # main task processor 
 #
 	def runall( self, text ):
+		""" runs all the enabled tasks in taskbot """
 		for t in self._gettasks_enabled():
 			print "Running: {}".format( t )
 			self.do( t )
@@ -85,10 +86,12 @@ class taskbot( toolbox.base_plugin ):
 		args['data'] = data
 		return args
 
-	def listuris( self, text=None ):
+	def geturis( self, text=None ):
+		""" returns a list of all uri's """
 		return self._data['uris']
 
 	def _uri_id( self, uri ):
+		""" returns the key for a given uri """
 		for key, value in self._data['uris'].iteritems():
 			if value == uri:
 				return key
