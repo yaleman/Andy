@@ -286,6 +286,39 @@ class taskbot( toolbox.base_plugin ):
 		if args['found']:
 			return args, data
 		return False
+
+	def __task_find_tag_without( self, tag, t, args, data ):
+		""" searches data for html tags and returns the tags without needle (or t[1]) in them """
+		needle = t[1]
+		print "Looking for '{}' in tag {}".format( needle, tag )
+		tagre = "(<{}[^>]*>(.*?)</{}[^>]*>)".format( tag, tag )
+		tagfinder = re.compile( tagre )
+		tagpairs = tagfinder.findall( data )
+		if( len( tagpairs ) > 0 ):
+			found_without_tags = [ x[0] for x in tagpairs if needle not in x[0] ]
+			if( len( found_without_tags ) > 0 ):
+				print "Found {} matching {}.".format( len( found_without_tags ), tag )
+				args['found'] = True
+			else:
+				print "Found {} but no valid matches.".format( tag )
+				return False
+		else:
+			print "Found no valid {} in data.".format( tag )
+		if args['found']:
+			return args, data
+		return False
+
+	def _task_find_td_without( self, t, args, data ):
+		""" see __task_find_tag_with, searches for td's """
+		return self.__task_find_tag_without( "td", t, args, data )
+
+	def _task_find_tr_without( self, t, args, data ):
+		""" see __task_find_tag_with, searches for tr's """
+		return self.__task_find_tag_without( "tr", t, args, data )
+
+	def _task_find_table_without( self, t, args, data ):
+		""" see __task_find_tag_with, searches for tables """
+		return self.__task_find_tag_without( "table", t, args, data )
 	
 	def _task_find_td_with( self, t, args, data ):
 		""" see __task_find_tag_with, searches for td's """
