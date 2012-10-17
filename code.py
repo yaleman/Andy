@@ -64,13 +64,20 @@ class Code( toolbox.base_plugin ):
 	def pylint( self, text ):
 		""" runs pylint on all the .py files in the current codebase, skips todo's and unused imports """
 		passed = []
+		e_raised = False
 		for f in [ f for f in self._filelist() if f.endswith( ".py" ) ]:
 			output = [ line for line in toolbox.run( "pylint "+f ) if ("TODO" not in line and "Unused import" not in line and line.strip() != "" ) ]
 			if len( output ) > 1:
-				print "\n".join( output )
+				toprint = "\n".join( output )
+				if( "E:" in toprint ):
+					e_raised = True
+				print toprint
 			else:
 				passed.append( f )
+		if e_raised:
+			print "*** ERRORS RAISED"
 		return "The following files passed: {}".format( ", ".join( passed ) )
+
 		
 if( __name__ == '__main__' ):
 	pass
