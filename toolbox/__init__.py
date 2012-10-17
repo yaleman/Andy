@@ -162,7 +162,7 @@ class FileCache( base_plugin ):
 
 	def getfile( self, fileref, expiry = 0 ):
 		#TODO  if expiry == 0 ignore it
-		filehash = md5( fileref )
+		filehash = self._genhash( fileref )
 		curr_time = time.time()
 		# if the file has expired, re-get it
 		getfile = False
@@ -216,6 +216,18 @@ class FileCache( base_plugin ):
 	def _contentlength( self, filehash ):
 		""" returns the size of the stored content, ignoring metadata """
 		return len( self._data[filehash]['contents'] )
+
+	def debugfile( self, fileref ):
+		filehash = self._genhash( fileref )
+		if not self._cached( filehash ):
+			return "File '{}' (hash: {}) not cached.".format( fileref, filehash )
+		else:
+			retstr = "{}\n".format( filehash )
+			for key in self._data[filehash]:
+				retstr += "{} : {}\n".format( key, self._data[filehash][key] )
+			retstr += "Content length: {}".format( self._contentlength( filehash ) )
+			return retstr 
+
 	def delete( self, filehash ):
 		""" deletes a hash from the file cache, not sure how often you'd actually use this """
 		if self._data.get( filehash, None ) != None:
