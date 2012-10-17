@@ -38,9 +38,9 @@ class taskbot( toolbox.base_plugin ):
 		#TODO move the compiled regexes to a dict
 		self._basetask = { 'enabled' : False, 'period' : 0, 'lastdone' : 0 }
 		self._re_addstep_testinput = re.compile( "(?P<taskname>[\S]*) (?P<stepid>[0-9]*) (?P<details>[\S^\:]*:(.*))" )
-
+		self._re_movestep_testinput = re.compile( "^(?P<taskname>[\S]+) (?P<oldstep>[\d]+) (?P<newstep>[\d]+).*" )
 		self._re_delstep_testinput = re.compile( "(?P<taskname>[\S]*) (?P<stepid>[0-9]*)" )
-
+		self._re_magnetfinder = re.compile( 'href="(magnet:\?[^\"]+)"' )
 
 	
 ###############################
@@ -63,7 +63,7 @@ class taskbot( toolbox.base_plugin ):
 		tmp = self._do_tasksequence( taskid, self._data, None )
 		if tmp != False:
 			args, data = tmp
-			return "Returning from do: {}".format( args['found'] )
+			return data
 		else:
 			return "Task failed"
 	
@@ -174,8 +174,8 @@ class taskbot( toolbox.base_plugin ):
 
 
 	def movestep( self, text ):
-		re_movestep_testinput = re.compile( "^(?P<taskname>[\S]+) (?P<oldstep>[\d]+) (?P<newstep>[\d]+).*" )
-		s = re_movestep_testinput.match( text )
+
+		s = self._re_movestep_testinput.match( text )
 		if( s != None ):
 			taskname = s.group( 'taskname' )
 			oldstep = int( s.group( 'oldstep' ) )
@@ -336,6 +336,7 @@ class taskbot( toolbox.base_plugin ):
 			found_tags = [ x[0] for x in tagpairs if needle in x[0] ]
 			if( len( found_tags ) > 0 ):
 				print "Found {} matching {}.".format( len( found_tags ), tag )
+				data = "\n".join( found_tags )
 				args['found'] = True
 			else:
 				print "Found {} but no matches.".format( tag )
@@ -358,6 +359,7 @@ class taskbot( toolbox.base_plugin ):
 			found_without_tags = [ x[0] for x in tagpairs if needle not in x[0] ]
 			if( len( found_without_tags ) > 0 ):
 				print "Found {} matching {}.".format( len( found_without_tags ), tag )
+				data = "\n".join( found_without_tags )
 				args['found'] = True
 			else:
 				print "Found {} but no valid matches.".format( tag )
