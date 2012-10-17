@@ -8,6 +8,7 @@ import re
 import toolbox
 import config
 import os
+import time
 import pickle
 
 #TODO add a step to the eztv tasks that deal with the silly magnet links?
@@ -169,6 +170,14 @@ class taskbot( toolbox.base_plugin ):
 		""" returns a list of all task-keys """
 		return self._data['tasks'].keys()
 
+	def _readytorun( self, taskname ):
+		""" checks if a task is due to run """
+		taskdata = self._gettask
+		if taskdata None:
+			runtime = taskdata['lastdone'] + taskdata['period']
+			if time.time() > runtime:
+				return True
+		return False
 
 ###############################
 # 
