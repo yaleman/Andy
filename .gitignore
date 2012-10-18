@@ -5,3 +5,7 @@ data/*
 config.py
 
 .DS_Store
+
+.project
+
+.pydevproject
