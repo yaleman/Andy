@@ -3,7 +3,7 @@
 try:
 	import pexpect
 except ImportError:
-	print "Couldn't load pexpect"
+	print( "Couldn't load pexpect" )
 import re
 import toolbox
 import toolbox.steps
@@ -54,9 +54,12 @@ class Plugin( toolbox.base_plugin ):
 # main task processor 
 #
 	def runall( self, text ):
+		print( text )
 		""" runs all the enabled tasks in taskbot """
-		for t in self._gettasks_enabled():
-			print "Running: {}".format( t )
+		tasktorun = self._gettasks_enabled()
+		print( "Tasks: {}".format( ",".join( tasktorun ) ) )
+		for t in tasktorun:
+			print( "Running: {}".format( t ) )
 			self.do( t )
 		return "Done."
 			
@@ -64,28 +67,28 @@ class Plugin( toolbox.base_plugin ):
 	def do( self, taskid ):
 		""" do an individual task """
 		if( not self._is_validtask( taskid ) ):
-			print  "Invalid task requested in do( '{}' )".format( taskid )
+			print(  "Invalid task requested in do( '{}' )".format( taskid ) )
 			return False
 		tmp = self._do_tasksequence( taskid, self._data, None )
 		if tmp != False:
-			args, data = tmp
+			tmp, data = tmp
 			return data
 		else:
 			return "Task failed"
 
 	def run( self, taskid ):
-		""" see self.do, this is just an alias """
+		""" this is an alias of self.do """
 		return self.do( taskid )
 
 	def _do_tasksequence( self, taskname, args, data ):
 		""" feed this a {} of tasks with the key as an int of the sequence, and it'll do them """
 		taskobject = self._data['tasks'].get( taskname, None )
 		if taskobject == None:
-			print "Invalid task '{}'".format( taskname )
+			print( "Invalid task '{}'".format( taskname ) )
 			return False
 		steps = self._get_tasksteps( taskobject )
 		if len( steps ) == 0: 
-			print "Task has no steps."
+			print( "Task has no steps." )
 			return False
 		# pull the task out as an object
 		
@@ -101,17 +104,17 @@ class Plugin( toolbox.base_plugin ):
 				# user-settable functions, go!
 				tmp = getattr( toolbox.steps, cmd )( self, t, args, data )
 				if tmp == False:
-					print "Task {} stopped at step {}.".format( taskname, step )
+					print( "Task {} stopped at step {}.".format( taskname, step ) )
 				# 	either return the false or the invalid data
 					return tmp
 				else:
 					args, data = tmp	
 			else:
-				print "Unknown task cmd '{}'".format( cmd )
+				print( "Unknown task cmd '{}'".format( cmd ) )
 		args['data'] = data
 		if tmp != False:
 			return args, data
-		print "_do_tasksequence stopped"
+		print( "_do_tasksequence stopped" )
 		return False
 
 	def geturis( self, text=None ):
@@ -136,20 +139,19 @@ class Plugin( toolbox.base_plugin ):
 			self._data['tasks'][taskid]['enabled'] = value
 
 	def disable( self, taskid ):
+		""" sets the enable bit to False on a task """
 		self._set_enable( taskid, False )
 		return "Disabled {}".format( taskid )
 	
 	def enable( self, taskid ):
+		""" sets the enable bit to True on a task """
 		self._set_enable( taskid, True )
 		return "Enabled {}".format( taskid )
-
-
-	def list( self, text=None):
-		return ", ".join( self._data['tasks'].keys() )
-
 	
 	def show( self, taskid ):
 		retval = ""
+		if taskid == "":
+				return ", ".join( self._data['tasks'].keys() )
 		if taskid in self._data['tasks']:
 			for displaytask in [ "{}\t{}".format( key, value ) for key, value in sorted( self._data['tasks'][taskid].items() ) ]:
 				retval += "{}\n".format( displaytask )
@@ -230,12 +232,11 @@ class Plugin( toolbox.base_plugin ):
 		stepid = int( s.group( 'stepid' ) )
 		details = s.group( 'details' )
 		# check if the task exists
-		print "Task: '{}'... ".format( newtask ),
+		print( "Task: '{}'... ".format( newtask ) ),
 		if( self._is_validtask( newtask ) ):
-			pass
-			#print "[OK]"
+			print( "[OK]" )
 		else:
-			print "[ERR]"
+			print( "[ERR]" )
 			return "Invalid task specified, please try one of these: {}".format( ", ".join( self._gettasks() ) )
 		# check if the step's already there, don't want to overwrite
 		if( self._data['tasks'][newtask].get( stepid, None ) != None ):
@@ -313,14 +314,14 @@ class Plugin( toolbox.base_plugin ):
 #
 
 if( __name__ == '__main__' ):
-	lf = taskbot( None, "lookfordata.pickle" )
+	lf = Plugin( None, "lookfordata.pickle" )
 
 	foundrows = []
 	for task in lf._gettasks():
 		lf.do( task )
 	lf._save()
 	if len( foundrows ) > 0:
-		print "Found something you were looking for!"
+		print( "Found something you were looking for!" )
 		htmlfile = "<html><Head></head><body><table>{}</table></body></html>".format( "\n".join( foundrows ) )
 		toolbox.writefile( "data/test.html", htmlfile )
 

@@ -3,7 +3,7 @@
 import os
 import sys
 import toolbox
-import config
+#import config
 import imp
 # TODO deal with calendars, look at upcoming agenda, set alarms etc? - http://code.google.com/p/gdata-python-client/
 
@@ -15,7 +15,7 @@ class Andy():
 		#to add a new plugin here, all you need to do is add its name to the list
 		self._loadplugins()
 		#self.register_plugin( toolbox.FileCache( self ) )
-		print "{} started.".format( self._pluginname )
+		print( "{} started.".format( self._pluginname ) )
 
 
 	def _loadplugins( self ):
@@ -41,11 +41,11 @@ class Andy():
 			return ", ".join( self.plugins.keys() )
 		elif( oper.startswith( "restart" ) ):
 			# this should save the system state then restart andy
-			print "Shutting down..."
+			print( "Shutting down..." )
 			self._save_before_shutdown()
 			# this should restart the program
 			python = sys.executable
-			print "Restarting now..."
+			print( "Restarting now..." )
 			os.execl(python, python, * sys.argv)
 		elif( oper.startswith( "help" ) ):
 			helpterm = text.split()[1:]
@@ -73,15 +73,15 @@ class Andy():
 			# skips dem newlines
 			if( text != "" ):
 				if text.startswith( "#" ):
-					print self._command_hash( text )
+					print( self._command_hash( text ) )
 				else:
 					text_lower = text.lower()
 					oper = text_lower.split()[0]
 					if( oper in self.plugins ):
 						if( '_handle_text' in dir( self.plugins[oper] ) ):
-							print self.plugins[oper]._handle_text( text )
+							print( self.plugins[oper]._handle_text( text ) )
 						else:
-							print "{} module doesn't have handle_text".format( oper )
+							print( "{} module doesn't have handle_text".format( oper ) )
 
 		self._save_before_shutdown()
 
@@ -99,7 +99,7 @@ class Andy():
 		if plugin not in self.plugins:
 			self.plugins[plugin.pluginname] = plugin
 		else:
-			print "Plugin with name {} is already registered.".format( plugin )
+			print( "Plugin with name {} is already registered.".format( plugin ) )
 
 
 if( __name__ == '__main__' ):
