@@ -3,7 +3,7 @@
 try:
 	import pexpect
 except ImportError:
-	print "Couldn't load pexpect"
+	print( "Couldn't load pexpect" )
 import re
 import toolbox
 import config
@@ -14,7 +14,7 @@ import pickle
 
 def dotask( self, t, args, data ):
 	""" does another task """
-	print "Doing subtask: {}".format( t[1] )
+	print( "Doing subtask: {}".format( t[1] ) )
 	return self._do_tasksequence( t[1], args, data )
 
 def stripnl( taskbot, t, args, data ):
@@ -25,12 +25,12 @@ def striptab( taskbot, t, args, data ):
 
 def email( self, t, args, data ):
 	#TODO add email functionality to do_tasksequence
-	print "Email functionality is not added yet, failing just in case."
+	print( "Email functionality is not added yet, failing just in case." )
 	return False
 
 def tweet( self, t, args, data ):
 	#TODO add tweeting function to taskbot
-	print "Tweet functionality is not added yet, failing just in case."
+	print( "Tweet functionality is not added yet, failing just in case." )
 	return False
 
 
@@ -41,40 +41,40 @@ def findhref_magnet( self, t, args, data ):
 		return args, "\n".join( s )
 
 def retstring( self, text ):
-	print "retstring not implemented yet, failing"
+	print( "retstring not implemented yet, failing" )
 	return False
 
 
 def geturi( self, t, args, data ):
 	uri = args[ 'uris' ][ int( t[1] ) ]
-	print "Grabbing uri: {}".format( uri ),
+	print( "Grabbing uri: {}".format( uri ) ),
 	# pulls the file from the filecache if possible, caches for config.uricachetime seconds
 	data = self._parent.plugins['filecache'].getfile( uri, config.uricachetime )
-	print "[OK] Filesize: {}".format( len( data ) )
+	print( "[OK] Filesize: {}".format( len( data ) ) )
 	return args, data
 
 
 def __task_find_tag_filter( self, tag, t, args, data, yesorno ):
 	""" searches data for html tags with needle (or t[1]) them if yesorno = True, or without them if yesorno = False """
 	needle = t[1]
-	print "Looking for '{}' in tag {}".format( needle, tag )
+	print("Looking for '{}' in tag {}".format( needle, tag ) )
 	tagre = "(<{}[^>]*>(.*?)</{}[^>]*>)".format( tag, tag )
 	tagfinder = re.compile( tagre )
 	tagpairs = tagfinder.findall( data )
 	if( len( tagpairs ) > 0 ):
 		found_tags = [ x[0] for x in tagpairs if (needle in x[0]) == yesorno ]
 		if( len( found_tags ) > 0 ):
-			print "Found {} matching {}.".format( len( found_tags ), tag )
+			print( "Found {} matching {}.".format( len( found_tags ), tag ) )
 			data = "\n".join( found_tags )
 			args['found'] = True
 		else:
-			print "Found {} but no matches.".format( tag )
+			print( "Found {} but no matches.".format( tag ) )
 			return False
 	else:
-		print "Found no {} in data.".format( tag )
+		print( "Found no {} in data.".format( tag ) )
 	if args['found']:
 		return args, data
-	print "No tag {} found in data.".format( tag )
+	print( "No tag {} found in data.".format( tag ) )
 	return False
 
 
@@ -134,7 +134,7 @@ def isin( self, t, args, data ):
 		return False
 
 def writefile( self, t, args, data ):
-	print "Writing to {}".format( t[1] )
+	print( "Writing to {}".format( t[1] ) )
 	f = open( t[1], 'w' )
 	f.write( data )
 	f.close
@@ -143,10 +143,11 @@ def writefile( self, t, args, data ):
 def setperiod( self, t, args, data ):
 	""" this should be able to set the period on a task out to x time if it's triggered, useful for things like periodic checkers 
 	that can delay themselves for normaltime x 3 on success or similar, then reset it back next time """
-	#TODO finish taskbox._task_selfdelay
 	tmp = t[1].split( "|" )
+	#TODO should probably check if the target's valid in setperiod
 	if( len( tmp ) == 2 ):
 		target, newperiod = tmp
+		self._data['tasks'][target]['period'] = int( newperiod )
 	else:
 		return False
 	return args, data

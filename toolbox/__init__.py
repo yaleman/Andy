@@ -97,8 +97,8 @@ def url_get( url ):
 	try:
 		u = urllib2.urlopen( url )
 		return u.read()
-	except urllib2.URLError, e:
-		return "URL Access Error: {}".format( e )
+	except ( urllib2.URLError ):
+		return "URL Access Error: {}".format( "boobs" )
 	# u.geturl() should return whatever ended up being grabbed (In case of a redirect)
 
 

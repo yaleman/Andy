@@ -18,14 +18,14 @@ class LogHandler():
 	def process( self ):
 		peopletalking = {}
 		contents = open( self.filename, "r" ).read()
-		print "{} length {}".format( self.filename, len( contents ) )
+		print( "{} length {}".format( self.filename, len( contents ) ) )
 		for line in contents.split( "\n" ):
 			logline = self.re_irclog.search( line )
 			if logline != None:
 				nick, text = logline.groups()
 				uri_list = self.re_uri.findall( text )
 				if uri_list:
-					print uri_list
+					print( uri_list )
 		#		print nick.strip(), text.strip()
 				if( nick not in peopletalking ):
 					peopletalking[nick] = [text]
@@ -41,9 +41,9 @@ class LogHandler():
 				#print "Found an ima: {}".format( line )
 				groups = res.groups()
 				if groups[ 0 ] == "yaleman":
-					print groups, line
+					print( groups, line )
 		
-		print [ key for key in peopletalking ]
+		print( [ key for key in peopletalking ] )
 
 if __name__ == "__main__":
 	datadir = "./data/irclogs/"

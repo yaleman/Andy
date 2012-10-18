@@ -79,8 +79,8 @@ class Plugin( toolbox.base_plugin ):
 			self._data[ filehash ]['contents'] = self._getfile( fileref )
 			self._unlock( fileref )
 
-		expirytime = self._data[ filehash ]['expiry'] + self._data[ filehash ]['lastupdate']
-		self._data[filehash]
+		#expirytime = self._data[ filehash ]['expiry'] + self._data[ filehash ]['lastupdate']
+		# TODO not sure why expirytime's above?
 		return self._data[filehash]['contents']
 
 	def _genhash( self, fileref ):

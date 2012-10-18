@@ -30,33 +30,33 @@ class Plugin( toolbox.base_plugin ):
 		# send it a node name and an array full of facts
 		self._data[node] = newfacts
 
-	def set( self, node, newfact ):
+	def add( self, node, newfact ):
 		# adds a new fact, checks to see if it's there already 
 		if( node not in self._data ):
 			self._data[node] = [ newfact ]
-			print "I learnt about {} and they are {}".format( node, newfact )
+			print( "I learnt about {} and they are {}".format( node, newfact ) )
 		elif( node in self._data ):
 			if( newfact not in self._data[node] ):
 				self._data[node].append( newfact )
-				print "I learnt a new fact about %s, they are %s" % ( node, newfact )
+				print( "I learnt a new fact about %s, they are %s" % ( node, newfact ) )
 			else:
-				print "I knew %s are %s already!" % ( node, newfact )
+				print("I knew %s are %s already!" % ( node, newfact ) )
 		else:
-			print "Something happened?"
+			print( "Something happened?" )
 
 	def get( self, node ):
 		# give it a node and it'll tell you what it knows. Could get unwieldy quickly.
 		if node not in self._data:
-			print "I don't know about {}".format( node )
+			print( "I don't know about {}".format( node ) )
 		else:
 			subfacts = []
-			print "This is what I know about {}".format( node )
-			print "They are {}".format( ",".join( self._data[node] ) )
+			print( "This is what I know about {}".format( node ) )
+			print( "They are {}".format( ",".join( self._data[node] ) ) )
 			for fact in [ fact for fact in self._data if fact != node ] :
 				if node in self._data[fact]: 
 					subfacts.append( fact )
 			if len( subfacts ) > 0:
-				print "Also a colour can be {}".format( ",".join( subfacts ) )
+				print( "Also a colour can be {}".format( ",".join( subfacts ) ) )
 
 
 

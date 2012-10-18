@@ -75,7 +75,7 @@ class Plugin( toolbox.base_plugin ):
 		pass
 
 if( __name__ == '__main__' ):
-	senseNetwork = SenseNetwork( config )
+	senseNetwork = Plugin( config )
 	#errors, info = senseNetwork.parse_lsof_information()
 	zerrors = senseNetwork.geterrors( None )
 	zinfo = senseNetwork.getinfo( None )
@@ -88,13 +88,13 @@ if( __name__ == '__main__' ):
 		else:
 			dets[line[0]].append( line[1:] )
 	for line in dets:
-		print line, dets[line]
-		print ""
+		print( line, dets[line] )
+		print( "" )
 	#print json.dumps( info, indent=2 )
 
 	if( len( zerrors ) > 0 ):
-		print "#" * 50
-		print "      Errors"
-		print "#" * 50
-		print "\n".join( zerrors )
+		print( "#" * 50 )
+		print( "      Errors" )
+		print( "#" * 50 )
+		print( "\n".join( zerrors ) )
 

@@ -16,7 +16,6 @@ class Plugin( toolbox.base_plugin ):
 
 	def _filelist( self ):
 		""" returns basically the results of `find .` but in an array etc."""
-		filelist = []
 		for (path, dirs, files) in os.walk( "."):
 			for f in files:
 				yield "{}/{}".format( path, f )
@@ -55,7 +54,7 @@ class Plugin( toolbox.base_plugin ):
 					unused.append( i )
 			# report on it for the file
 			if( len( unused ) > 0 ):
-				print "File: {} has unused imports: {}".format( f, ", ".join( unused ) )
+				print( "File: {} has unused imports: {}".format( f, ", ".join( unused ) ) )
 				foundunused = True
 		if( foundunused ):
 			return "Found unused imports"
@@ -71,11 +70,11 @@ class Plugin( toolbox.base_plugin ):
 				toprint = "\n".join( output )
 				if( "E:" in toprint ):
 					e_raised = True
-				print toprint
+				print( toprint )
 			else:
 				passed.append( f )
 		if e_raised:
-			print "*** ERRORS RAISED"
+			print( "*** ERRORS RAISED" )
 		return "The following files passed: {}".format( ", ".join( passed ) )
 
 		
