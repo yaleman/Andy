@@ -32,3 +32,14 @@ class Note( toolbox.base_plugin ):
 	def dump( self, text ):
 		for notekey in self._data:
 			print "# {}".format( self._data[notekey] )
+
+	def delete( self, text ):
+		if len( text.split() ) == 1 :
+			noteid = text.strip()
+			if noteid in self._data:
+				del( self._data[noteid] )
+				return "Deleted NoteID {}".format( noteid )
+			else:
+				return "NoteID {} not found in data.".format( noteid )
+		else:
+			return "Too many commands entered or something: '{}'".format( text )

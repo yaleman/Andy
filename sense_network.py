@@ -70,6 +70,10 @@ class SenseNetwork( toolbox.base_plugin ):
 		self._lsof_errors = errors
 		return errors, info
 
+	def _make_information_storable( self, data ):
+		""" this should break it out into something usable for storage ? """
+		pass
+
 if( __name__ == '__main__' ):
 	senseNetwork = SenseNetwork( config )
 	#errors, info = senseNetwork.parse_lsof_information()
