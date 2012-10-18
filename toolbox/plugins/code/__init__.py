@@ -65,7 +65,7 @@ class Plugin( toolbox.base_plugin ):
 		""" runs pylint on all the .py files in the current codebase, skips todo's and unused imports """
 		passed = []
 		e_raised = False
-		for f in [ f for f in self._filelist() if f.endswith( ".py" ) ]:
+		for f in [ f for f in os.listdir( "." ) if f.endswith( ".py" ) ]:
 			output = [ line for line in toolbox.run( "pylint "+f ) if ("TODO" not in line and "Unused import" not in line and line.strip() != "" ) ]
 			if len( output ) > 1:
 				toprint = "\n".join( output )
