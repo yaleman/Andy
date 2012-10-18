@@ -4,6 +4,7 @@ import os
 import sys
 import toolbox
 import config
+import imp
 # TODO deal with calendars, look at upcoming agenda, set alarms etc? - http://code.google.com/p/gdata-python-client/
 
 
@@ -19,12 +20,26 @@ class Andy():
 					'code' : 'code.Code( self )',
 					'taskbot' : "taskbot.taskbot( self )",
 					}
+		self._loadplugins()
 		self.register_plugin( toolbox.FileCache( self ) )
-		for plugin in self._init_plugins:
-			# I'm sure I'll go to hell for this.
-			exec( "import {}".format( plugin ) )
-			eval( 'self.register_plugin( {} )'.format( self._init_plugins[plugin] ) )
 		print "{} started.".format( self._pluginname )
+
+
+	def _loadplugins( self ):
+		""" dynamic plugin loader 
+			based loosely on the tutorial here: http://lkubuntu.wordpress.com/2012/10/02/writing-a-python-plugin-api/ """
+		# dynamic plugin loader
+		plugindir = './toolbox/plugins'
+		# search the plugin folder for files
+		for f in os.listdir( plugindir ):
+			location = os.path.join( plugindir, f )
+			# find the module
+			info = imp.find_module( '__init__', [ location ] )
+			# load the module looking for Plugin 
+			plugin = imp.load_module( 'Plugin', *info )
+			# register it into andy
+			self.register_plugin( plugin.Plugin( self ) )
+			
 
 	def _command_hash( self, text ):
 		""" this handles #command style things in the interact loop """
