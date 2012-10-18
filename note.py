@@ -13,6 +13,7 @@ class Note( toolbox.base_plugin ):
 		self._load()
 
 	def search( self, text ):
+		""" search for a given note in the database, doesn't do ranking or anything yet """
 		foundany = False
 		terms = [ term.lower() for term in text.split() ]
 		# python list comprehensions are mental
@@ -22,18 +23,21 @@ class Note( toolbox.base_plugin ):
 
 	
 	def add( self, text ):
-		h = toolbox.md5( text )
-		if h not in self._data:
-			self._data[h] = text
+		""" adds a new note, won't allow you to add duplicates """
+		notehash = toolbox.md5( text )
+		if notehash not in self._data:
+			self._data[notehash] = text
 			self._save()
 			return "Added"
 		return "Note already exists"
 
 	def dump( self, text ):
+		""" dump a full list of all the notes """
 		for notekey in self._data:
 			print "# {}".format( self._data[notekey] )
 
 	def delete( self, text ):
+		""" delete a note based on a given noteid """
 		if len( text.split() ) == 1 :
 			noteid = text.strip()
 			if noteid in self._data:
