@@ -94,9 +94,13 @@ def url_get( url ):
 	#based on info from here: http://docs.python.org/library/urllib2.html#urllib2.urlopen
 	# create the request object
 	#TODO deal with exceptions
-	u = urllib2.urlopen( url )
+	try:
+		u = urllib2.urlopen( url )
+		urllib2.URLError
+	except urllib2.URLError, e:
+		return "URL Access Error: {}".format( e )
 	# u.geturl() should return whatever ended up being grabbed (In case of a redirect)
-	return u.read()
+
 
 def md5( text ):
 	h = hashlib.new( 'ripemd160' )
