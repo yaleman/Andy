@@ -17,7 +17,7 @@ class Note( toolbox.base_plugin ):
 		terms = [ term.lower() for term in text.split() ]
 		# python list comprehensions are mental
 		# this will return all results, if ANY term matches.
-		notes = "\n##################\n".join( set( [ self._data[note] for note in self._data for term in terms if term in self._data[note].lower() ] ) )
+		notes ="\n".join( set( [  "#{}#\n{}".format( note, self._data[note] ) for note in self._data for term in terms if term in self._data[note].lower() ] ) )
 		return notes
 
 	
