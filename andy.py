@@ -13,13 +13,6 @@ class Andy():
 		self.plugins = {}
 		self._pluginname = "Andy"
 		#to add a new plugin here, all you need to do is add its name to the list
-		self._init_plugins = { 'sense_network' : 'sense_network.SenseNetwork( self )',
-					'are' : "are.Are( self )",
-					'note' : "note.Note( self )",
-					#'sense_ap' : 'sense_ap.AP( self )',
-					'code' : 'code.Code( self )',
-					'taskbot' : "taskbot.taskbot( self )",
-					}
 		self._loadplugins()
 		#self.register_plugin( toolbox.FileCache( self ) )
 		print "{} started.".format( self._pluginname )

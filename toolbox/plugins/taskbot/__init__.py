@@ -73,15 +73,25 @@ class Plugin( toolbox.base_plugin ):
 		else:
 			return "Task failed"
 
+	def run( self, taskid ):
+		""" see self.do, this is just an alias """
+		return self.do( taskid )
+
 	def _do_tasksequence( self, taskname, args, data ):
 		""" feed this a {} of tasks with the key as an int of the sequence, and it'll do them """
-		if not self._is_validtask( taskname ):
-			return "Invalid task '{}'".format( taskname )
+		taskobject = self._data['tasks'].get( taskname, None )
+		if taskobject == None:
+			print "Invalid task '{}'".format( taskname )
+			return False
+		steps = self._get_tasksteps( taskobject )
+		if len( steps ) == 0: 
+			print "Task has no steps."
+			return False
 		# pull the task out as an object
-		taskobject = self._data['tasks'][taskname]
+		
 		args['found'] = False
 		# a task should be a taskname:stufftodo
-		for step in self._get_tasksteps( taskobject ):
+		for step in steps:
 			t = taskobject[step].split( ":" )
 			# deal with steps that have : in their commands
 			if( len( t ) > 2 ):
@@ -287,13 +297,13 @@ class Plugin( toolbox.base_plugin ):
 
 	def _task_hassteps( self, taskobject ):
 		""" will return true if the task has valid steps, false if not """
-		if self._is_validtaskobject( taskobject ):
-			if( len( self._get_tasksteps( taskobject ) ) > 0 ):
-				return True
+		if( len( self._get_tasksteps( taskobject ) ) > 0 ):
+			return True
 		return False
 
 	def _get_tasksteps( self, taskobject ):
 		ret_steps = sorted( [ key for key in taskobject if isinstance( key, int ) ] )
+		#print ret_steps
 		return ret_steps
 
 ###############################

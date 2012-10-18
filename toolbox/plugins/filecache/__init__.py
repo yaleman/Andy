@@ -84,7 +84,7 @@ class Plugin( toolbox.base_plugin ):
 		return self._data[filehash]['contents']
 
 	def _genhash( self, fileref ):
-		return md5( fileref )
+		return toolbox.md5( fileref )
 
 	def _cached( self, filehash ):
 		if self._data.get( filehash, None ) != None:

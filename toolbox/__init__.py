@@ -96,7 +96,7 @@ def url_get( url ):
 	#TODO deal with exceptions
 	try:
 		u = urllib2.urlopen( url )
-		urllib2.URLError
+		return u.read()
 	except urllib2.URLError, e:
 		return "URL Access Error: {}".format( e )
 	# u.geturl() should return whatever ended up being grabbed (In case of a redirect)

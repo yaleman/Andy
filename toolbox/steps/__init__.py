@@ -54,16 +54,15 @@ def geturi( self, t, args, data ):
 	return args, data
 
 
-# TODO refactor __task_find_tag_with and __task_find_tag_without to make them one function that just takes an option NESTING WOO
-def __task_find_tag_with( self, tag, t, args, data ):
-	""" searches data for html tags with needle (or t[1]) inside them """
+def __task_find_tag_filter( self, tag, t, args, data, yesorno ):
+	""" searches data for html tags with needle (or t[1]) them if yesorno = True, or without them if yesorno = False """
 	needle = t[1]
 	print "Looking for '{}' in tag {}".format( needle, tag )
 	tagre = "(<{}[^>]*>(.*?)</{}[^>]*>)".format( tag, tag )
 	tagfinder = re.compile( tagre )
 	tagpairs = tagfinder.findall( data )
 	if( len( tagpairs ) > 0 ):
-		found_tags = [ x[0] for x in tagpairs if needle in x[0] ]
+		found_tags = [ x[0] for x in tagpairs if (needle in x[0]) == yesorno ]
 		if( len( found_tags ) > 0 ):
 			print "Found {} matching {}.".format( len( found_tags ), tag )
 			data = "\n".join( found_tags )
@@ -78,27 +77,14 @@ def __task_find_tag_with( self, tag, t, args, data ):
 	print "No tag {} found in data.".format( tag )
 	return False
 
+
+def __task_find_tag_with( self, tag, t, args, data ):
+	""" searches data for html tags with needle (or t[1]) inside them """
+	return __task_find_tag_filter( self, tag, t, args, data, True )
+
 def __task_find_tag_without( self, tag, t, args, data ):
 	""" searches data for html tags and returns the tags without needle (or t[1]) in them """
-	needle = t[1]
-	print "Looking for '{}' in tag {}".format( needle, tag )
-	tagre = "(<{}[^>]*>(.*?)</{}[^>]*>)".format( tag, tag )
-	tagfinder = re.compile( tagre )
-	tagpairs = tagfinder.findall( data )
-	if( len( tagpairs ) > 0 ):
-		found_without_tags = [ x[0] for x in tagpairs if needle not in x[0] ]
-		if( len( found_without_tags ) > 0 ):
-			print "Found {} matching {}.".format( len( found_without_tags ), tag )
-			data = "\n".join( found_without_tags )
-			args['found'] = True
-		else:
-			print "Found {} but no valid matches.".format( tag )
-			return False
-	else:
-		print "Found no valid {} in data.".format( tag )
-	if args['found']:
-		return args, data
-	return False
+	return __task_find_tag_filter( self, tag, t, args, data, False )
 
 def find_td_without( self, t, args, data ):
 	""" see __task_find_tag_with, searches for td's """
