@@ -6,13 +6,13 @@ I guess the aim is to make my own little intelligent agent, pulling in informati
 
 # Adding a new plugin
 
-* Create a new .py file 
-* Import toolbox
-* Make a class in it that imports *toolbox.base_plugin*
-* Set the plugin name through *self.pluginname*
-* Set the data save file in *config.filenames*, key should be *self.pluginname*
-* In Andy() add a value to *self._init_plugins* which is *'module_name' : 'module_name.ClassName( self )'*
-	* I hope to be able to automagically import plugins soon
+* Create a new folder in toolbox/plugins
+* Create an *\__init__.py* file  inside it
+* In the file:
+ * Import toolbox
+ * Make a class in it that imports *toolbox.base_plugin* called Plugin
+ * Set the plugin name through *self.pluginname*
+ * Set the data save file in *config.filenames*, key should be *self.pluginname*
 	
 You should be able to call the plugin in *Andy.interact()* by typing *pluginname [action]*
 
