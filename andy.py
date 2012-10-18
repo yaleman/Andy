@@ -21,7 +21,7 @@ class Andy():
 					'taskbot' : "taskbot.taskbot( self )",
 					}
 		self._loadplugins()
-		self.register_plugin( toolbox.FileCache( self ) )
+		#self.register_plugin( toolbox.FileCache( self ) )
 		print "{} started.".format( self._pluginname )
 
 
