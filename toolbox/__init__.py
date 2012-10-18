@@ -108,14 +108,14 @@ def md5( text ):
 	return h.hexdigest()
 
 def writefile( filename, contents ):
-	print "Writing {} bytes to {}".format( len( contents ), filename )
-	f = open( filename, 'w' )
-	f.write( contents )
-	f.close()
+	message = "Writing {} bytes to {}".format( len( contents ), filename )
+	print( message )
+	try:
+		f = open( filename, 'w' )
+		f.write( contents )
+		f.close()
+	except( IOError ):
+		print( "IOError Error writing file" )
+	return True
 
-
-#if __name__ == "__main__":
-#	filerefisuri = re.compile( "^[a-z]{3,5}:\/\/[\S]+", re.IGNORECASE )
-#	for test in [ 'http://lol.com', 'HttPs://buggts.com:80', '/hello/world' ]:
-#		print "{} {}".format( test, filerefisuri.match( test ) )
 
