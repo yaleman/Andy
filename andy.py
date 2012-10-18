@@ -15,7 +15,7 @@ class Andy():
 		self._init_plugins = { 'sense_network' : 'sense_network.SenseNetwork( self )',
 					'are' : "are.Are( self )",
 					'note' : "note.Note( self )",
-					'sense_ap' : 'sense_ap.AP( self )',
+					#'sense_ap' : 'sense_ap.AP( self )',
 					'code' : 'code.Code( self )',
 					'taskbot' : "taskbot.taskbot( self )",
 					}
