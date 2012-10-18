@@ -13,7 +13,7 @@ import config
 
 #TODO: deal with ipv6 ('launchd', '1', 'root', '32u', 'IPv6', '0x78aab92d3c18db51', '0t0', 'TCP', '[::1]:631 (LISTEN)')
 
-class SenseNetwork( toolbox.base_plugin ):
+class Plugin( toolbox.base_plugin ):
 	"""  this should be run every x time to check up on what the computer's doing and report back to the database
 		 the basic idea is to get a map of process -> ports/ip's used. things like web browsers will be noisy, but I'm looking
 		 for those strange apps/ports that you don't know about until you're looking on wireshark.
@@ -25,7 +25,7 @@ class SenseNetwork( toolbox.base_plugin ):
 		self._command = "lsof -i4 -L -n -P"
 		self._lsof_info = []
 		self._lsof_errors = []
-		self.pluginname = "sense-network"
+		self.pluginname = "networkmap"
 		
 
 	def getinfo( self, text ):

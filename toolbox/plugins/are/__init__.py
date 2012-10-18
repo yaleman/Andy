@@ -2,7 +2,7 @@ import re
 import config
 import toolbox 
 
-class Are( toolbox.base_plugin ):
+class Plugin( toolbox.base_plugin ):
 	def __init__( self, parent ):
 		# relies on os, re, pickle
 		# feed it a filename, it'll either load a pickle of the facts or create a new empty file

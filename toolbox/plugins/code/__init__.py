@@ -9,7 +9,7 @@ import config
 #import json
 
 
-class Code( toolbox.base_plugin ):
+class Plugin( toolbox.base_plugin ):
 	def __init__( self, parent ):
 		toolbox.base_plugin.__init__( self, parent )
 		self.pluginname = "code"

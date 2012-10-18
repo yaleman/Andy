@@ -27,7 +27,7 @@ re.compile( regex:[hash] )
 tr's = apply the regex to the data
 """
 
-class taskbot( toolbox.base_plugin ):
+class Plugin( toolbox.base_plugin ):
 	def __init__( self, parent ):
 		toolbox.base_plugin.__init__( self, parent )
 		self.pluginname = "task"

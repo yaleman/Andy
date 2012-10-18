@@ -3,7 +3,7 @@ import pickle
 import os
 import toolbox
 
-class Note( toolbox.base_plugin ):
+class Plugin( toolbox.base_plugin ):
 	def __init__( self, parent ):
 		# relies on hashlib, pickle, os
 		toolbox.base_plugin.__init__( self, parent )
