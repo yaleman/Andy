@@ -3,7 +3,7 @@
 try:
 	import pexpect
 except ImportError:
-	print "Failed to import pexpect"
+	print( "Failed to import pexpect" )
 
 import config
 import pickle
@@ -30,9 +30,9 @@ class base_plugin():
 	def _handle_text( self, text ):
 		text = " ".join( text.split()[1:] )
 		commands = [ func for func in dir( self ) if not func.startswith( "_" ) ]
-		for f in commands:
-			if text.startswith( "{}".format( f ) ):
-				return eval( 'self.{}( " ".join( text.split()[1:] ) )'.format( f ) )
+		cmd = text.split()[0]
+		if cmd in commands:
+				return getattr( self, cmd )( " ".join( text.split()[1:] ) )
 		return "Unsure what you meant by '{}'".format( text )
 
 	def _load( self ):
