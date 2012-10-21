@@ -22,14 +22,25 @@ class Plugin( toolbox.base_plugin ):
 		
 	def _expirytime( self, filehash ):
 		""" gets the time the file should expire given a hash """
-		fc = self._data[filehash]
-		expirytime = fc['lastupdate'] + fc['expiry']
-		return expirytime
+		fc = self._data.get( filehash, None )
+		if fc != None:
+			# if expiry's -1, return that
+			if fc['expiry'] == -1:
+				return -1
+
+			else:
+				expirytime = fc['lastupdate'] + fc['expiry']
+				return expirytime
+		return False
 
 
 	def _expired( self, filehash ):
 		""" checks if a file is expired, if it's set to -1, it'll never expire """
-		if self._data[filehash]['expiry'] == -1:
+		expirytime = self._expirytime( filehash )
+		if( expirytime == False ):
+			pass
+			#TODO Raise error in filecache._expired on can't find hash
+		if self._expirytime( filehash ) == -1:
 			return False
 		if time.time() > self._expirytime( filehash ):
 			return True
@@ -44,6 +55,7 @@ class Plugin( toolbox.base_plugin ):
 				del( self._data[f] )
 
 	def _filerefisuri( self, fileref ):
+		""" checks if file ref is uri... should work in 99% of cases """
 		if( self._re_filerefisuri.match( fileref ) != None ):
 			return True
 		return False
