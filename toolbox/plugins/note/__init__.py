@@ -23,12 +23,13 @@ class Plugin( toolbox.base_plugin ):
 	
 	def add( self, text ):
 		""" adds a new note, won't allow you to add duplicates """
-		notehash = toolbox.md5( text )
-		if notehash not in self._data:
-			self._data[notehash] = text
-			self._save()
-			return "Added"
-		return "Note already exists"
+		if( text.strip() != "" ):
+			notehash = toolbox.md5( text )
+			if notehash not in self._data:
+				self._data[notehash] = text
+				self._save()
+				return "Added"
+			return "Note already exists"
 
 	def dump( self, text ):
 		""" dump a full list of all the notes """
