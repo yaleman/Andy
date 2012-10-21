@@ -146,6 +146,7 @@ def isin( self, t, args, data ):
 		return False
 
 def writefile( self, t, args, data ):
+	""" write the contents of data to the filename in t[1] """
 	print( "Writing to {}".format( t[1] ) )
 	f = open( t[1], 'w' )
 	f.write( data )
