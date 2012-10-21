@@ -58,6 +58,7 @@ class Plugin( toolbox.base_plugin ):
 
 	def getfile( self, fileref, expiry = 0 ):
 		#TODO  if expiry == 0 ignore it
+	def getfile( self, fileref, expiry = config.filecache['defaultexpiry'] ):
 		filehash = self._genhash( fileref )
 		curr_time = time.time()
 		# if the file has expired, re-get it

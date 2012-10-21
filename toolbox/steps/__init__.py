@@ -48,8 +48,8 @@ def retstring( self, text ):
 def geturi( self, t, args, data ):
 	uri = args[ 'uris' ][ int( t[1] ) ]
 	print( "Grabbing uri: {}".format( uri ) ),
-	# pulls the file from the filecache if possible, caches for config.uricachetime seconds
-	data = self._parent.plugins['filecache'].getfile( uri, config.uricachetime )
+	# pulls the file from the filecache if possible, caches for config.filecache['uricachetime'] seconds
+	data = self._parent.plugins['filecache'].getfile( uri, config.filecache['uricachetime'] )
 	print( "[OK] Filesize: {}".format( len( data ) ) )
 	return args, data
 
