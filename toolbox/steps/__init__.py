@@ -60,7 +60,19 @@ def __task_find_tag_filter( self, tag, t, args, data, yesorno ):
 	print("Looking for '{}' in tag {}".format( needle, tag ) )
 	tagre = "(<{}[^>]*>(.*?)</{}[^>]*>)".format( tag, tag )
 	tagfinder = re.compile( tagre )
-	tagpairs = tagfinder.findall( data )
+
+	# if it's  a list, retucn a merged list of results out of the list's items
+	if type( data ) == "list":
+		tagpairs = [ tagfinder.findall( d ) for d	 in data ]
+		tagpairs = reduce( lambda x, y: x + y, tagpairs )
+	# not really sure I want to deal with dicts?
+	elif type( data ) == "dict":
+		print( "Seriously, a dict in data?" )
+		return False
+	# strings are easy to deal with
+	else:
+		tagpairs = tagfinder.findall( data )
+
 	if( len( tagpairs ) > 0 ):
 		found_tags = [ x[0] for x in tagpairs if (needle in x[0]) == yesorno ]
 		if( len( found_tags ) > 0 ):
