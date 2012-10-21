@@ -5,6 +5,7 @@ import toolbox
 
 class Plugin( toolbox.base_plugin ):
 	def __init__( self, parent ):
+		""" this is the note taking and storing plugin """
 		# relies on hashlib, pickle, os
 		toolbox.base_plugin.__init__( self, parent )
 		self.pluginname = "note"

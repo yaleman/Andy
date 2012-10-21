@@ -79,9 +79,8 @@ def run( command ):
 	return lines
 
 def self_ipaddr():
-	# finds a list of the local ip addresses
-	# relies on subprocess
-	# only works on POSIX systems		
+	""" finds and returns list of the local ip addresses for all interfaces
+		relies on subprocess, only works on POSIX systems """
 	ifconfig = run( "ifconfig" )
 	re_ipfind = re.compile( "inet[6\s]{1,2}([a-f0-9\.\:]{3,})" )
 	ipaddr = []
@@ -91,9 +90,10 @@ def self_ipaddr():
 	return ipaddr
 
 def url_get( url ):
-	#based on info from here: http://docs.python.org/library/urllib2.html#urllib2.urlopen
+	""" grabs a url and returns the contents
+		based on info from here: http://docs.python.org/library/urllib2.html#urllib2.urlopen """
 	# create the request object
-	#TODO deal with exceptions
+	#TODO deal with exceptions in url.get (deals with URLError so far)
 	try:
 		u = urllib2.urlopen( url )
 		return u.read()
@@ -103,6 +103,7 @@ def url_get( url ):
 
 
 def md5( text ):
+	""" returns an md5 hash of the input text """
 	h = hashlib.new( 'ripemd160' )
 	h.update( text )
 	return h.hexdigest()
