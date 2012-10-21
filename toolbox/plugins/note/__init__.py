@@ -34,6 +34,7 @@ class Plugin( toolbox.base_plugin ):
 	def dump( self, text ):
 		""" dump a full list of all the notes """
 		for notekey in self._data:
+			print( "- {}".format( notekey ) )
 			print( "# {}".format( self._data[notekey] ) )
 
 	def delete( self, text ):
