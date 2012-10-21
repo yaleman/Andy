@@ -66,11 +66,14 @@ class Plugin( toolbox.base_plugin ):
 			#TODO deal with failures in FileCache._getfile
 			return toolbox.url_get( fileref )
 		else:
-			return open( fileref, 'r' ).read()
+			try:
+				retval = open( fileref, 'r' ).read()
+				return retval
+			except( IOError ):
+				print( "IOError accessing {}".format( fileref ) )
 
-	def getfile( self, fileref, expiry = 0 ):
-		#TODO  if expiry == 0 ignore it
 	def getfile( self, fileref, expiry = config.filecache['defaultexpiry'] ):
+		""" gets a file from cache """
 		filehash = self._genhash( fileref )
 		curr_time = time.time()
 		# if the file has expired, re-get it
