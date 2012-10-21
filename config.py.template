@@ -1,0 +1,14 @@
+# password for when you run sudo
+sudopassword = ""
+# default filenames for data storage
+filename = { 
+		'task' : 'data/taskbot.pickle',
+		'note' : 'data/notes.pickle', 
+		'are' : 'data/are.pickle', 
+		'filecache' : 'data/filecache.pickle',
+		}
+
+# settings for filecache plugin
+filecache = { 'defaultexpiry' : 300,
+				'uricachetime' : 1800,
+				}
