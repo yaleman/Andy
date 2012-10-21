@@ -5,7 +5,7 @@ import sys
 import toolbox
 #import config
 import imp
-# TODO deal with calendars, look at upcoming agenda, set alarms etc? - http://code.google.com/p/gdata-python-client/
+#TODO deal with calendars, look at upcoming agenda, set alarms etc? - http://code.google.com/p/gdata-python-client/
 
 
 class Andy():
