@@ -178,7 +178,7 @@ class Plugin( toolbox.base_plugin ):
 		if( self._is_validtask( t.strip() ) ):
 			taskobject = self._gettask( t )
 			if( taskobject['lastdone'] == 0 ):
-				return 0
+				return 0.0
 			else:
 				runtime = taskobject['lastdone'] + taskobject['period']
 				#print( "Runtime for {}: {}".format( t, runtime ) )
