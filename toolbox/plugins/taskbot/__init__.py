@@ -71,6 +71,7 @@ class Plugin( toolbox.base_plugin ):
 			print(  "Invalid task requested in do( '{}' )".format( taskid ) )
 			return False
 		self._data['tasks'][taskid]['lastdone'] = time.time()
+		self._parent._save_before_shutdown()
 		tmp = self._do_tasksequence( taskid, self._data, None )
 		if tmp != False:
 			tmp, data = tmp
