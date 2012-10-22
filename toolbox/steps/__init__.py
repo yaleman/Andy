@@ -199,7 +199,10 @@ def setperiod( self, t, args, data ):
 	#TODO should probably check if the target's valid in setperiod
 	if( len( tmp ) == 2 ):
 		target, newperiod = tmp
-		self._data['tasks'][target]['period'] = int( newperiod )
+		if( self._parent['plugins']['taskbot']._is_validtask( target ) ):
+			self._data['tasks'][target]['period'] = int( newperiod )
+		else:
+			return False
 	else:
 		return False
 	return args, data
