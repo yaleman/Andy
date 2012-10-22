@@ -3,10 +3,12 @@
 import os
 import sys
 import toolbox
-#import config
 import imp
-#TODO deal with calendars, look at upcoming agenda, set alarms etc? - http://code.google.com/p/gdata-python-client/
 
+# readline does autocomplete
+import readline
+
+#TODO deal with calendars, look at upcoming agenda, set alarms etc? - http://code.google.com/p/gdata-python-client/
 
 class Andy():
 	def __init__( self ):
@@ -17,6 +19,14 @@ class Andy():
 		#self.register_plugin( toolbox.FileCache( self ) )
 		print( "{} started.".format( self._pluginname ) )
 
+	def complete(self, text, state):
+		#print( "'{} {}'".format( text, state ) )
+		for p in self.plugins:
+			if p.startswith(text):
+				if not state:
+					return p
+				else:
+					state -= 1
 
 	def _loadplugins( self ):
 		""" dynamic plugin loader 
@@ -32,7 +42,6 @@ class Andy():
 			plugin = imp.load_module( 'Plugin', *info )
 			# register it into andy
 			self.register_plugin( plugin.Plugin( self ) )
-			
 
 	def _command_hash( self, text ):
 		""" this handles #command style things in the interact loop """
@@ -68,6 +77,9 @@ class Andy():
 			it'll sit there waiting on input, if it's a #something it's probably a help/query
 			anything else you type should start with a plugin name and then the subsequent commands/arguments """ 
 		text = ""
+		readline.parse_and_bind("tab: complete")
+		readline.set_completer( self.complete )
+		#raw_input('Enter section name: ')
 		while( text != "quit" ):	
 			text = raw_input( "# " ).strip()
 			# skips dem newlines
