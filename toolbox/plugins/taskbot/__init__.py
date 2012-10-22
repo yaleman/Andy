@@ -166,7 +166,20 @@ class Plugin( toolbox.base_plugin ):
 # private task listing steps
 #
 #
-
+	def schedule( self, text=None ):
+		return "secs\ttask\n" + "\n".join( sorted( [ "{}\t{}".format( self._timetorun( t ), t ) for t in self._gettasks_enabled() ] ) ) 
+			
+	def _timetorun( self, t=None):
+		if( self._is_validtask( t.strip() ) ):
+			taskobject = self._gettask( t )
+			if( taskobject['lastdone'] == 0 ):
+				return 0
+			else:
+				runtime = taskobject['lastdone'] + taskobject['period']
+				print( "Runtime for {}: {}".format( t, runtime ) )
+				runtime = int( runtime - time.time() )
+				return runtime
+		return False
 
 	def _gettasks_enabled( self, text=None ):
 		return [ t for t in self._gettasks() if self._data['tasks'][t]['enabled'] == True ]
