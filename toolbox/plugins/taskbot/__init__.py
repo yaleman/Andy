@@ -47,7 +47,7 @@ class Plugin( toolbox.base_plugin ):
 
 
 	def _buildvalidsteps( self ):
-		self._validsteps = [ step for step in dir( toolbox.steps ) if not step.startswith( "_" ) ]
+		#self._validsteps = [ step for step in dir( toolbox.steps ) if not step.startswith( "_" ) ]
 		return self._validsteps
 	
 ###############################
@@ -173,6 +173,8 @@ class Plugin( toolbox.base_plugin ):
 		return "secs\ttask\n{}\n{}".format( goodtasks, disabledtasks )
 			
 	def _timetorun( self, t=None):
+		""" will return 0 if the task has no lastdone, or return the number of seconds until it's due to run 
+			negative numbers show it's overdue """
 		if( self._is_validtask( t.strip() ) ):
 			taskobject = self._gettask( t )
 			if( taskobject['lastdone'] == 0 ):
@@ -325,22 +327,16 @@ class Plugin( toolbox.base_plugin ):
 		#print ret_steps
 		return ret_steps
 
-###############################
-# 
-# task steps
 #
+#if( __name__ == '__main__' ):
+#	lf = Plugin( None, "lookfordata.pickle" )
 #
-
-if( __name__ == '__main__' ):
-	lf = Plugin( None, "lookfordata.pickle" )
-
-	foundrows = []
-	for task in lf._gettasks():
-		lf.do( task )
-	lf._save()
-	if len( foundrows ) > 0:
-		print( "Found something you were looking for!" )
-		htmlfile = "<html><Head></head><body><table>{}</table></body></html>".format( "\n".join( foundrows ) )
-		toolbox.writefile( "data/test.html", htmlfile )
-
+#	foundrows = []
+#	for task in lf._gettasks():
+#	lf._save()
+#	if len( foundrows ) > 0:
+#		print( "Found something you were looking for!" )
+#		htmlfile = "<html><Head></head><body><table>{}</table></body></html>".format( "\n".join( foundrows ) )
+#		toolbox.writefile( "data/test.html", htmlfile )
+#
 
