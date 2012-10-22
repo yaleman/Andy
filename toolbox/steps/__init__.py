@@ -57,6 +57,7 @@ def striptab( taskbot, t, args, data ):
 
 def email( self, t, args, data ):
 	#TODO add email functionality to do_tasksequence
+	# http://docs.python.org/library/email-examples.html
 	print( "Email functionality is not added yet, failing just in case." )
 	return False
 
@@ -67,17 +68,20 @@ def tweet( self, t, args, data ):
 
 
 def findhref_magnet( self, t, args, data ):
-	
+	""" will do its best to find href's which hold magnets """
+	#TODO check if steps.findhref_magnet is broken
 	s = self._re_magnetfinder.findall( data )
 	if s != None:
 		return args, "\n".join( s )
 
 def retstring( self, text ):
+	#TODO fix steps.retstring
 	print( "retstring not implemented yet, failing" )
 	return False
 
 
 def geturi( self, t, args, data ):
+	""" grabs a uri using FileCache xand sticks the contents into data """
 	uri = args[ 'uris' ][ int( t[1] ) ]
 	print( "Grabbing uri: {}".format( uri ) ),
 	# pulls the file from the filecache if possible, caches for config.filecache['uricachetime'] seconds
@@ -89,7 +93,10 @@ def geturi( self, t, args, data ):
 def __task_find_tag_filter( self, tag, t, args, data, yesorno ):
 	""" searches data for html tags with needle (or t[1]) them if yesorno = True, or without them if yesorno = False """
 	needle = t[1]
-	print("Looking for '{}' in tag {}".format( needle, tag ) )
+	if( yesorno ):
+		print("Looking for '{}' in tag {}".format( needle, tag ) )
+	else:
+		print( "Looking for tag {} without '{}'".format( tag, needle ) )
 	tagre = "(<{}[^>]*>(.*?)</{}[^>]*>)".format( tag, tag )
 	tagfinder = re.compile( tagre )
 
