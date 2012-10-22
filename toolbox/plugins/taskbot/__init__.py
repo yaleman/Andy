@@ -47,8 +47,8 @@ class Plugin( toolbox.base_plugin ):
 
 
 	def _buildvalidsteps( self ):
-		#self._validsteps = [ step for step in dir( toolbox.steps ) if not step.startswith( "_" ) ]
-		return self._validsteps
+		""" returns a list of all steps available to the taskbot """
+		return [ step for step in dir( toolbox.steps ) if not step.startswith( "_" ) ]
 	
 ###############################
 # 
