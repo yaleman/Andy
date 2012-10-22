@@ -168,7 +168,9 @@ class Plugin( toolbox.base_plugin ):
 #
 #
 	def schedule( self, text=None ):
-		return "secs\ttask\n" + "\n".join( sorted( [ "{}\t{}".format( self._timetorun( t ), t ) for t in self._gettasks_enabled() ] ) ) 
+		goodtasks = "\n".join( sorted( [ "{}\t{}".format( self._timetorun( t ), t ) for t in self._gettasks_enabled() ] ) )
+		disabledtasks = "\n".join( [ "never\t{}".format( t ) for t in self._gettasks_disabled() ] )
+		return "secs\ttask\n{}\n{}".format( goodtasks, disabledtasks )
 			
 	def _timetorun( self, t=None):
 		if( self._is_validtask( t.strip() ) ):
@@ -177,7 +179,7 @@ class Plugin( toolbox.base_plugin ):
 				return 0
 			else:
 				runtime = taskobject['lastdone'] + taskobject['period']
-				print( "Runtime for {}: {}".format( t, runtime ) )
+				#print( "Runtime for {}: {}".format( t, runtime ) )
 				runtime = int( runtime - time.time() )
 				return runtime
 		return False
