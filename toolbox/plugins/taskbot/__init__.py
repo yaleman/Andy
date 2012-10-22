@@ -176,7 +176,7 @@ class Plugin( toolbox.base_plugin ):
 
 	def _gettask( self, taskname ):
 		""" returns false if it's not a valid task """
-		return self._data.get( taskname, False )
+		return self._data['tasks'].get( taskname, False )
 
 
 	def _gettasks( self, text=None ):
