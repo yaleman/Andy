@@ -12,7 +12,7 @@ import time
 import pickle
 
 def join( self, t, args, data ):
-	""" can do the join function on the data """
+	""" tries to do the join function on the data """
 	if( t[1] == "newline" ):
 		joiner = "\n"
 	else:
@@ -39,9 +39,11 @@ def _preorappend( preorap, self, t, args, data ):
 		return args, data+t[1]
 	
 def prepend( self, t, args, data ):
+	""" prepends a string to data, converts non-strings where possible """
 	return _preorappend( 'pre', self, t, args, data)
 
 def append( self, t, args, data ):
+	""" appends a string to data, converts non-strings where possible """
 	return _preorappend( 'ap', self, t, args, data )
 
 def dotask( self, t, args, data ):
@@ -50,6 +52,7 @@ def dotask( self, t, args, data ):
 	return self._do_tasksequence( t[1], args, data )
 
 def stripnl( taskbot, t, args, data ):
+	""" strips newlines and replaces them with spaces """
 	return args, data.replace( "\n", " " )
 
 def striptab( taskbot, t, args, data ):
@@ -73,11 +76,6 @@ def findhref_magnet( self, t, args, data ):
 	s = self._re_magnetfinder.findall( data )
 	if s != None:
 		return args, "\n".join( s )
-
-def retstring( self, text ):
-	#TODO fix steps.retstring
-	print( "retstring not implemented yet, failing" )
-	return False
 
 
 def geturi( self, t, args, data ):
@@ -196,7 +194,7 @@ def setperiod( self, t, args, data ):
 	""" this should be able to set the period on a task out to x time if it's triggered, useful for things like periodic checkers 
 	that can delay themselves for normaltime x 3 on success or similar, then reset it back next time """
 	tmp = t[1].split( "|" )
-	#TODO should probably check if the target's valid in setperiod
+	#TODO want to be able to set "me" in steps.setperiod
 	if( len( tmp ) == 2 ):
 		print( "setperiod {}".format( args ) )
 		target, newperiod = tmp
