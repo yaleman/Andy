@@ -289,9 +289,11 @@ class Plugin( toolbox.base_plugin ):
 
 	def add( self, taskname ):
 		""" adds a new task to the stored tasks """
-		if( taskname not in self._gettasks() ):
+		if( len( taskname.split() ) > 1 ):
+			return "Can't add tasks with spaces in the names yet."
+		elif( taskname not in self._gettasks() ):
 			self._data['tasks'][taskname] = self._basetask
-		return "added task"
+			return "added task"
 
 	def delete( self, taskname ):
 		""" deletes a task """
