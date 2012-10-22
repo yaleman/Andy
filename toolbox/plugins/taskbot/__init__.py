@@ -265,6 +265,7 @@ class Plugin( toolbox.base_plugin ):
 			self._data['tasks'][newtask][stepid] = details
 		except KeyError:
 			return "Something broke with self._data['tasks'][newtask][stepid] = details"
+		self._parent._save_before_shutdown()
 		return "Task #{} added to {}".format( stepid, newtask ) 
 
 	def delstep( self, text ):
