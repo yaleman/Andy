@@ -30,10 +30,13 @@ class base_plugin():
 	def _handle_text( self, text ):
 		text = " ".join( text.split()[1:] )
 		commands = [ func for func in dir( self ) if not func.startswith( "_" ) ]
-		cmd = text.split()[0]
-		if cmd in commands:
+		if( text.strip() != "" ):
+			cmd = text.split()[0]
+			if cmd in commands:
 				return getattr( self, cmd )( " ".join( text.split()[1:] ) )
-		return "Unsure what you meant by '{}'".format( text )
+			return "Unsure what you meant by '{}'".format( text )
+		else:
+			return "Got a task to do?"
 
 	def _load( self ):
 		if( self._filename != "" ):
