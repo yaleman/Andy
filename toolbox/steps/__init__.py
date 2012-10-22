@@ -11,6 +11,20 @@ import os
 import time
 import pickle
 
+def join( self, t, args, data ):
+	""" can do the join function on the data """
+	if( t[1] == "newline" ):
+		joiner = "\n"
+	else:
+		joiner = " "	
+
+	if( type( data ) == "list" ):
+		data = joiner.join( data )
+	elif( type(data ) == "str" ):
+		pass
+	elif( type( data ) == "dict" ):
+		data = joiner.join( [ "{} : {}".format( k, v ) for k, v in data.iteritems() ] )
+	return args, data
 	
 def _preorappend( preorap, self, t, args, data ):
 	""" prepends or appends something to the data, will convert things to strings if it can  """
