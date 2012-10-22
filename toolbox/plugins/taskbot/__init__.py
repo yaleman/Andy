@@ -168,9 +168,9 @@ class Plugin( toolbox.base_plugin ):
 #
 #
 	def schedule( self, text=None ):
-		goodtasks = "\n".join( sorted( [ "{}\t{}".format( self._timetorun( t ), t ) for t in self._gettasks_enabled() ] ) )
-		disabledtasks = "\n".join( [ "never\t{}".format( t ) for t in self._gettasks_disabled() ] )
-		return "secs\ttask\n{}\n{}".format( goodtasks, disabledtasks )
+		goodtasks = "\n".join( sorted( [ "{}\t{}\t{}".format( self._timetorun( t ), len( self._get_tasksteps(self._gettask(t))), t ) for t in self._gettasks_enabled() ] ) )
+		disabledtasks = "\n".join( [ "never\t{}\t{}".format(  len( self._get_tasksteps(self._gettask(t))), t ) for t in self._gettasks_disabled() ] )
+		return "secs\tsteps\ttask\n{}\n{}".format( goodtasks, disabledtasks )
 			
 	def _timetorun( self, t=None):
 		""" will return 0 if the task has no lastdone, or return the number of seconds until it's due to run 
