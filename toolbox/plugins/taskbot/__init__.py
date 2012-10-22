@@ -4,6 +4,7 @@ try:
 	import pexpect
 except ImportError:
 	print( "Couldn't load pexpect" )
+
 import re
 import toolbox
 import toolbox.steps
@@ -69,6 +70,7 @@ class Plugin( toolbox.base_plugin ):
 		if( not self._is_validtask( taskid ) ):
 			print(  "Invalid task requested in do( '{}' )".format( taskid ) )
 			return False
+		self._data['tasks'][taskid]['lastdone'] = time.time()
 		tmp = self._do_tasksequence( taskid, self._data, None )
 		if tmp != False:
 			tmp, data = tmp
