@@ -11,6 +11,24 @@ import os
 import time
 import pickle
 
+	
+def _preorappend( preorap, self, t, args, data ):
+	""" prepends or appends something to the data, will convert things to strings if it can  """
+	if( type( data ) != "str" ):
+		args, data = join( self, t, args, data )
+	if( len (t) > 2):
+		t[1] = t[1:]
+
+	if( preorap == 'ap' ):
+		return args, data+t[1]
+	elif( preorap == 'pre' ):
+		return args, data+t[1]
+	
+def prepend( self, t, args, data ):
+	return _preorappend( 'pre', self, t, args, data)
+
+def append( self, t, args, data ):
+	return _preorappend( 'ap', self, t, args, data )
 
 def dotask( self, t, args, data ):
 	""" does another task """
