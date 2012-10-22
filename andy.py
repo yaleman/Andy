@@ -19,7 +19,8 @@ class Andy():
 		#self.register_plugin( toolbox.FileCache( self ) )
 		print( "{} started.".format( self._pluginname ) )
 
-	def complete(self, text, state):
+	def _complete(self, text, state):
+		""" does auto-completion for interact """
 		#print( "'{} {}'".format( text, state ) )
 		for p in self.plugins:
 			if p.startswith(text):
@@ -78,7 +79,7 @@ class Andy():
 			anything else you type should start with a plugin name and then the subsequent commands/arguments """ 
 		text = ""
 		readline.parse_and_bind("tab: complete")
-		readline.set_completer( self.complete )
+		readline.set_completer( self._complete )
 		#raw_input('Enter section name: ')
 		while( text != "quit" ):	
 			text = raw_input( "# " ).strip()
