@@ -10,8 +10,8 @@ class Plugin( toolbox.base_plugin ):
 		toolbox.base_plugin.__init__( self, parent )
 		self.pluginname = 'filecache'
 		self._filename = config.filename[self.pluginname]
-		# base datatype is [ curr_time, expiry, self._getfile( fileref ) ]
-		#self._blank = [ 0, 0, None ]
+
+		# self._blank is the default for a cached file record
 		self._blank = { 'lastupdate' : 0, 'expiry' : 0, 'contents' : None, 'locked' : True } 
 		self._data = {}
 		self._load()
@@ -89,17 +89,17 @@ class Plugin( toolbox.base_plugin ):
 
 		if getfile:
 			# re-get the file
-			self._data[ filehash ] = self._blank #[ curr_time, expiry, self._getfile( fileref ) ]
+			self._data[ filehash ] = self._blank
 			self._data[ filehash ]['lastupdate'] = curr_time
 			self._data[ filehash ]['expiry'] = expiry
 			self._data[ filehash ]['contents'] = self._getfile( fileref )
 			self._unlock( fileref )
 
-		#expirytime = self._data[ filehash ]['expiry'] + self._data[ filehash ]['lastupdate']
-		# TODO not sure why expirytime's above?
 		return self._data[filehash]['contents']
 
 	def _genhash( self, fileref ):
+		""" generates a hash based on the fileref - md5 for now, 
+			and a placeholder in case something else comes along """
 		return toolbox.md5( fileref )
 
 	def _cached( self, filehash ):
@@ -109,6 +109,7 @@ class Plugin( toolbox.base_plugin ):
 		return False
 
 	def __setlock( self, lock, fileref=None, filehash=None ):
+		""" internal function for setting locks on cached files """
 		if fileref != None and filehash == None:
 			filehash = self._genhash( fileref )
 		elif filehash == None:
@@ -120,6 +121,7 @@ class Plugin( toolbox.base_plugin ):
 			return lock
 
 	def _lock( self, fileref=None, filehash=None ):
+		""" sets the locking on a cached file """
 		return self.__setlock( True, fileref=fileref, filehash=filehash )
 
 	def _unlock( self, fileref=None, filehash=None ):
@@ -131,6 +133,7 @@ class Plugin( toolbox.base_plugin ):
 		return len( self._data[filehash]['contents'] )
 
 	def debugfile( self, fileref ):
+		""" dumps a bunch of data on a given fileref """
 		filehash = self._genhash( fileref )
 		if not self._cached( filehash ):
 			return "File '{}' (hash: {}) not cached.".format( fileref, filehash )
@@ -149,5 +152,6 @@ class Plugin( toolbox.base_plugin ):
 		return False
 
 	def cachenum( self, text=None ):
+		""" returns a string showing how many files are cached """
 		return "Number of files cached: {}".format( len( self._data ) )
 
