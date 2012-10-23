@@ -103,7 +103,8 @@ class Plugin( toolbox.base_plugin ):
 		return toolbox.md5( fileref )
 
 	def _cached( self, filehash ):
-		if self._data.get( filehash, None ) != None:
+		""" checks if a given filehash exists """
+		if self._data.get( filehash, None ) != None and self._expired( filehash ) == False:
 			return True
 		return False
 
