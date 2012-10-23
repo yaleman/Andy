@@ -11,6 +11,7 @@ import config
 
 class Plugin( toolbox.base_plugin ):
 	def __init__( self, parent ):
+		""" code is supposed to be able to allow the system to self-check """
 		toolbox.base_plugin.__init__( self, parent )
 		self.pluginname = "code"
 
@@ -21,7 +22,7 @@ class Plugin( toolbox.base_plugin ):
 				yield "{}/{}".format( path, f )
 
 	def todo( self, text ):
-		# search through .py files in the current folder and look for to-do's
+		""" will will search through .py files in the current folder and look for to-do's in the code """
 		retval = ""
 		for f in [ f for f in self._filelist() if f.endswith( ".py" )]:
 			found = False
@@ -32,7 +33,7 @@ class Plugin( toolbox.base_plugin ):
 					found = True
 					lines.append( line.strip() )
 			if( found ):
-				retval += "\n{}\n".format( f ) + "\n".join( lines )
+				retval += "\n\n{}\n".format( f ) + "\n".join( lines )
 				
 		return retval
 
