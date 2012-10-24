@@ -79,7 +79,8 @@ class Plugin( toolbox.base_plugin ):
 			tmp, data = tmp
 			return data
 		else:
-			return "Task failed"
+			#TODO work out a way to return something useful from taskbot.do
+			return False
 
 	def run( self, taskid ):
 		""" this is an alias of self.do """
