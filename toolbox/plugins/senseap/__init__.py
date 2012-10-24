@@ -12,7 +12,7 @@ import config
 #import json
 
 #TODO check what AP's we're connected to (maybe on a timer?)
-#TODO be able to respond about this
+
 
 class Plugin( toolbox.base_plugin ):
 	def __init__( self, parent ):
@@ -22,6 +22,7 @@ class Plugin( toolbox.base_plugin ):
 		self._command_scan = "airport -s"
 
 	def _current_data( self, text=None ):
+		""" returns the current access point that the computer is connected to """
 		data = [ line for line in toolbox.run( self._command_current_connection ) if line.startswith( "SSID" ) and line.strip() != "" ]
 		data = data[0].split( ":" )[1].strip()
 		if( data != "" ):
