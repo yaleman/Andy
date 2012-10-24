@@ -196,7 +196,7 @@ def setperiod( self, t, args, data ):
 	tmp = t[1].split( "|" )
 	#TODO want to be able to set "me" in steps.setperiod
 	if( len( tmp ) == 2 ):
-		print( "setperiod {}".format( args ) )
+		#print( "setperiod {}".format( args ) )
 		target, newperiod = tmp
 		if( self._parent.plugins['task']._is_validtask( target ) ):
 			self._data['tasks'][target]['period'] = int( newperiod )

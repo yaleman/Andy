@@ -61,7 +61,9 @@ class Plugin( toolbox.base_plugin ):
 		print( "Tasks: {}".format( ",".join( tasktorun ) ) )
 		for t in tasktorun:
 			print( "Running: {}".format( t ) )
-			self.do( t )
+			data = self.do( t )
+			if data != False:
+				print( data )
 		return "Done."
 			
 
