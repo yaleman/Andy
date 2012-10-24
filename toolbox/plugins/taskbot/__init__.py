@@ -218,6 +218,21 @@ class Plugin( toolbox.base_plugin ):
 #
 #
 
+	def setperiod( self, text ):
+		""" this should be able to set the period on a task out to x time if it's triggered, useful for things like periodic checkers 
+		that can delay themselves for normaltime x 3 on success or similar, then reset it back next time """
+		re_setperiod_testinput = re.compile( "(?P<taskname>[\S]*) (?P<newperiod>[\d]+)" )
+	
+		#TODO want to be able to set "me" in steps.setperiod
+		s = re_setperiod_testinput.match( text )
+		if s != None:
+			if( self._is_validtask( s.group( 'taskname' ) ) ):
+				self._data['tasks'][s.group( 'taskname' )]['period'] = int( s.group( 'newperiod' ) )
+				return "Set task {} period to {}".format( s.group( 'taskname' ), s.group( 'newperiod' ) )
+			else:
+				return "Invalid task {}".format( s.group( 'taskname' ) )
+		else:
+			return False
 
 	def movestep( self, text ):
 
