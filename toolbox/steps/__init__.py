@@ -184,6 +184,12 @@ def replacewithspace( self, t, args, data ):
 	data = data.replace( t[1].strip(), " " )
 	return args, data
 
+def datais( self, t, args, data ):
+	""" checks if data matches given value, should really only use this with string """
+	print( "This isn't implemented yet." )
+	#TODO Finish steps.datais
+	return False
+	
 def isin( self, t, args, data ):
 	""" check if something's in the input data """
 	if( t[1] in data ):
