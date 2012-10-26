@@ -11,6 +11,19 @@ import os
 import time
 import pickle
 
+def get_from_plugin( self, t, args, data ):
+	plugin, func = t[1].split( "|" )
+	if plugin in self._parent.plugins:
+		print( "Plugin {} found".format( plugin ) )
+	else:
+		print( "Plugin {} not found".format( plugin ) ) 
+		return False
+	if func in dir( self._parent.plugins[plugin] ):
+		data = getattr( self._parent.plugins[plugin], func )()
+	else:
+		return False
+	return args, data
+
 def join( self, t, args, data ):
 	""" tries to do the join function on the data """
 	if( t[1] == "newline" ):
