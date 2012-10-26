@@ -259,6 +259,7 @@ class Plugin( toolbox.base_plugin ):
 		return "Movestep usage: movestep [taskname] [oldstep] [newstep] [force(optional)]"
 
 	def addstep( self, text ):
+		self._parent._save_before_shutdown()
 		# check it's a valid task definition
 		s = self._re_addstep_testinput.match( text )
 		if( s != None ):
@@ -287,6 +288,7 @@ class Plugin( toolbox.base_plugin ):
 		return "Task #{} added to {}".format( stepid, newtask ) 
 
 	def delstep( self, text ):
+		self._parent._save_before_shutdown()
 		""" removes a step from a task, delstep [taskname] [stepid] """
 		s = self._re_delstep_testinput.match( text )
 		if( s != None ):
