@@ -1,6 +1,10 @@
+.DS_Store
+
 *.pickle
 *.pyc
 *.swp
-data/*
 config.py
-.DS_Store
+
+
+data/*
+backups/*
