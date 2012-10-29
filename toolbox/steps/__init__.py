@@ -185,6 +185,10 @@ class stepTests( unittest.TestCase ):
 		self.failUnless( find_table_with( None, ( None, "test" ), {}, "<table>test</table>" ) )
 	def find_table_with_ShouldFail( self ):
 		self.failUnless( find_table_with( None, ( None, "test" ), {}, "<table>test</table>" ) ) 
+	#test replace
+	def replaceSouldPass( self ):
+		pass
+
 
 def replace( self, t, args, data ):
 	""" replaces whatever's between the : and the | with whatever's after the | """
