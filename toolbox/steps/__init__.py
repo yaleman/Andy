@@ -103,6 +103,7 @@ def geturi( self, t, args, data ):
 
 def __task_find_tag_filter( self, tag, t, args, data, yesorno ):
 	""" searches data for html tags with needle (or t[1]) them if yesorno = True, or without them if yesorno = False """
+	args['found'] = False
 	needle = t[1]
 	if( yesorno ):
 		pass
