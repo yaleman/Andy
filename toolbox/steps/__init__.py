@@ -105,9 +105,11 @@ def __task_find_tag_filter( self, tag, t, args, data, yesorno ):
 	""" searches data for html tags with needle (or t[1]) them if yesorno = True, or without them if yesorno = False """
 	needle = t[1]
 	if( yesorno ):
-		print("Looking for '{}' in tag {}".format( needle, tag ) )
+		pass
+		#print("Looking for '{}' in tag {}".format( needle, tag ) )
 	else:
-		print( "Looking for tag {} without '{}'".format( tag, needle ) )
+		pass
+		#print( "Looking for tag {} without '{}'".format( tag, needle ) )
 	tagre = "(<{}[^>]*>(.*?)</{}[^>]*>)".format( tag, tag )
 	tagfinder = re.compile( tagre )
 
@@ -126,17 +128,18 @@ def __task_find_tag_filter( self, tag, t, args, data, yesorno ):
 	if( len( tagpairs ) > 0 ):
 		found_tags = [ x[0] for x in tagpairs if (needle in x[0]) == yesorno ]
 		if( len( found_tags ) > 0 ):
-			print( "Found {} matching {}.".format( len( found_tags ), tag ) )
+			#print( "Found {} matching {}.".format( len( found_tags ), tag ) )
 			data = "\n".join( found_tags )
 			args['found'] = True
 		else:
-			print( "Found {} but no matches.".format( tag ) )
+			#print( "Found {} but no matches.".format( tag ) )
 			return False
 	else:
-		print( "Found no {} in data.".format( tag ) )
+		pass
+		#print( "Found no {} in data.".format( tag ) )
 	if args['found']:
 		return args, data
-	print( "No tag {} found in data.".format( tag ) )
+	#print( "No tag {} found in data.".format( tag ) )
 	return False
 
 
