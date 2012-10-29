@@ -179,16 +179,12 @@ def find_table_with( self, t, args, data ):
 	""" see __task_find_tag_with, searches for tables """
 	return __task_find_tag_with( self, "table", t, args, data )
 
-class stepTests( unittest.TestCase ):
+class stepTests_find_table_with( unittest.TestCase ):
 	# test find_table_with
-	def find_table_with_ShouldPass( self ):
+	def testShouldPass( self ):
 		self.failUnless( find_table_with( None, ( None, "test" ), {}, "<table>test</table>" ) )
-	def find_table_with_ShouldFail( self ):
-		self.failUnless( find_table_with( None, ( None, "test" ), {}, "<table>test</table>" ) ) 
-	#test replace
-	def replaceSouldPass( self ):
-		pass
-
+	def testShouldFail( self ):
+		self.failIf( find_table_with( None, ( None, "test" ), {}, "<table>this should fail</table>" ) ) 
 
 def replace( self, t, args, data ):
 	""" replaces whatever's between the : and the | with whatever's after the | """
