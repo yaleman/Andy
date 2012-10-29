@@ -103,6 +103,8 @@ def geturi( self, t, args, data ):
 	print( "[OK] Filesize: {}".format( len( data ) ) )
 	return args, data
 
+########################################################################################################
+
 
 def __task_find_tag_filter( self, tag, t, args, data, yesorno ):
 	""" searches data for html tags with needle (or t[1]) them if yesorno = True, or without them if yesorno = False """
@@ -186,6 +188,8 @@ class stepTests_find_table_with( unittest.TestCase ):
 	def testShouldFail( self ):
 		self.failIf( find_table_with( None, ( None, "test" ), {}, "<table>this should fail</table>" ) ) 
 
+########################################################################################################
+
 def replace( self, t, args, data ):
 	""" replaces whatever's between the : and the | with whatever's after the | """
 	search, replace = t[1].split( "|" )
@@ -198,19 +202,37 @@ class stepTests_replace( unittest.TestCase ):
 		self.failUnless( replace( None, ( None, "before|after" ), {}, "before" )[1] == "after" )
 	def testShouldFail( self ):
 		self.failIf( replace( None, ( None, "before|after" ), {}, "before" )[1] != "after" )
+	def testShouldAlsoFail( self ):
+		self.failIf( replace( None, ( None, "before|after" ), {}, "befo123re" )[1] == "after" )
 		
-
+########################################################################################################
 
 def replacewithspace( self, t, args, data ):
 	""" replaces the input data with spaces """
 	data = data.replace( t[1].strip(), " " )
 	return args, data
 
+
+########################################################################################################
+
 def datais( self, t, args, data ):
 	""" checks if data matches given value, should really only use this with string """
-	print( "This isn't implemented yet." )
+	args['found'] = False
+	if( t[1] == data ):
+		args['found'] = True
+		return args, data
 	#TODO Finish steps.datais
 	return False
+
+class stepTests_datais( unittest.TestCase ):
+	def testShouldPass(self):
+		a, d =  datais( None, ( None, "test" ), {}, "test" ) 
+		self.failUnless( a['found'] )
+		self.failUnless( d == "test" )
+	def testGetFalse( self ):
+		self.failIf( datais( None, ( None, "te12st" ), {}, "test" ) )
+
+########################################################################################################
 	
 def isin( self, t, args, data ):
 	""" check if something's in the input data """
@@ -223,6 +245,8 @@ def isin( self, t, args, data ):
 		args['found'] = False
 		return False
 
+########################################################################################################
+
 def writefile( self, t, args, data ):
 	""" write the contents of data to the filename in t[1] """
 	print( "Writing to {}".format( t[1] ) )
@@ -230,6 +254,8 @@ def writefile( self, t, args, data ):
 	f.write( data )
 	f.close
 	return args, data
+
+########################################################################################################
 
 def setperiod( self, t, args, data ):
 	""" this should be able to set the period on a task out to x time if it's triggered, useful for things like periodic checkers 
@@ -246,6 +272,8 @@ def setperiod( self, t, args, data ):
 	else:
 		return False
 	return args, data
+
+########################################################################################################
 
 if __name__ == "__main__":
 	unittest.main()
