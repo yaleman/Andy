@@ -192,6 +192,15 @@ def replace( self, t, args, data ):
 	data = data.replace( search, replace )
 	return args, data
 
+class stepTests_replace( unittest.TestCase ):	
+	#test replace
+	def testShouldPass( self ):
+		self.failUnless( replace( None, ( None, "before|after" ), {}, "before" )[1] == "after" )
+	def testShouldFail( self ):
+		self.failIf( replace( None, ( None, "before|after" ), {}, "before" )[1] != "after" )
+		
+
+
 def replacewithspace( self, t, args, data ):
 	""" replaces the input data with spaces """
 	data = data.replace( t[1].strip(), " " )
