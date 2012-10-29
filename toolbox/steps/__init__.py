@@ -212,6 +212,11 @@ def replacewithspace( self, t, args, data ):
 	data = data.replace( t[1].strip(), " " )
 	return args, data
 
+class stepTests_replacewithspace( unittest.TestCase ):
+	def test1( self ):
+		self.failUnless( replacewithspace( None, ( None, " foo" ), {}, "foo foo" )[1] == "   " )
+	def test2( self ):
+		self.failUnless( replacewithspace( None, ( None, " foo" ), {}, "fobaro foo" )[1] == "fobaro  " )  
 
 ########################################################################################################
 
