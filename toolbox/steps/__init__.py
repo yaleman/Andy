@@ -10,6 +10,9 @@ import config
 import os
 import time
 import pickle
+import unittest
+
+
 
 def get_from_plugin( self, t, args, data ):
 	plugin, func = t[1].split( "|" )
@@ -176,6 +179,12 @@ def find_table_with( self, t, args, data ):
 	""" see __task_find_tag_with, searches for tables """
 	return __task_find_tag_with( self, "table", t, args, data )
 
+class stepTests( unittest.TestCase ):
+	# test find_table_with
+	def find_table_with_ShouldPass( self ):
+		self.failUnless( find_table_with( None, ( None, "test" ), {}, "<table>test</table>" ) )
+	def find_table_with_ShouldFail( self ):
+		self.failUnless( find_table_with( None, ( None, "test" ), {}, "<table>test</table>" ) ) 
 
 def replace( self, t, args, data ):
 	""" replaces whatever's between the : and the | with whatever's after the | """
@@ -229,3 +238,5 @@ def setperiod( self, t, args, data ):
 		return False
 	return args, data
 
+if __name__ == "__main__":
+	unittest.main()
