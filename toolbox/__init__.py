@@ -74,7 +74,6 @@ class base_plugin():
 #		lines.append( child.readline().strip() )
 #	return lines
 
-		lines.append( child.readline().strip() )
 def run( command, getstderror = False ):
 	""" this will run a given command on the commandline """
 	torun = command.split()
