@@ -1,10 +1,11 @@
 #!/usr/bin/env python
 
-try:
-	import pexpect
-except ImportError:
-	print( "Failed to import pexpect" )
+#try:
+#	import pexpect
+#except ImportError:
+#	print( "Failed to import pexpect" )
 
+import subprocess
 import config
 import pickle
 import re
@@ -62,22 +63,22 @@ class base_plugin():
 		else:
 			return False	
 
-
-def sudorun( command, password ):
+# TODO: reimplement sudorun at some point
+#def sudorun( command, password ):
 	# uses pexpect to run a command with sudo on the command line with a given password and return the results. 
 	# relies on pexpect
-	child = pexpect.spawn ( "sudo {}".format( command ) )
-	i = child.expect( [ 'Password:*', '' ] )
-	lines = []
-	if i == 0:
-		child.sendline( password )
-	else:
-		lines.append( child.before.strip() )
-	while not child.eof() :
-		lines.append( child.readline().strip() )
-	return lines
+#	child = pexpect.spawn ( "sudo {}".format( command ) )
+#	i = child.expect( [ 'Password:*', '' ] )
+#	lines = []
+#	if i == 0:
+#		child.sendline( password )
+#	else:
+#		lines.append( child.before.strip() )
+#	while not child.eof() :
+#		lines.append( child.readline().strip() )
+#	return lines
 
-
+# TODO replace pexpect with something else for python3.3 ?
 def run( command ):
 	child = pexpect.spawn ( command )
 	lines = []
