@@ -66,7 +66,7 @@ class Plugin( toolbox.base_plugin ):
 		passed = []
 		e_raised = False
 		for f in [ f for f in os.listdir( "." ) if f.endswith( ".py" ) ]:
-			output = [ line for line in toolbox.run( "pylint "+f ) if ("TODO" not in line and "Unused import" not in line and line.strip() != "" ) ]
+			output = [ line for line in toolbox.run( "pylint "+f ).split("\n") if ("TODO" not in line and "Unused import" not in line and line.strip() != "" ) ]
 			if len( output ) > 1:
 				toprint = "\n".join( output )
 				if( "E:" in toprint ):
