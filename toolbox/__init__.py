@@ -9,7 +9,11 @@ import config
 import pickle
 import re
 import hashlib
-import urllib2
+#TODO fix references to urllib2
+try:
+	import urllib2
+except ImportError:
+	import urllib
 import sys
 import os
 import time
@@ -98,11 +102,15 @@ def url_get( url ):
 	# create the request object
 	#TODO deal with exceptions in url.get (deals with URLError so far)
 	try:
+		#u = urllib.request.urlopen( url )
 		u = urllib2.urlopen( url )
 		return u.read()
-	except ( urllib2.URLError ):
-		return "URL Access Error: {}".format( "boobs" )
-	# u.geturl() should return whatever ended up being grabbed (In case of a redirect)
+#	except:
+#		print( "Whoops, URL get failed" )
+#		return ""
+	except urllib2.URLError as e :
+		print( "URL Access Error: {}".format( e ) )
+		#u.geturl() should return whatever ended up being grabbed (In case of a redirect)
 
 
 def md5( text ):
