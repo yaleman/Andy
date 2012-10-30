@@ -1,16 +1,12 @@
 #!/usr/bin/env python
 
-#try:
-#	import pexpect
-#except ImportError:
-#	print( "Failed to import pexpect" )
 
 import subprocess
 import config
 import pickle
 import re
 import hashlib
-#TODO fix references to urllib2
+#TODO fix references to urllib2 -> moving to urllib for python3.3
 try:
 	import urllib2
 except ImportError:
@@ -78,13 +74,21 @@ class base_plugin():
 #		lines.append( child.readline().strip() )
 #	return lines
 
-# TODO replace pexpect with something else for python3.3 ?
-def run( command ):
-	child = pexpect.spawn ( command )
-	lines = []
-	while not child.eof() :
 		lines.append( child.readline().strip() )
-	return lines
+def run( command, getstderror = False ):
+	""" this will run a given command on the commandline """
+	torun = command.split()
+	
+	if( getstderror ): #include STDERR into the data
+		stderr = subprocess.STDOUT
+	else:
+		stderr = None
+	try:
+		retval = subprocess.check_output( torun, stderr=stderr )
+	except subprocess.CalledProcessError,e :
+		retval = e.output
+	return retval
+	#return lines
 
 def self_ipaddr():
 	""" finds and returns list of the local ip addresses for all interfaces
