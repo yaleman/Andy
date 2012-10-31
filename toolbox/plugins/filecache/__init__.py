@@ -50,7 +50,7 @@ class Plugin( toolbox.base_plugin ):
 		""" this goes through the cached files and deletes the expired ones """
 		keys = self._data.keys()
 		#print "Cleaning expired files, {} to process.".format( len( keys ) ),
-		for f in keys:
+		for f in set( keys ):
 			if self._expired( f ):
 				del( self._data[f] )
 
