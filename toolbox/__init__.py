@@ -82,7 +82,7 @@ def run( command, getstderror = False ):
 		retval = subprocess.check_output( torun, stderr=stderr )
 	except subprocess.CalledProcessError as e :
 		retval = e.output
-	return str( retval )
+	return retval.decode( 'utf-8' )
 	#return lines
 
 def self_ipaddr():
