@@ -12,6 +12,7 @@ import readline
 
 class Andy():
 	def __init__( self ):
+		""" andy is the little bot that could """
 		self.plugins = {}
 		self._pluginname = "Andy"
 		#to add a new plugin here, all you need to do is add its name to the list
@@ -117,6 +118,6 @@ class Andy():
 if( __name__ == '__main__' ):
 
 	andy = Andy()
-	andy.plugins['are'].replace( "ipaddr", toolbox.self_ipaddr() )
+#	andy.plugins['are'].replace( "ipaddr", toolbox.self_ipaddr() )
 
 	andy.interact()
