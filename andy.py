@@ -80,7 +80,6 @@ class Andy():
 		text = ""
 		readline.parse_and_bind("tab: complete")
 		readline.set_completer( self._complete )
-		#raw_input('Enter section name: ')
 		while( text != "quit" ):	
 			text = input( "# " ).strip()
 			# skips dem newlines
@@ -99,16 +98,16 @@ class Andy():
 		self._save_before_shutdown()
 
 	def _save_before_shutdown( self ):
-		# this goes through all the registered plugins and saves them
+		""" this goes through all the registered plugins and tells them to save """
 		for plugin in self.plugins:
 			if( '_save' in dir( self.plugins[plugin] ) ):
 				self.plugins[plugin]._save()
 	
 
 	def register_plugin( self, plugin ):
-		# registers plugins
-		# plugins need a self.pluginname which are unique so that when you call @plugin xxx it'll know what to ask for
-		# doesn't hurt to have a handle_text too
+		""" registers plugins
+		plugins need a self.pluginname which are unique so that when you call @plugin xxx it'll know what to ask for
+		doesn't hurt to have a handle_text too """
 		if plugin not in self.plugins:
 			self.plugins[plugin.pluginname] = plugin
 		else:
