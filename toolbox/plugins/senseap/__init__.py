@@ -39,7 +39,7 @@ class Plugin( toolbox.base_plugin ):
 		if not tmp:
 			return "Currently disconnected"
 		else:
-			return "Connected to {}.".format( self._current_data() )
+			return "Connected to {}.".format( tmp )
 
 if( __name__ == '__main__' ):
 	pass
