@@ -82,7 +82,7 @@ class Andy():
 		readline.set_completer( self._complete )
 		#raw_input('Enter section name: ')
 		while( text != "quit" ):	
-			text = raw_input( "# " ).strip()
+			text = input( "# " ).strip()
 			# skips dem newlines
 			if( text != "" ):
 				if text.startswith( "#" ):

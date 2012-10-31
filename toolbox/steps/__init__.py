@@ -69,10 +69,10 @@ def dotask( self, t, args, data ):
 
 def stripnl( taskbot, t, args, data ):
 	""" strips newlines and replaces them with spaces """
-	return args, data.replace( "\n", " " )
+	return args, str( data ).replace( "\n", " " )
 
 def striptab( taskbot, t, args, data ):
-	return args, data.replace( "\t", " " )
+	return args, str( data ).replace( "\t", " " )
 
 def email( self, t, args, data ):
 	#TODO add email functionality to do_tasksequence
@@ -99,7 +99,7 @@ def geturi( self, t, args, data ):
 	uri = args[ 'uris' ][ int( t[1] ) ]
 	print( "Grabbing uri: {}".format( uri ) ),
 	# pulls the file from the filecache if possible, caches for config.filecache['uricachetime'] seconds
-	data = self._parent.plugins['filecache'].getfile( uri, config.filecache['uricachetime'] )
+	data = str( self._parent.plugins['filecache'].getfile( uri, config.filecache['uricachetime'] ) )
 	print( "[OK] Filesize: {}".format( len( data ) ) )
 	return args, data
 

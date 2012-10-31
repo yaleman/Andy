@@ -6,11 +6,7 @@ import config
 import pickle
 import re
 import hashlib
-#TODO fix references to urllib2 -> moving to urllib for python3.3
-try:
-	import urllib2
-except ImportError:
-	import urllib
+import urllib.request
 import sys
 import os
 import time
@@ -84,9 +80,9 @@ def run( command, getstderror = False ):
 		stderr = None
 	try:
 		retval = subprocess.check_output( torun, stderr=stderr )
-	except subprocess.CalledProcessError,e :
+	except subprocess.CalledProcessError as e :
 		retval = e.output
-	return retval
+	return str( retval )
 	#return lines
 
 def self_ipaddr():
@@ -95,9 +91,11 @@ def self_ipaddr():
 	ifconfig = run( "ifconfig" )
 	re_ipfind = re.compile( "inet[6\s]{1,2}([a-f0-9\.\:]{3,})" )
 	ipaddr = []
-	for line in ifconfig:
-		if "inet" in line and re_ipfind.search( line ) != None:
-			ipaddr.append( re_ipfind.findall( line )[0] )
+	#print ifconfig
+	for line in ifconfig.split( '\n' ):
+		if "inet" in line :
+			if re_ipfind.search( line ) != None:
+				ipaddr.append( re_ipfind.findall( line )[0] )
 	return ipaddr
 
 def url_get( url ):
@@ -105,22 +103,22 @@ def url_get( url ):
 		based on info from here: http://docs.python.org/library/urllib2.html#urllib2.urlopen """
 	# create the request object
 	#TODO deal with exceptions in url.get (deals with URLError so far)
-	try:
-		#u = urllib.request.urlopen( url )
-		u = urllib2.urlopen( url )
-		return u.read()
+	#try:
+	u = urllib.request.urlopen( url )
+		#u = urllib2.urlopen( url )
+	return u.read()
 #	except:
 #		print( "Whoops, URL get failed" )
 #		return ""
-	except urllib2.URLError as e :
-		print( "URL Access Error: {}".format( e ) )
-		#u.geturl() should return whatever ended up being grabbed (In case of a redirect)
+	#except urllib.error as e :
+	#	print( "URL Access Error: {}".format( e ) )
+	#	#u.geturl() should return whatever ended up being grabbed (In case of a redirect)
 
 
-def md5( text ):
+def md5( tohash ):
 	""" returns an md5 hash of the input text """
 	h = hashlib.new( 'ripemd160' )
-	h.update( text )
+	h.update( tohash.encode( 'utf-8' ) )
 	return h.hexdigest()
 
 def writefile( filename, contents ):

@@ -23,10 +23,12 @@ class Plugin( toolbox.base_plugin ):
 
 	def _current_data( self, text=None ):
 		""" returns the current access point that the computer is connected to """
-		data = [ line.strip() for line in toolbox.run( self._command_current_connection ).split( "\n" ) if line.strip().startswith( "SSID" ) and line.strip() != "" ]
-		data = data[0].split( ":" )[1].strip()
-		if( data != "" ):
-			return data
+		cmdoutput = toolbox.run( self._command_current_connection ).split( "\\n" )
+		data = [ line.strip() for line in cmdoutput if line.strip().startswith( "SSID" ) and line.strip() != "" ]
+		if data:
+			data = data[0].split( ":" )[1].strip()
+			if( data != "" ):
+				return data
 		else:
 			#return "no access point"
 			return False
