@@ -50,7 +50,9 @@ class base_plugin():
 		# if there's data, save it
 		if( self._data != "" and self._filename != "" ):
 			#save the file
-			pickle.dump( self._data, open( self._filename, 'wb' ) )
+			fh = open( self._filename, 'wb' )
+			pickle.dump( self._data, fh )
+			fh.close()
 		# if not, return false
 		else:
 			return False	
