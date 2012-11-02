@@ -55,6 +55,7 @@ class base_plugin():
 		else:
 			return False	
 
+#http://stackoverflow.com/questions/567542/running-a-command-as-a-super-user-from-a-python-script
 # TODO: reimplement sudorun at some point
 #def sudorun( command, password ):
 	# uses pexpect to run a command with sudo on the command line with a given password and return the results. 
