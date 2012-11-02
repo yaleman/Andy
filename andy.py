@@ -19,6 +19,7 @@ class Andy():
 		self._loadplugins()
 		#self.register_plugin( toolbox.FileCache( self ) )
 		print( "{} started.".format( self._pluginname ) )
+		self._keeprunning = True
 
 	def _complete(self, text, state):
 		""" does auto-completion for interact """
@@ -81,22 +82,28 @@ class Andy():
 		text = ""
 		readline.parse_and_bind("tab: complete")
 		readline.set_completer( self._complete )
-		while( text != "quit" ):	
-			text = input( "# " ).strip()
-			# skips dem newlines
-			if( text != "" ):
-				if text.startswith( "#" ):
-					print( self._command_hash( text ) )
-				else:
-					text_lower = text.lower()
-					oper = text_lower.split()[0]
-					if( oper in self.plugins ):
-						if( '_handle_text' in dir( self.plugins[oper] ) ):
-							print( self.plugins[oper]._handle_text( text ) )
+		
+		while self._keeprunning:
+			try:
+				
+				while( text != "quit" ):	
+					text = input( "# " ).strip()
+					# skips dem newlines
+					if( text != "" ):
+						if text.startswith( "#" ):
+							print( self._command_hash( text ) )
 						else:
-							print( "{} module doesn't have handle_text".format( oper ) )
-
-		self._save_before_shutdown()
+							text_lower = text.lower()
+							oper = text_lower.split()[0]
+							if( oper in self.plugins ):
+								if( '_handle_text' in dir( self.plugins[oper] ) ):
+									print( self.plugins[oper]._handle_text( text ) )
+								else:
+									print( "{} module doesn't have handle_text".format( oper ) )
+			except:
+				print( "Something failed. Let's try not to do that." )
+			finally:
+				self._save_before_shutdown()
 
 	def _save_before_shutdown( self ):
 		""" this goes through all the registered plugins and tells them to save """
