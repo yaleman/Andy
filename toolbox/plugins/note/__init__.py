@@ -1,3 +1,4 @@
+import time
 import config
 import pickle
 import os
@@ -18,7 +19,7 @@ class Plugin( toolbox.base_plugin ):
 		terms = [ term.lower() for term in text.split() ]
 		# python list comprehensions are mental and fun!
 		# this will return all results, if ANY term matches.
-		notes = "\n".join( set( [  "#{}#\n{}".format( note, self._data[note] ) for note in self._data for term in terms if term in self._data[note].lower() ] ) )
+		notes = "\n".join( set( [  "#{} {}#\n{}".format( self._data[note]['time'], note, self._data[note]['contents'] ) for note in self._data for term in terms if term in self._data[note]['contents'].lower() ] ) )
 		return notes
 
 	
@@ -27,7 +28,7 @@ class Plugin( toolbox.base_plugin ):
 		if( text.strip() != "" ):
 			notehash = toolbox.md5( text )
 			if notehash not in self._data:
-				self._data[notehash] = text
+				self._data[notehash] = { 'contents' : text, 'time' : time.time() }
 				self._save()
 				return "Added"
 			return "Note already exists"
@@ -35,8 +36,8 @@ class Plugin( toolbox.base_plugin ):
 	def dump( self, text ):
 		""" dump a full list of all the notes """
 		for notekey in self._data:
-			print( "- {}".format( notekey ) )
-			print( "# {}".format( self._data[notekey] ) )
+			print( "- {} {}".format( notekey, self._data[notekey]['time'] ) )
+			print( "# {}".format( self._data[notekey]['contents'] ) )
 
 	def delete( self, text ):
 		""" delete a note based on a given noteid """
