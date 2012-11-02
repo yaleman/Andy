@@ -102,6 +102,7 @@ class Andy():
 									print( "{} module doesn't have handle_text".format( oper ) )
 			except:
 				print( "Something failed. Let's try not to do that." )
+				#TODO add fault logging to Andy rebootskis
 			finally:
 				self._save_before_shutdown()
 
