@@ -104,6 +104,8 @@ class Andy():
 				print( "Something failed. Let's try not to do that." )
 				#TODO add fault logging to Andy rebootskis
 			finally:
+				if( text == "quit" ):
+					self._keeprunning = False
 				self._save_before_shutdown()
 
 	def _save_before_shutdown( self ):
