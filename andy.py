@@ -15,11 +15,9 @@ class Andy():
 		""" andy is the little bot that could """
 		self.plugins = {}
 		self._pluginname = "Andy"
-		#to add a new plugin here, all you need to do is add its name to the list
 		self._loadplugins()
-		#self.register_plugin( toolbox.FileCache( self ) )
-		print( "{} started.".format( self._pluginname ) )
 		self._keeprunning = True
+		print( "{} started.".format( self._pluginname ) )
 
 	def _complete(self, text, state):
 		""" does auto-completion for interact """
