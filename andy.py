@@ -18,13 +18,13 @@ class Andy():
 		self._pluginname = "Andy"
 		self._loadplugins()
 		self._keeprunning = True
-		self._logfh = open( "logs/andy.log" , 'w' )
+		self._logfile = "logs/andy.log" 
 		print( "{} started.".format( self._pluginname ) )
 		self.log( "{} started.".format( self._pluginname )  )
 
 	def _complete(self, text, state):
 		""" does auto-completion for interact """
-		#print( "'{} {}'".format( text, state ) )
+		self.log( ( "'{} {}'".format( text, state ) ) )
 		
 		for p in self.plugins:
 			if p.startswith(text):
@@ -34,7 +34,9 @@ class Andy():
 					state -= 1
 					
 	def log( self, texttolog ):
-		self._logfh.write( "{} {}\n".format( time.time(), texttolog ) )
+		fh = open( self._logfile, 'w')
+		fh.write( "{} {}\n".format( time.time(), texttolog ) )
+		fh.close()
 
 	def _loadplugins( self ):
 		""" dynamic plugin loader 
