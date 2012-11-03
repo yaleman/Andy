@@ -4,6 +4,7 @@ import os
 import sys
 import toolbox
 import imp
+import time
 
 # readline does autocomplete
 import readline
@@ -17,17 +18,23 @@ class Andy():
 		self._pluginname = "Andy"
 		self._loadplugins()
 		self._keeprunning = True
+		self._logfh = open( "logs/andy.log" , 'w' )
 		print( "{} started.".format( self._pluginname ) )
+		self.log( "{} started.".format( self._pluginname )  )
 
 	def _complete(self, text, state):
 		""" does auto-completion for interact """
 		#print( "'{} {}'".format( text, state ) )
+		
 		for p in self.plugins:
 			if p.startswith(text):
 				if not state:
 					return p
 				else:
 					state -= 1
+					
+	def log( self, texttolog ):
+		self._logfh.write( "{} {}\n".format( time.time(), texttolog ) )
 
 	def _loadplugins( self ):
 		""" dynamic plugin loader 

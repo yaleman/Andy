@@ -34,6 +34,9 @@ class base_plugin():
 			return "Unsure what you meant by '{}'".format( text )
 		else:
 			return "Got a task to do?"
+		
+	def _log( self, texttolog ):
+		self._parent.log( "({}) {}".format( self.pluginname, texttolog ) )
 
 	def _load( self ):
 		if( self._filename != "" ):
