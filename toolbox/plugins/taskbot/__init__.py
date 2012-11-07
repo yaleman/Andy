@@ -155,11 +155,13 @@ class Plugin( toolbox.base_plugin ):
 		return "Enabled {}".format( taskid )
 	
 	def show( self, taskid ):
+		""" show task information. If a specific task isn't listed, show a list of tasks """
 		retval = ""
 		if taskid == "":
 				return ", ".join( self._data['tasks'].keys() )
 		if taskid in self._data['tasks']:
-			for displaytask in [ "{}\t{}".format( key, value ) for key, value in sorted( self._data['tasks'][taskid].items() ) ]:
+			#TODO: sort the dict, can't use items anymore.
+			for displaytask in [ "{}\t{}".format( key, value ) for key, value in self._data['tasks'][taskid].items() ]:
 				retval += "{}\n".format( displaytask )
 			return retval 
 		else:
