@@ -22,10 +22,9 @@ class Andy():
 		print( "{} started.".format( self._pluginname ) )
 		self.log( "{} started.".format( self._pluginname )  )
 
-	def _complete(self, text, state):
+	def _completeline(self, text, state):
 		""" does auto-completion for interact """
-		self.log( ( "'{} {}'".format( text, state ) ) )
-		
+		self.log( ( "'{} {}'".format( text, state ) ) )		
 		for p in self.plugins:
 			if p.startswith(text):
 				if not state:
@@ -87,14 +86,14 @@ class Andy():
 			it'll sit there waiting on input, if it's a #something it's probably a help/query
 			anything else you type should start with a plugin name and then the subsequent commands/arguments """ 
 		text = ""
+		readline.set_completer( self._completeline )
 		readline.parse_and_bind("tab: complete")
-		readline.set_completer( self._complete )
-		
 		while self._keeprunning:
 			try:
 				
 				while( text != "quit" ):	
-					text = input( "# " ).strip()
+					text = input( "# " )
+					text = text.strip()
 					# skips dem newlines
 					if( text != "" ):
 						if text.startswith( "#" ):
