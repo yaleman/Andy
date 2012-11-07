@@ -1,8 +1,8 @@
 #!/opt/local/bin/python3.3
 
+import traceback
 import os
 import sys
-import toolbox
 import imp
 import time
 
@@ -107,7 +107,13 @@ class Andy():
 								else:
 									print( "{} module doesn't have handle_text".format( oper ) )
 			except:
-				print( "Something failed. Let's try not to do that." )
+				print( "Something failed. Let's try not to do that again. Displaying traceback..." )
+				print( "#" * 40 )
+					
+				#traceback.print_stack()
+				#traceback.print_tb(exc_traceback, limit=1, file=sys.stdout)
+				traceback.print_exc()
+				print( "#" * 40 )
 				#TODO add fault logging to Andy rebootskis
 			finally:
 				if( text == "quit" ):
