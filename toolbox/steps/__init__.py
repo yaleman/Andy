@@ -122,6 +122,8 @@ def __task_find_tag_filter( self, tag, t, args, data, yesorno ):
 	# if it's  a list, retucn a merged list of results out of the list's items
 	if type( data ) == "list":
 		tagpairs = [ tagfinder.findall( d ) for d	 in data ]
+		#TODO: replace reduce with something useful
+		from functools import reduce
 		tagpairs = reduce( lambda x, y: x + y, tagpairs )
 	# not really sure I want to deal with dicts?
 	elif type( data ) == "dict":
