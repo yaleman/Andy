@@ -20,6 +20,7 @@ class Andy():
 		self._keeprunning = True
 		self._logfile = "logs/andy.log" 
 		print( "{} started.".format( self._pluginname ) )
+		#TODO: setup a way to clear the logfile or something
 		self.log( "{} started.".format( self._pluginname )  )
 
 	def _completeline(self, text, state):
@@ -33,7 +34,7 @@ class Andy():
 					state -= 1
 					
 	def log( self, texttolog ):
-		fh = open( self._logfile, 'w')
+		fh = open( self._logfile, 'a')
 		fh.write( "{} {}\n".format( time.time(), texttolog ) )
 		fh.close()
 
