@@ -41,6 +41,7 @@ class base_plugin():
 	def _load( self ):
 		if( self._filename != "" ):
 			if os.path.exists( self._filename ):
+				#TODO: decide on if I need rb in the load
 				self._data = pickle.load( open( self._filename , "rb" ) )
 				return True
 			# no file? return false
